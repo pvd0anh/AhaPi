@@ -5,10 +5,10 @@
 | Bước | Việc cần làm |
 |---|---|
 | 1 | Tạo tài khoản tại **github.com** |
-| 2 | Bấm **New repository** → đặt tên `ahapi` → chọn **Public** → **Create** |
+| 2 | Bấm **New repository** → đặt tên `AhaPi` → chọn **Public** → **Create** |
 | 3 | Bấm **uploading an existing file** → kéo thả **toàn bộ** thư mục này vào → **Commit changes** |
 | 4 | Vào **Settings → Pages** → mục *Branch* chọn `main` / `(root)` → **Save** |
-| 5 | Đợi 2 phút. Web của bạn ở địa chỉ `https://<tên-tài-khoản>.github.io/ahapi/` |
+| 5 | Đợi 2 phút. Web của bạn ở địa chỉ `https://<tên-tài-khoản>.github.io/AhaPi/` |
 
 Gửi địa chỉ đó cho học sinh. Xong.
 

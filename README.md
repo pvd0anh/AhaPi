@@ -18,7 +18,7 @@ Web tĩnh để đăng bài giảng Toán: video YouTube, lý thuyết có công
 
 | Bước | Thao tác |
 |---|---|
-| 1 | Tạo repository mới trên GitHub, đặt tên `ahapi`, chọn **Public** |
+| 1 | Tạo repository mới trên GitHub, đặt tên `AhaPi`, chọn **Public** |
 | 2 | Upload toàn bộ file trong thư mục này vào **gốc** repo (không lồng thêm thư mục) |
 | 3 | **Settings → Pages** → Branch: `main`, thư mục `/ (root)` → **Save** |
 | 4 | Đợi 1–2 phút. Web chạy tại `https://<tài-khoản>.github.io/<tên-repo>/` |

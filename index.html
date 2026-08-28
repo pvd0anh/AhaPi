@@ -22,6 +22,9 @@
   --vien:#E6E6EA;
   --nen:#FFFFFF;
   --nen-xam:#FAFAFB;
+  --giay:#FCFCFA;        /* nền giấy phần lý thuyết */
+  --o-ly:#D8E4EA;        /* nét kẻ ô ly */
+  --o:26px;              /* cạnh một ô */
   --tren:56px;
   --duoi:60px;
   --ben:340px;
@@ -112,6 +115,21 @@ h1.ten-bai{font-size:clamp(24px,3.4vw,32px);font-weight:800;letter-spacing:-.025
 .duoi-ten .chip{display:inline-flex;align-items:center;gap:6px}
 
 .noi-dung{font-family:'Source Serif 4',Georgia,serif;font-size:17.5px;line-height:1.75;color:#232327}
+
+/* ---- tờ giấy ô ly: chỉ dùng cho phần lý thuyết ---- */
+.to-giay{
+  background-color:var(--giay);
+  background-image:
+    linear-gradient(var(--o-ly) 1px,transparent 1px),
+    linear-gradient(90deg,var(--o-ly) 1px,transparent 1px);
+  background-size:var(--o) var(--o);
+  border:1px solid var(--vien);border-radius:5px;
+  padding:24px 28px;box-shadow:0 1px 2px rgba(20,20,26,.04);
+}
+.to-giay > :first-child{margin-top:0}
+.to-giay > :last-child{margin-bottom:0}
+.to-giay table{background:var(--nen)}          /* bảng phải đục để đọc được số */
+.to-giay code{background:var(--nen)}
 .noi-dung h2,.noi-dung h3{font-family:'Be Vietnam Pro',sans-serif;letter-spacing:-.015em;line-height:1.3;color:var(--chu)}
 .noi-dung h2{font-size:21px;font-weight:700;margin:38px 0 12px;padding-left:13px;border-left:3px solid var(--nhan)}
 .noi-dung h3{font-size:17.5px;font-weight:600;margin:28px 0 8px;color:var(--nhan)}
@@ -259,6 +277,7 @@ body.gap-ben .thanh-duoi{right:0}
   body.mo-ben #nen-mo{display:block}
   body.gap-ben aside{transform:translateX(100%)}
   .trong{padding:0 20px}
+  .to-giay{padding:18px 16px;border-radius:4px}
   header .dang-o{display:none}
   .noi-dung{font-size:16.5px}
   .thanh-duoi button span.chu-nut{display:none}
@@ -476,7 +495,7 @@ async function moBai(i,dayHash=true){
       ${tuVung.length?`<span class="chip">🔤 ${tuVung.length} từ vựng</span>`:''}
       ${baiTap.length?`<span class="chip">✎ ${baiTap.length} bài tập</span>`:''}
     </div>`;
-  if(lyThuyet) h+=`<div class="noi-dung">${render(lyThuyet)}</div>`;
+  if(lyThuyet) h+=`<div class="noi-dung to-giay">${render(lyThuyet)}</div>`;
 
   if(tuVung.length){
     h+=`<section class="tu-vung"><div class="nhan">Từ vựng<span class="gach"></span>

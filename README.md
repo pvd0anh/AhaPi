@@ -68,7 +68,7 @@ Push to a public GitHub repo, then **Settings → Pages → Branch: `main` / `(r
 
 ## Customising
 
-The accent colour is the `--nhan:` variable at the top of `index.html`. The name appears in `<title>`, the header, `document.title`, `soan-bai.html` and `404.html`; the `π` logo lives in `index.html`, `404.html` and `favicon.svg`.
+The accent colour is the `--nhan:` variable at the top of `index.html`; the ruled-paper backdrop behind the theory of each lesson is `--giay` (paper), `--o-ly` (grid line) and `--o` (cell size) next to it. The name appears in `<title>`, the header, `document.title`, `soan-bai.html` and `404.html`; the `π` logo lives in `index.html`, `404.html` and `favicon.svg`.
 
 ## Known limits
 

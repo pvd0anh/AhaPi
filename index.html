@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AhaPi</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+<style>
+:root{
+  --nhan:#5B3FA8;        /* MÀU NHẤN — đổi 1 dòng này là đổi cả web */
+  --nhan-mo:#F0ECFA;
+  --do:#C8453C;          /* đáp án / bút đỏ */
+  --xanh:#16A34A;        /* đã học */
+  --chu:#1B1B1F;
+  --chu-nhat:#6E7075;
+  --vien:#E6E6EA;
+  --nen:#FFFFFF;
+  --nen-xam:#FAFAFB;
+  --tren:56px;
+  --duoi:60px;
+  --ben:340px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Be Vietnam Pro',system-ui,sans-serif;color:var(--chu);background:var(--nen);font-size:15px}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--nhan);outline-offset:2px}
+
+/* ================= HEADER ================= */
+header{
+  position:fixed;top:0;left:0;right:0;height:var(--tren);z-index:40;
+  background:var(--nen);border-bottom:1px solid var(--vien);
+  display:flex;align-items:center;gap:14px;padding:0 18px;
+}
+.logo{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.logo .dau{
+  width:30px;height:30px;border-radius:7px;background:var(--nhan);color:#fff;
+  display:grid;place-items:center;font-family:'Source Serif 4',serif;
+  font-size:19px;font-weight:600;font-style:italic;
+}
+.logo b{font-weight:800;font-size:15.5px;letter-spacing:-.01em}
+header .dang-o{
+  color:var(--chu-nhat);font-size:14px;font-weight:500;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  border-left:1px solid var(--vien);padding-left:14px;
+}
+header .phai{margin-left:auto;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.tien-do{display:flex;align-items:center;gap:8px}
+.tien-do svg{transform:rotate(-90deg)}
+.tien-do .vong-nen{stroke:var(--vien)}
+.tien-do .vong{stroke:var(--xanh);transition:stroke-dashoffset .4s ease}
+.tien-do span{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--chu-nhat)}
+.nut-icon{
+  width:36px;height:36px;border:1px solid var(--vien);border-radius:8px;
+  background:var(--nen);display:grid;place-items:center;font-size:15px;color:var(--chu);
+}
+.nut-icon:hover{background:var(--nen-xam)}
+
+/* ================= CỘT CHÍNH ================= */
+main{
+  margin:var(--tren) var(--ben) var(--duoi) 0;
+  padding:0 0 60px;min-height:calc(100vh - var(--tren) - var(--duoi));
+  transition:margin-right .22s ease;
+}
+body.gap-ben main{margin-right:0}
+.trong{max-width:780px;margin:0 auto;padding:0 32px}
+
+.khung-video{position:relative;padding-top:56.25%;background:#101014;margin-bottom:0}
+.khung-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.khung-video .bia{
+  position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;
+  background:#101014 center/cover no-repeat;display:grid;place-items:center;
+}
+.khung-video .bia::after{
+  content:"";position:absolute;inset:0;background:rgba(10,10,14,.28);
+  opacity:0;transition:opacity .18s ease;
+}
+.khung-video .bia:hover::after{opacity:1}
+.khung-video .phat{
+  position:relative;z-index:1;width:66px;height:46px;border-radius:11px;
+  background:rgba(20,20,26,.82);display:grid;place-items:center;
+  transition:background .18s ease,transform .18s ease;
+}
+.khung-video .bia:hover .phat{background:var(--do);transform:scale(1.06)}
+.khung-video .phat::before{
+  content:"";border-style:solid;border-width:9px 0 9px 15px;
+  border-color:transparent transparent transparent #fff;margin-left:3px;
+}
+.duoi-video{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  padding:9px 4px;font-size:12.5px;color:var(--chu-nhat);margin-bottom:24px;
+}
+.duoi-video a{color:var(--chu-nhat);text-decoration:none;border-bottom:1px solid var(--vien)}
+.duoi-video a:hover{color:var(--nhan);border-bottom-color:var(--nhan)}
+
+.meta{
+  font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--nhan);margin:30px 0 8px;
+}
+h1.ten-bai{font-size:clamp(24px,3.4vw,32px);font-weight:800;letter-spacing:-.025em;line-height:1.2}
+.duoi-ten{
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  margin:12px 0 30px;padding-bottom:22px;border-bottom:1px solid var(--vien);
+  font-size:13.5px;color:var(--chu-nhat);
+}
+.duoi-ten .chip{display:inline-flex;align-items:center;gap:6px}
+
+.noi-dung{font-family:'Source Serif 4',Georgia,serif;font-size:17.5px;line-height:1.75;color:#232327}
+.noi-dung h2,.noi-dung h3{font-family:'Be Vietnam Pro',sans-serif;letter-spacing:-.015em;line-height:1.3;color:var(--chu)}
+.noi-dung h2{font-size:21px;font-weight:700;margin:38px 0 12px;padding-left:13px;border-left:3px solid var(--nhan)}
+.noi-dung h3{font-size:17.5px;font-weight:600;margin:28px 0 8px;color:var(--nhan)}
+.noi-dung p{margin:0 0 15px}
+.noi-dung ul,.noi-dung ol{margin:0 0 15px;padding-left:24px}
+.noi-dung li{margin-bottom:7px}
+.noi-dung strong{font-weight:600;color:var(--nhan)}
+.noi-dung blockquote{background:var(--nhan-mo);border-left:3px solid var(--nhan);padding:14px 18px;margin:0 0 18px;border-radius:0 4px 4px 0}
+.noi-dung blockquote p:last-child{margin:0}
+.noi-dung table{border-collapse:collapse;width:100%;margin:0 0 18px;font-size:16px}
+.noi-dung th,.noi-dung td{border:1px solid var(--vien);padding:9px 13px;text-align:left}
+.noi-dung th{background:var(--nen-xam);font-family:'Be Vietnam Pro',sans-serif;font-weight:600;font-size:13.5px}
+.noi-dung hr{border:0;border-top:1px solid var(--vien);margin:34px 0}
+.noi-dung code{font-family:'IBM Plex Mono',monospace;font-size:.87em;background:var(--nen-xam);border:1px solid var(--vien);padding:1px 5px;border-radius:3px}
+.katex-display{margin:22px 0;overflow-x:auto;overflow-y:hidden;padding:2px 0}
+.loi-math{color:var(--do)!important;background:#FCEEED!important;border-color:#F3C9C6!important}
+
+.bai-tap{margin-top:54px}
+.bai-tap .nhan{
+  display:flex;align-items:center;gap:10px;margin-bottom:20px;
+  font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--do);
+}
+.bai-tap .nhan::after{content:"";flex:1;height:1px;background:var(--vien)}
+.cau{border:1px solid var(--vien);border-radius:8px;padding:18px 22px;margin-bottom:14px;background:var(--nen)}
+.cau .so{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.1em;color:var(--chu-nhat);display:block;margin-bottom:7px}
+.cau .de{font-size:17px}
+.cau .de p:last-child{margin-bottom:0}
+.cau .xem{
+  margin-top:14px;padding:7px 15px;font-size:13px;font-weight:500;border-radius:6px;
+  background:var(--nen);color:var(--do);border:1px solid #EBC4C1;
+}
+.cau .xem:hover{background:#FCEEED}
+.dap-an{display:none;margin-top:15px;padding:15px 18px;border-radius:6px;background:#FCF7F6;border:1px solid #F0DCDA;color:var(--do)}
+.dap-an.hien{display:block;animation:mo .2s ease-out}
+.dap-an .nhan-da{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;opacity:.7;display:block;margin-bottom:6px}
+.dap-an .katex,.dap-an strong{color:var(--do)}
+@keyframes mo{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+
+/* ================= SIDEBAR ================= */
+aside{
+  position:fixed;top:var(--tren);right:0;bottom:0;width:var(--ben);z-index:30;
+  background:var(--nen);border-left:1px solid var(--vien);
+  overflow-y:auto;transition:transform .22s ease;
+}
+body.gap-ben aside{transform:translateX(100%)}
+aside .tieu-de{
+  position:sticky;top:0;background:var(--nen);z-index:2;
+  padding:16px 20px 12px;border-bottom:1px solid var(--vien);
+  font-weight:700;font-size:14.5px;letter-spacing:-.01em;
+}
+.chuong{border-bottom:1px solid var(--vien)}
+.chuong > button{
+  width:100%;background:var(--nen-xam);border:0;text-align:left;
+  padding:13px 20px;display:flex;align-items:center;gap:10px;
+}
+.chuong > button:hover{background:#F2F2F5}
+.chuong .mui{font-size:10px;color:var(--chu-nhat);transition:transform .18s ease}
+.chuong.mo .mui{transform:rotate(90deg)}
+.chuong .ten-ch{flex:1;font-weight:600;font-size:13.5px;line-height:1.4}
+.chuong .dem{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--chu-nhat);flex-shrink:0}
+.chuong .ds{display:none}
+.chuong.mo .ds{display:block}
+
+.muc{
+  width:100%;background:none;border:0;text-align:left;
+  padding:11px 20px 11px 18px;display:flex;gap:11px;align-items:flex-start;
+  border-left:3px solid transparent;
+}
+.muc:hover{background:var(--nen-xam)}
+.muc.dang-xem{background:var(--nhan-mo);border-left-color:var(--nhan)}
+.muc .dau-cham{
+  width:19px;height:19px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  border:1.5px solid var(--vien);display:grid;place-items:center;
+  font-size:10px;color:transparent;background:var(--nen);
+}
+.muc.xong .dau-cham{background:var(--xanh);border-color:var(--xanh);color:#fff}
+.muc.dang-xem:not(.xong) .dau-cham{border-color:var(--nhan);color:var(--nhan);font-size:8px}
+.muc .chu{flex:1;min-width:0}
+.muc .tt{font-size:13.5px;line-height:1.45;font-weight:500}
+.muc.dang-xem .tt{color:var(--nhan);font-weight:600}
+.muc .ng{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--chu-nhat);margin-top:2px;display:block}
+
+/* ================= THANH DƯỚI ================= */
+.thanh-duoi{
+  position:fixed;bottom:0;left:0;right:var(--ben);height:var(--duoi);z-index:35;
+  background:var(--nen);border-top:1px solid var(--vien);
+  display:flex;align-items:center;justify-content:center;gap:10px;padding:0 20px;
+  transition:right .22s ease;
+}
+body.gap-ben .thanh-duoi{right:0}
+.thanh-duoi button{
+  height:38px;padding:0 17px;border-radius:8px;font-size:13.5px;font-weight:500;
+  border:1px solid var(--vien);background:var(--nen);color:var(--chu);
+  display:inline-flex;align-items:center;gap:7px;
+}
+.thanh-duoi button:hover:not(:disabled){background:var(--nen-xam)}
+.thanh-duoi button:disabled{opacity:.38;cursor:not-allowed}
+.thanh-duoi .xong-nut{border-color:var(--nhan);background:var(--nhan);color:#fff;font-weight:600}
+.thanh-duoi .xong-nut:hover{opacity:.9;background:var(--nhan)}
+.thanh-duoi .xong-nut.da{background:var(--nen);color:var(--xanh);border-color:#B7E4C7;font-weight:500}
+
+#nen-mo{display:none;position:fixed;inset:0;background:rgba(20,20,26,.4);z-index:29}
+
+/* ================= MOBILE ================= */
+@media(max-width:1024px){
+  :root{--ben:0px}
+  aside{width:min(340px,86vw);transform:translateX(100%);box-shadow:-8px 0 26px rgba(0,0,0,.1)}
+  body.mo-ben aside{transform:none}
+  body.mo-ben #nen-mo{display:block}
+  body.gap-ben aside{transform:translateX(100%)}
+  .trong{padding:0 20px}
+  header .dang-o{display:none}
+  .noi-dung{font-size:16.5px}
+  .thanh-duoi button span.chu-nut{display:none}
+  .thanh-duoi .xong-nut span.chu-nut{display:inline}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><div class="dau">π</div><b>AhaPi</b></div>
+  <div class="dang-o" id="dang-o">—</div>
+  <div class="phai">
+    <div class="tien-do" title="Số bài đã học">
+      <svg width="26" height="26" viewBox="0 0 26 26">
+        <circle class="vong-nen" cx="13" cy="13" r="10.5" fill="none" stroke-width="2.5"/>
+        <circle class="vong" id="vong" cx="13" cy="13" r="10.5" fill="none" stroke-width="2.5"
+                stroke-linecap="round" stroke-dasharray="65.97" stroke-dashoffset="65.97"/>
+      </svg>
+      <span id="so-tien-do">0/0</span>
+    </div>
+    <button class="nut-icon" id="nut-ben" aria-label="Ẩn hiện danh sách bài">☰</button>
+  </div>
+</header>
+
+<main>
+  <div id="video-day"></div>
+  <div class="trong" id="than-bai"></div>
+</main>
+
+<aside>
+  <div class="tieu-de">Nội dung khoá học</div>
+  <div id="cay"></div>
+</aside>
+
+<div class="thanh-duoi">
+  <button id="nut-truoc">← <span class="chu-nut">Bài trước</span></button>
+  <button class="xong-nut" id="nut-xong">Đánh dấu đã học</button>
+  <button id="nut-sau"><span class="chu-nut">Bài tiếp</span> →</button>
+</div>
+
+<div id="nen-mo"></div>
+
+<script>
+marked.setOptions({breaks:true,gfm:true});
+const $=id=>document.getElementById(id);
+const KHOA='ahapi-da-hoc';
+
+let daHoc=new Set();
+try{ daHoc=new Set(JSON.parse(localStorage.getItem(KHOA)||'[]')); }catch(e){}
+function luu(){ try{ localStorage.setItem(KHOA,JSON.stringify([...daHoc])); }catch(e){} }
+
+function render(md){
+  const kho=[];
+  let s=md.replace(/\$\$([\s\S]+?)\$\$/g,(_,t)=>{kho.push({t,d:true});return `@@M${kho.length-1}@@`;})
+          .replace(/\$([^$\n]+?)\$/g,(_,t)=>{kho.push({t,d:false});return `@@M${kho.length-1}@@`;});
+  return marked.parse(s).replace(/@@M(\d+)@@/g,(_,i)=>{
+    const{t,d}=kho[+i];
+    try{return katex.renderToString(t,{displayMode:d,throwOnError:true});}
+    catch(e){return `<code class="loi-math">${t}</code>`;}
+  });
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function idYoutube(u){const m=String(u).match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([A-Za-z0-9_-]{11})/);return m?m[1]:null;}
+
+function phanTich(raw){
+  let video='',than=raw;
+  const mv=than.match(/^\s*\[\[VIDEO\]\]\s*(\S+)\s*$/m);
+  if(mv){video=mv[1];than=than.replace(mv[0],'');}
+  let ly=than,bt=[];
+  const i=than.indexOf('[[BÀI TẬP]]');
+  if(i>-1){
+    ly=than.slice(0,i);
+    than.slice(i+'[[BÀI TẬP]]'.length).split(/\[\[Câu\]\]/).slice(1).forEach(k=>{
+      const p=k.split(/\[\[Đáp án\]\]/);
+      bt.push({de:p[0].trim(),da:(p[1]||'').trim()});
+    });
+  }
+  return{video,lyThuyet:ly.trim(),baiTap:bt};
+}
+
+let DS=[], viTri=0;
+
+function veCay(){
+  const nhom=[];
+  DS.forEach((b,i)=>{
+    let g=nhom.find(n=>n.ten===b.chapter);
+    if(!g){g={ten:b.chapter,bai:[]};nhom.push(g);}
+    g.bai.push({...b,i});
+  });
+  $('cay').innerHTML=nhom.map(g=>{
+    const xong=g.bai.filter(b=>daHoc.has(b.id)).length;
+    return `<div class="chuong" data-ch="${esc(g.ten)}">
+      <button type="button">
+        <span class="mui">▶</span>
+        <span class="ten-ch">${esc(g.ten)}</span>
+        <span class="dem">${xong}/${g.bai.length}</span>
+      </button>
+      <div class="ds">${g.bai.map(b=>`
+        <button class="muc ${daHoc.has(b.id)?'xong':''}" data-i="${b.i}" type="button">
+          <span class="dau-cham">${daHoc.has(b.id)?'✓':'●'}</span>
+          <span class="chu"><span class="tt">${esc(b.title)}</span><span class="ng">${esc(b.date)}</span></span>
+        </button>`).join('')}</div>
+    </div>`;
+  }).join('');
+
+  document.querySelectorAll('.chuong > button').forEach(b=>{
+    b.onclick=()=>b.parentElement.classList.toggle('mo');
+  });
+  document.querySelectorAll('.muc').forEach(b=>{
+    b.onclick=()=>{ moBai(+b.dataset.i); document.body.classList.remove('mo-ben'); };
+  });
+  danhDau();
+}
+function danhDau(){
+  const bai=DS[viTri]; if(!bai) return;
+  document.querySelectorAll('.muc').forEach(m=>m.classList.toggle('dang-xem',+m.dataset.i===viTri));
+  const ch=[...document.querySelectorAll('.chuong')].find(c=>c.dataset.ch===bai.chapter);
+  if(ch) ch.classList.add('mo');
+}
+function veTienDo(){
+  const tong=DS.length, xong=DS.filter(b=>daHoc.has(b.id)).length;
+  $('so-tien-do').textContent=`${xong}/${tong}`;
+  const C=2*Math.PI*10.5;
+  $('vong').style.strokeDashoffset = tong ? C*(1-xong/tong) : C;
+}
+
+async function moBai(i,dayHash=true){
+  const bai=DS[i]; if(!bai) return;
+  viTri=i;
+  $('than-bai').innerHTML='<p style="color:var(--chu-nhat);padding:40px 0">Đang tải bài…</p>';
+  $('video-day').innerHTML='';
+
+  let raw;
+  try{
+    const r=await fetch(`lessons/${bai.id}.md`);
+    if(!r.ok) throw 0;
+    raw=await r.text();
+  }catch(e){
+    $('than-bai').innerHTML=`<div class="meta">Lỗi</div><h1 class="ten-bai">Không mở được bài này</h1>
+      <div class="duoi-ten">Thiếu file <code>lessons/${esc(bai.id)}.md</code> — kiểm tra tên file có khớp <code>id</code> trong index.json.</div>`;
+    capNhatThanh(); danhDau(); return;
+  }
+
+  const{video,lyThuyet,baiTap}=phanTich(raw);
+  const vid=idYoutube(video);
+  if(vid){
+    $('video-day').innerHTML=`
+      <div class="khung-video">
+        <button class="bia" type="button" aria-label="Phát video bài giảng"
+                style="background-image:url('https://i.ytimg.com/vi/${vid}/hqdefault.jpg')">
+          <span class="phat"></span>
+        </button>
+      </div>
+      <div class="trong duoi-video">
+        <span>Video bài giảng</span>
+        <a href="https://www.youtube.com/watch?v=${vid}" target="_blank" rel="noopener">
+          Không xem được? Mở trên YouTube ↗</a>
+      </div>`;
+    $('video-day').querySelector('.bia').onclick=function(){
+      this.parentElement.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${vid}?autoplay=1"
+        title="Video bài giảng" allowfullscreen
+        allow="accelerometer;autoplay;clipboard-write;encrypted-media;picture-in-picture"></iframe>`;
+    };
+  }
+
+  let h=`<div class="meta">${esc(bai.chapter)}</div>
+    <h1 class="ten-bai">${esc(bai.title)}</h1>
+    <div class="duoi-ten">
+      <span class="chip">📅 ${esc(bai.date)}</span>
+      <span class="chip">Bài ${i+1}/${DS.length}</span>
+      ${baiTap.length?`<span class="chip">✎ ${baiTap.length} bài tập</span>`:''}
+    </div>`;
+  if(lyThuyet) h+=`<div class="noi-dung">${render(lyThuyet)}</div>`;
+  if(baiTap.length){
+    h+=`<section class="bai-tap"><div class="nhan">Bài tập</div>`;
+    baiTap.forEach((c,n)=>{
+      h+=`<div class="cau"><span class="so">Câu ${n+1}</span>
+        <div class="de noi-dung">${render(c.de)}</div>
+        ${c.da?`<button class="xem" type="button" aria-expanded="false">Xem đáp án</button>
+        <div class="dap-an noi-dung"><span class="nhan-da">Đáp án</span>${render(c.da)}</div>`:''}
+      </div>`;
+    });
+    h+=`</section>`;
+  }
+  $('than-bai').innerHTML=h;
+
+  document.querySelectorAll('.cau .xem').forEach(b=>{
+    b.onclick=()=>{
+      const d=b.nextElementSibling, hien=d.classList.toggle('hien');
+      b.textContent=hien?'Ẩn đáp án':'Xem đáp án';
+      b.setAttribute('aria-expanded',hien);
+    };
+  });
+
+  $('dang-o').textContent=bai.title;
+  document.title=`${bai.title} · AhaPi`;
+  if(dayHash) history.replaceState(null,'',`#${bai.id}`);
+  danhDau(); capNhatThanh(); window.scrollTo(0,0);
+}
+
+function capNhatThanh(){
+  const bai=DS[viTri]; if(!bai) return;
+  $('nut-truoc').disabled = viTri<=0;
+  $('nut-sau').disabled   = viTri>=DS.length-1;
+  const da=daHoc.has(bai.id);
+  const n=$('nut-xong');
+  n.classList.toggle('da',da);
+  n.textContent = da ? '✓ Đã học' : 'Đánh dấu đã học';
+}
+$('nut-truoc').onclick=()=>moBai(viTri-1);
+$('nut-sau').onclick  =()=>moBai(viTri+1);
+$('nut-xong').onclick =()=>{
+  const id=DS[viTri].id;
+  daHoc.has(id)?daHoc.delete(id):daHoc.add(id);
+  luu(); veCay(); veTienDo(); capNhatThanh();
+};
+$('nut-ben').onclick=()=>{
+  if(window.innerWidth<=1024) document.body.classList.toggle('mo-ben');
+  else document.body.classList.toggle('gap-ben');
+};
+$('nen-mo').onclick=()=>document.body.classList.remove('mo-ben');
+document.addEventListener('keydown',e=>{
+  if(e.target.matches('input,textarea')) return;
+  if(e.key==='ArrowLeft'  && viTri>0) moBai(viTri-1);
+  if(e.key==='ArrowRight' && viTri<DS.length-1) moBai(viTri+1);
+});
+
+(async function(){
+  try{
+    DS = await (await fetch('index.json')).json();
+  }catch(e){
+    $('than-bai').innerHTML=`<div class="meta">Lỗi</div><h1 class="ten-bai">Chưa đọc được danh sách bài</h1>
+      <div class="duoi-ten">Không tải được <code>index.json</code>. Nếu bạn mở file bằng cách nhấp đúp trên máy, trình duyệt sẽ chặn — hãy xem qua GitHub Pages.</div>`;
+    return;
+  }
+  veCay(); veTienDo();
+  const dau=location.hash.slice(1);
+  const k=DS.findIndex(b=>b.id===dau);
+  moBai(k>-1?k:0,false);
+})();
+</script>
+</body>
+</html>

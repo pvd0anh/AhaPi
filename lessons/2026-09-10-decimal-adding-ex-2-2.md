@@ -25,6 +25,12 @@ $$6 + 0.375 + 12.9 \;=\; 6.000 + 0.375 + 12.900 \;=\; 19.275$$
 
 A whole number has an invisible decimal point after it: $6 = 6.000$.
 
+[[TỪ VỰNG]]
+carry /ˈkæri/ : nhớ, số nhớ khi cộng
+estimate /ˈestɪmət/ : ước lượng
+whole number : số nguyên
+sensible /ˈsensəbl/ : hợp lý
+
 [[BÀI TẬP]]
 
 [[Câu]] Work out $45.68 + 7.59$.

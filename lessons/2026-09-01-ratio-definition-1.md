@@ -37,6 +37,14 @@ With 3 apples and 4 oranges there are $3+4=7$ fruits in total.
 
 A part-to-whole ratio can also be read as a fraction of the total: apples make up $\frac{3}{7}$ of the basket.
 
+[[TỪ VỰNG]]
+ratio /ˈreɪʃiəʊ/ : tỉ số
+quantity /ˈkwɒntəti/ : đại lượng, số lượng
+compare /kəmˈpeə(r)/ : so sánh
+fraction /ˈfrækʃn/ : phân số
+total /ˈtəʊtl/ : tổng
+part-to-whole : phần so với tổng
+
 [[BÀI TẬP]]
 
 [[Câu]] A box contains 5 red pens and 8 blue pens. Write the ratio of red pens to blue pens in all three forms.

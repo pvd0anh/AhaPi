@@ -30,6 +30,14 @@ Adding a zero on the right does not change a decimal's value, because $12.4 = 12
 
 Lining up the **right-hand edges** instead of the points. That would pair the $4$ tenths with the $5$ hundredths and produce nonsense. Position, not appearance, decides which digits add together.
 
+[[TỪ VỰNG]]
+decimal /ˈdesɪml/ : số thập phân
+place value : giá trị theo vị trí
+tenths /tenθs/ : phần mười
+hundredths /ˈhʌndrədθs/ : phần trăm
+column /ˈkɒləm/ : cột
+line up : xếp thẳng hàng
+
 [[BÀI TẬP]]
 
 [[Câu]] Work out $8.6 + 4.35$.

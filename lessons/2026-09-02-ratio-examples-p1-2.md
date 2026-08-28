@@ -16,6 +16,13 @@ Every one of these follows the same three steps.
 
 > **Watch out:** a problem often gives you more numbers than you need. In the rock example there are three kinds of rock, but the question only asks about two of them — granite is not part of the answer.
 
+[[TỪ VỰNG]]
+collection /kəˈlekʃn/ : bộ sưu tập
+granite /ˈɡrænɪt/ : đá hoa cương
+marble /ˈmɑːbl/ : đá cẩm thạch
+sandstone /ˈsændstəʊn/ : đá sa thạch
+equivalent /ɪˈkwɪvələnt/ : tương đương
+
 [[BÀI TẬP]]
 
 [[Câu]] In the first example (0:04 - 0:55) there are 4 monkeys and 5 bananas. If you add 4 more monkeys and 5 more bananas, what is the new ratio of monkeys to bananas?

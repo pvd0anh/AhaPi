@@ -19,10 +19,10 @@ Mở file **soan-bai.html** trên máy bằng cách nhấp đúp. Bên trái đi
 | Bước | Việc cần làm | Ở đâu |
 |---|---|---|
 | 1 | Điền Ngày dạy, Chương, Tên bài, dán link YouTube | soan-bai.html |
-| 2 | Gõ lý thuyết, thêm các câu bài tập kèm đáp án | soan-bai.html |
+| 2 | Gõ lý thuyết, thêm từ vựng, thêm các câu bài tập kèm đáp án | soan-bai.html |
 | 3 | Bấm **⬇ Tải file .md** → file lưu về máy | soan-bai.html |
 | 4 | Lên GitHub, mở thư mục `lessons` → **Add file → Upload files** → thả file vừa tải → **Commit** | GitHub |
-| 5 | Mở file `index.json` trên GitHub → bấm ✏️ → chọn hết → chép vào ô "Bước 5" của soan-bai.html | Cả hai |
+| 5 | Mở file `index.json` trên GitHub → bấm ✏️ → chọn hết → chép vào ô "Bước 6" của soan-bai.html | Cả hai |
 | 6 | Bấm **Thêm bài này vào danh sách** → **Chép kết quả** → dán đè lên `index.json` trên GitHub → **Commit** | Cả hai |
 
 Bài mới được thêm vào **cuối** danh sách. Muốn bài xuất hiện ở vị trí khác trong chương, chỉ cần cắt dòng đó dán lên trên — thứ tự dòng trong `index.json` chính là thứ tự học.
@@ -42,6 +42,19 @@ Sau 1–2 phút bài mới xuất hiện trên web.
 | `> ghi nhớ` | Khung ghi nhớ |
 | `$x^2 + 1$` | Công thức nằm trong dòng |
 | `$$\int x\,dx$$` | Công thức riêng một dòng, căn giữa |
+
+## C2. Gõ từ vựng
+
+Ô **Bước 3** trong trình soạn bài, mỗi dòng một từ:
+
+```
+ratio /ˈreɪʃiəʊ/ : tỉ số
+highest common factor : ước chung lớn nhất
+```
+
+Bên trái dấu `:` là tiếng Anh, bên phải là tiếng Việt. Phần phiên âm trong hai dấu gạch chéo **không bắt buộc** — muốn có thì tra trên Oxford rồi chép vào.
+
+Học sinh bấm nút 🔊 là nghe được phát âm, và bấm mũi tên ↗ để mở thẳng mục từ đó trên từ điển Oxford. Giọng đọc lấy từ chính máy của học sinh nên không cần mạng, không cần cài gì thêm. Máy nào không có sẵn giọng tiếng Anh thì nút loa tự ẩn đi.
 
 Công thức hay dùng: `\frac{a}{b}` phân số · `\sqrt{x}` căn · `x^{2}` mũ · `x_{1}` chỉ số dưới · `\int` tích phân · `\sum` tổng · `\Rightarrow` suy ra · `\leq` bé hơn bằng.
 

@@ -26,6 +26,12 @@ Adding a zero anywhere else does change it — $15.07$ is a different number ent
 
 > **Check by adding back.** If $15.70 - 8.24 = 7.46$, then $7.46 + 8.24$ should return $15.70$. It does.
 
+[[TỪ VỰNG]]
+subtract /səbˈtrækt/ : trừ
+borrow /ˈbɒrəʊ/ : mượn, khi trừ phải mượn
+unchanged /ʌnˈtʃeɪndʒd/ : không đổi
+pad with zeros : thêm số 0 cho đủ chữ số
+
 [[BÀI TẬP]]
 
 [[Câu]] Work out $24.5 - 9.38$.

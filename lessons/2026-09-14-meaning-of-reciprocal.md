@@ -28,6 +28,13 @@ $$\frac{3}{4} \div \frac{2}{5} \;=\; \frac{3}{4} \times \frac{5}{2} \;=\; \frac{
 
 > **"Keep, change, flip."** Keep the first fraction, change the division to multiplication, flip the second fraction. That instruction is just the reciprocal rule in disguise.
 
+[[TỪ VỰNG]]
+reciprocal /rɪˈsɪprəkl/ : số nghịch đảo
+numerator /ˈnjuːməreɪtə(r)/ : tử số
+denominator /dɪˈnɒmɪneɪtə(r)/ : mẫu số
+flip /flɪp/ : lật ngược
+undefined /ˌʌndɪˈfaɪnd/ : không xác định
+
 [[BÀI TẬP]]
 
 [[Câu]] Write the reciprocal of $\frac{7}{9}$, and of $12$.

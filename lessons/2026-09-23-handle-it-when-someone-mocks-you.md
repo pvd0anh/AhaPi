@@ -27,6 +27,13 @@ The third response is a skill, and like any skill it improves with practice.
 
 Silence reads as agreement. A short sentence — "That wasn't funny, let them finish" — costs little and changes the room more than anything the target can say.
 
+[[TỪ VỰNG]]
+mock /mɒk/ : chế giễu, chê cười
+bully /ˈbʊli/ : bắt nạt
+bystander /ˈbaɪstændə(r)/ : người đứng ngoài chứng kiến
+acknowledge /əkˈnɒlɪdʒ/ : thừa nhận, ghi nhận
+redirect /ˌriːdəˈrekt/ : chuyển hướng trở lại
+
 [[BÀI TẬP]]
 
 [[Câu]] A classmate laughs when you give a wrong answer in class. Write down what you would say, using the four steps above.

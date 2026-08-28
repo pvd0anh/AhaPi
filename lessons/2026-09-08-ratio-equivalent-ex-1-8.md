@@ -31,6 +31,13 @@ $$50\ \text{cm} : 2\ \text{m} \;=\; 50:200 \;=\; 1:4$$
 | 30 min : 2 hours | $30:120$ | $1:4$ |
 | 200 g : 1 kg | $200:1000$ | $1:5$ |
 
+[[TỪ VỰNG]]
+equivalent /ɪˈkwɪvələnt/ : tương đương
+convert /kənˈvɜːt/ : chuyển đổi
+unit /ˈjuːnɪt/ : đơn vị
+cross multiply : nhân chéo
+common factor : ước chung
+
 [[BÀI TẬP]]
 
 [[Câu]] Write $45:60$ in its simplest form.

@@ -42,6 +42,10 @@ $$\int_{0}^{1} x\,dx = \frac{1}{2}$$
 
 > A callout box
 
+[[TỪ VỰNG]]
+ratio /ˈreɪʃiəʊ/ : tỉ số
+highest common factor : ước chung lớn nhất
+
 [[BÀI TẬP]]
 
 [[Câu]] Question text
@@ -50,9 +54,11 @@ $$\int_{0}^{1} x\,dx = \frac{1}{2}$$
 
 Every tag is optional. `[[VIDEO]]` must sit alone on its own line; everything after `[[BÀI TẬP]]` is parsed as exercises.
 
+Each `[[TỪ VỰNG]]` line is `english /ipa/ : vietnamese`, with the IPA optional. Every entry gets a speaker button — pronunciation comes from the browser's own speech engine, so it needs no files, no API key and no network — plus a link out to Oxford Learner's Dictionaries for the full entry.
+
 ## Adding a lesson
 
-Open `soan-bai.html` by double-clicking it — it runs locally with a live preview. Fill in the form, download the `.md` into `lessons/`, then paste your current `index.json` into step 5 to get an updated copy. Commit both files; GitHub Pages redeploys itself in about a minute.
+Open `soan-bai.html` by double-clicking it — it runs locally with a live preview. Fill in the form, download the `.md` into `lessons/`, then paste your current `index.json` into step 6 to get an updated copy. Commit both files; GitHub Pages redeploys itself in about a minute.
 
 Editing an existing lesson only touches its `.md`. Renaming, reordering or removing a lesson only touches `index.json`. Adding a new one needs both — a lesson missing from `index.json` will not appear in the menu.
 

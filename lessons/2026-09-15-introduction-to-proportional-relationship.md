@@ -38,6 +38,13 @@ A relationship is proportional when **all three** of these hold:
 
 The ratio changes, so this is not proportional — even though $y$ rises steadily.
 
+[[TỪ VỰNG]]
+proportional /prəˈpɔːʃənl/ : tỉ lệ thuận
+constant /ˈkɒnstənt/ : hằng số
+graph /ɡrɑːf/ : đồ thị
+origin /ˈɒrɪdʒɪn/ : gốc toạ độ
+straight line : đường thẳng
+
 [[BÀI TẬP]]
 
 [[Câu]] A table shows $x=4, y=10$ and $x=6, y=15$. Is the relationship proportional? If so, give $k$.

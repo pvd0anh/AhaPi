@@ -29,6 +29,13 @@ Check: $20+25=45$. ✓
 
 Reading which of the two you have is the hardest step. "Share 45 sweets" gives a total; "there are 12 red marbles" gives one part.
 
+[[TỪ VỰNG]]
+share /ʃeə(r)/ : chia, phần chia
+total /ˈtəʊtl/ : tổng
+split /splɪt/ : chia tách
+ribbon /ˈrɪbən/ : dải ruy băng
+unit method : phương pháp chia phần bằng nhau
+
 [[BÀI TẬP]]
 
 [[Câu]] Share 60 marbles between two players in the ratio $2:3$.

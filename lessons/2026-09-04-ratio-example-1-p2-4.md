@@ -28,6 +28,13 @@ $$\frac{3}{5}=\frac{12}{x}$$
 
 Cross multiply: $3x = 5 \times 12 = 60$, so $x = 20$. Same answer, different bookkeeping — use whichever you find clearer.
 
+[[TỪ VỰNG]]
+scale factor : hệ số tỉ lệ
+unknown /ʌnˈnəʊn/ : ẩn số
+cross multiply : nhân chéo
+shelter /ˈʃeltə(r)/ : trại cứu hộ động vật
+altogether /ˌɔːltəˈɡeðə(r)/ : tất cả, tổng cộng
+
 [[BÀI TẬP]]
 
 [[Câu]] Cats and dogs at a shelter are in the ratio $4:7$. There are 28 dogs. How many cats?

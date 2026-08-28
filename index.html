@@ -151,6 +151,41 @@ h1.ten-bai{font-size:clamp(24px,3.4vw,32px);font-weight:800;letter-spacing:-.025
 .dap-an .katex,.dap-an strong{color:var(--do)}
 @keyframes mo{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 
+/* ================= TỪ VỰNG ================= */
+.tu-vung{margin-top:48px}
+.tu-vung .nhan{
+  display:flex;align-items:center;gap:10px;margin-bottom:18px;
+  font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--nhan);
+}
+.tu-vung .nhan .gach{flex:1;height:1px;background:var(--vien)}
+.tu-vung .doc-het{
+  font-family:'Be Vietnam Pro',sans-serif;font-size:12px;font-weight:500;letter-spacing:0;
+  text-transform:none;padding:5px 11px;border-radius:6px;flex-shrink:0;
+  border:1px solid var(--vien);background:var(--nen);color:var(--chu-nhat);
+}
+.tu-vung .doc-het:hover{background:var(--nhan-mo);border-color:var(--nhan);color:var(--nhan)}
+.tu{
+  display:flex;align-items:center;gap:13px;background:var(--nen);
+  border:1px solid var(--vien);border-radius:8px;padding:12px 15px;margin-bottom:9px;
+}
+.tu .loa{
+  width:34px;height:34px;flex-shrink:0;border-radius:50%;font-size:14px;
+  border:1px solid var(--vien);background:var(--nen);color:var(--nhan);
+  display:grid;place-items:center;transition:background .15s ease,transform .15s ease;
+}
+.tu .loa:hover{background:var(--nhan-mo);border-color:var(--nhan)}
+.tu .loa.dang-doc{background:var(--nhan);border-color:var(--nhan);color:#fff;transform:scale(1.08)}
+.tu .chu{flex:1;min-width:0}
+.tu .en{font-weight:600;font-size:15.5px;letter-spacing:-.01em}
+.tu .ipa{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--chu-nhat);margin-left:9px}
+.tu .vi{font-family:'Source Serif 4',Georgia,serif;font-size:16px;color:#232327;margin-top:1px}
+.tu .tra{
+  flex-shrink:0;width:30px;height:30px;border-radius:6px;text-decoration:none;
+  color:var(--chu-nhat);font-size:13px;display:grid;place-items:center;
+}
+.tu .tra:hover{background:var(--nen-xam);color:var(--nhan)}
+
 /* ================= SIDEBAR ================= */
 aside{
   position:fixed;top:var(--tren);right:0;bottom:0;width:var(--ben);z-index:30;
@@ -294,17 +329,59 @@ function phanTich(raw){
   let video='',than=raw;
   const mv=than.match(/^\s*\[\[VIDEO\]\]\s*(\S+)\s*$/m);
   if(mv){video=mv[1];than=than.replace(mv[0],'');}
-  let ly=than,bt=[];
-  const i=than.indexOf('[[BÀI TẬP]]');
-  if(i>-1){
-    ly=than.slice(0,i);
-    than.slice(i+'[[BÀI TẬP]]'.length).split(/\[\[Câu\]\]/).slice(1).forEach(k=>{
+
+  const TV='[[TỪ VỰNG]]', BT='[[BÀI TẬP]]';
+  let iTV=than.indexOf(TV), iBT=than.indexOf(BT);
+  const cat=[iTV,iBT].filter(x=>x>-1);
+  const ly = cat.length ? than.slice(0,Math.min(...cat)) : than;
+
+  let tv=[];
+  if(iTV>-1){
+    const het = (iBT>iTV) ? iBT : than.length;
+    than.slice(iTV+TV.length,het).split('\n').forEach(d=>{
+      d=d.trim(); if(!d) return;
+      const k=d.indexOf(':'); if(k<0) return;
+      let en=d.slice(0,k).trim(), vi=d.slice(k+1).trim();
+      const mi=en.match(/\/[^\/]+\//);           // phiên âm IPA, nếu có
+      const ipa=mi?mi[0]:'';
+      en=en.replace(/\/[^\/]+\//,'').trim();
+      if(en&&vi) tv.push({en,ipa,vi});
+    });
+  }
+
+  let bt=[];
+  if(iBT>-1){
+    than.slice(iBT+BT.length).split(/\[\[Câu\]\]/).slice(1).forEach(k=>{
       const p=k.split(/\[\[Đáp án\]\]/);
       bt.push({de:p[0].trim(),da:(p[1]||'').trim()});
     });
   }
-  return{video,lyThuyet:ly.trim(),baiTap:bt};
+  return{video,lyThuyet:ly.trim(),tuVung:tv,baiTap:bt};
 }
+
+/* ---- phát âm: dùng bộ đọc sẵn có của trình duyệt ---- */
+const coTTS = 'speechSynthesis' in window;
+let giongEN=null;
+function chonGiong(){
+  if(!coTTS) return;
+  const v=speechSynthesis.getVoices().filter(x=>/^en/i.test(x.lang));
+  giongEN = v.find(x=>/^en[-_]US/i.test(x.lang)) || v.find(x=>/^en[-_]GB/i.test(x.lang)) || v[0] || null;
+}
+if(coTTS){ chonGiong(); speechSynthesis.addEventListener('voiceschanged',chonGiong); }
+function doc(chu,nut,xepHang){
+  if(!coTTS) return;
+  if(!xepHang) speechSynthesis.cancel();     // bấm 1 từ: cắt từ đang đọc dở
+  const u=new SpeechSynthesisUtterance(chu);
+  if(giongEN) u.voice=giongEN;
+  u.lang = giongEN ? giongEN.lang : 'en-US';
+  u.rate = .85;                                  // chậm lại cho học sinh nghe rõ
+  if(nut){
+    nut.classList.add('dang-doc');
+    u.onend=u.onerror=()=>nut.classList.remove('dang-doc');
+  }
+  speechSynthesis.speak(u);
+}
+const OXFORD='https://www.oxfordlearnersdictionaries.com/search/english/?q=';
 
 let DS=[], viTri=0;
 
@@ -369,7 +446,7 @@ async function moBai(i,dayHash=true){
     capNhatThanh(); danhDau(); return;
   }
 
-  const{video,lyThuyet,baiTap}=phanTich(raw);
+  const{video,lyThuyet,tuVung,baiTap}=phanTich(raw);
   const vid=idYoutube(video);
   if(vid){
     $('video-day').innerHTML=`
@@ -396,9 +473,29 @@ async function moBai(i,dayHash=true){
     <div class="duoi-ten">
       <span class="chip">📅 ${esc(bai.date)}</span>
       <span class="chip">Bài ${i+1}/${DS.length}</span>
+      ${tuVung.length?`<span class="chip">🔤 ${tuVung.length} từ vựng</span>`:''}
       ${baiTap.length?`<span class="chip">✎ ${baiTap.length} bài tập</span>`:''}
     </div>`;
   if(lyThuyet) h+=`<div class="noi-dung">${render(lyThuyet)}</div>`;
+
+  if(tuVung.length){
+    h+=`<section class="tu-vung"><div class="nhan">Từ vựng<span class="gach"></span>
+      ${coTTS?`<button class="doc-het" type="button">▶ Đọc tất cả</button>`:''}</div>`;
+    tuVung.forEach(t=>{
+      h+=`<div class="tu">
+        ${coTTS?`<button class="loa" type="button" data-doc="${esc(t.en)}"
+                  aria-label="Nghe phát âm: ${esc(t.en)}">🔊</button>`:''}
+        <div class="chu">
+          <div><span class="en">${esc(t.en)}</span>${t.ipa?`<span class="ipa">${esc(t.ipa)}</span>`:''}</div>
+          <div class="vi">${esc(t.vi)}</div>
+        </div>
+        <a class="tra" href="${OXFORD}${encodeURIComponent(t.en)}" target="_blank" rel="noopener"
+           aria-label="Tra ${esc(t.en)} trên Oxford Learner's Dictionaries"
+           title="Tra trên Oxford Learner's Dictionaries">↗</a>
+      </div>`;
+    });
+    h+=`</section>`;
+  }
   if(baiTap.length){
     h+=`<section class="bai-tap"><div class="nhan">Bài tập</div>`;
     baiTap.forEach((c,n)=>{
@@ -411,6 +508,15 @@ async function moBai(i,dayHash=true){
     h+=`</section>`;
   }
   $('than-bai').innerHTML=h;
+
+  document.querySelectorAll('.tu .loa').forEach(b=>{
+    b.onclick=()=>doc(b.dataset.doc,b);
+  });
+  const dh=document.querySelector('.tu-vung .doc-het');
+  if(dh) dh.onclick=()=>{
+    speechSynthesis.cancel();
+    tuVung.forEach(t=>doc(t.en,null,true));   // xếp hàng, đọc lần lượt hết danh sách
+  };
 
   document.querySelectorAll('.cau .xem').forEach(b=>{
     b.onclick=()=>{

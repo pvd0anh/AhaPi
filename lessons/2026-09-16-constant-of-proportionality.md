@@ -33,6 +33,13 @@ $$\text{km per hour}=\frac{210}{3}=70 \qquad \text{hours per km}=\frac{3}{210}=\
 
 Both are correct; they answer different questions.
 
+[[TỪ VỰNG]]
+constant of proportionality : hằng số tỉ lệ
+unit rate : tỉ lệ trên một đơn vị
+coefficient /ˌkəʊɪˈfɪʃnt/ : hệ số
+steady /ˈstedi/ : đều, ổn định
+reciprocal /rɪˈsɪprəkl/ : nghịch đảo
+
 [[BÀI TẬP]]
 
 [[Câu]] 5 notebooks cost 40. Find the constant of proportionality and write the equation.

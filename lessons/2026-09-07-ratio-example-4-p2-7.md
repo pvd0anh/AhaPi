@@ -28,6 +28,13 @@ A ratio answer should normally be given in its simplest form — divide both par
 | $12:30$ | 6 | $2:5$ |
 | $21:14$ | 7 | $3:2$ |
 
+[[TỪ VỰNG]]
+counter /ˈkaʊntə(r)/ : quân cờ, thẻ đếm
+simplify /ˈsɪmplɪfaɪ/ : rút gọn
+remove /rɪˈmuːv/ : lấy đi, bớt đi
+highest common factor : ước chung lớn nhất
+simplest form : dạng tối giản
+
 [[BÀI TẬP]]
 
 [[Câu]] Apples and pears are in the ratio $3:4$, with 42 fruits in total. Five pears are eaten. What is the new ratio, in simplest form?

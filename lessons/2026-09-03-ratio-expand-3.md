@@ -29,6 +29,13 @@ Expanding lets you scale a recipe or a plan up to the size you actually need.
 | Recipe for 2 people, cooking for 6 | $1:2$ | $3$ | $3:6$ |
 | Model car, 1 cm stands for 20 cm | $1:20$ | $5$ | $5:100$ |
 
+[[TỪ VỰNG]]
+expand /ɪkˈspænd/ : mở rộng, nhân lên
+multiply /ˈmʌltɪplaɪ/ : nhân
+divide /dɪˈvaɪd/ : chia
+recipe /ˈresəpi/ : công thức nấu ăn
+equivalent fraction : phân số tương đương
+
 [[BÀI TẬP]]
 
 [[Câu]] Expand the ratio $3:5$ by a factor of 6.

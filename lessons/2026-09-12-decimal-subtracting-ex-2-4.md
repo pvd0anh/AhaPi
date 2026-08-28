@@ -24,6 +24,12 @@ Whole numbers hide their zeros, which is where mistakes creep in.
 | $50 - 12.75$ | $50.00 - 12.75 = 37.25$ |
 | $1 - 0.001$ | $1.000 - 0.001 = 0.999$ |
 
+[[TỪ VỰNG]]
+repeated /rɪˈpiːtɪd/ : lặp lại nhiều lần
+verify /ˈverɪfaɪ/ : kiểm chứng lại
+remaining /rɪˈmeɪnɪŋ/ : còn lại
+patiently /ˈpeɪʃntli/ : kiên nhẫn
+
 [[BÀI TẬP]]
 
 [[Câu]] Work out $40.1 - 26.375$.

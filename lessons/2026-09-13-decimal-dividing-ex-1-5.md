@@ -24,6 +24,12 @@ $$9.45 \div 5 = 1.89$$
 
 > **Sanity check:** dividing by a number smaller than 1 makes the answer **bigger** than what you started with. $7.36 \div 0.4 = 18.4$ is larger than $7.36$, and that is correct, not a mistake.
 
+[[TỪ VỰNG]]
+divide /dɪˈvaɪd/ : chia
+divisor /dɪˈvaɪzə(r)/ : số chia
+power of ten : luỹ thừa của mười
+check /tʃek/ : kiểm tra lại
+
 [[BÀI TẬP]]
 
 [[Câu]] Work out $8.4 \div 0.7$.

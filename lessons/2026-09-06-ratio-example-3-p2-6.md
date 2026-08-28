@@ -26,6 +26,13 @@ Check: $35-15=20$. ✓
 
 Once you can name which row you are on, every ratio problem becomes the same problem.
 
+[[TỪ VỰNG]]
+difference /ˈdɪfrəns/ : hiệu, kết quả phép trừ
+exceed /ɪkˈsiːd/ : vượt quá
+larger /ˈlɑːdʒə(r)/ : lớn hơn
+smaller /ˈsmɔːlə(r)/ : nhỏ hơn
+car park : bãi đỗ xe
+
 [[BÀI TẬP]]
 
 [[Câu]] Two numbers are in the ratio $2:5$ and differ by 18. Find them.

@@ -1,91 +1,72 @@
 # AhaPi
 
-Web tĩnh để đăng bài giảng Toán: video YouTube, lý thuyết có công thức LaTeX, bài tập kèm đáp án ẩn. Không cần server, không cần database, không cần đăng nhập.
+A static site for publishing maths lessons — YouTube video, LaTeX theory, and exercises with hidden answers. No server, no database, no login, no build step.
 
-## Cấu trúc
+**Live:** https://pvd0anh.github.io/AhaPi/
 
-| Đường dẫn | Vai trò |
+## How it works
+
+`index.html` reads `index.json` (the table of contents) and fetches each lesson from `lessons/<id>.md` on demand. Formulas render with KaTeX, Markdown with marked. That is the whole architecture — two HTML files and a folder of text.
+
+| Path | Role |
 |---|---|
-| `index.html` | Trang học sinh xem. Đọc `index.json` rồi nạp bài từ `lessons/` |
-| `soan-bai.html` | Công cụ soạn bài của giáo viên. Điền form → tải file `.md` → sinh sẵn dòng JSON |
-| `index.json` | Mục lục. **Thứ tự dòng = thứ tự học** |
-| `lessons/*.md` | Nội dung từng bài. Tên file phải trùng `id` trong `index.json` |
-| `404.html` · `favicon.svg` | Trang lỗi và biểu tượng |
-| `.nojekyll` | **Bắt buộc giữ.** Ngăn GitHub Pages xử lý file `.md`, nếu xoá thì bài giảng không tải được |
-| `HUONG-DAN.md` | Hướng dẫn thao tác hằng ngày, không rành IT vẫn làm được |
+| `index.html` | The student-facing app |
+| `soan-bai.html` | Lesson editor for the teacher — fill a form, download a `.md`, get the JSON line |
+| `index.json` | Table of contents. **Row order = teaching order** |
+| `lessons/*.md` | One file per lesson. Filename must match its `id` |
+| `.nojekyll` | **Keep this.** Without it GitHub Pages runs Jekyll and the `.md` lessons stop loading |
+| `HUONG-DAN.md` | Vietnamese step-by-step guide, written for a non-technical teacher |
 
-## Deploy
+## Content
 
-| Bước | Thao tác |
+23 lessons across 5 chapters, built from the [Thảo Lê](https://www.youtube.com/@ThaoLe-pm8mh) YouTube channel:
+
+| Chapter | Lessons |
 |---|---|
-| 1 | Tạo repository mới trên GitHub, đặt tên `AhaPi`, chọn **Public** |
-| 2 | Upload toàn bộ file trong thư mục này vào **gốc** repo (không lồng thêm thư mục) |
-| 3 | **Settings → Pages** → Branch: `main`, thư mục `/ (root)` → **Save** |
-| 4 | Đợi 1–2 phút. Web chạy tại `https://<tài-khoản>.github.io/<tên-repo>/` |
+| Ratio | 8 |
+| Decimal | 6 |
+| Proportional Relationship | 2 |
+| Toán lớp 7 (Vietnamese) | 6 |
+| Better Everyday | 1 |
 
-Nếu dùng Netlify hoặc Vercel: kéo thả thư mục này, không cần cấu hình build.
-
-## Thêm bài mới
-
-Mở `soan-bai.html` bằng cách nhấp đúp (chạy ngay trên máy, không cần server):
-
-1. Điền ngày, chương, tên bài, link YouTube, lý thuyết, bài tập
-2. Bấm **Tải file .md** → upload file đó vào thư mục `lessons/`
-3. Dán `index.json` hiện tại vào ô Bước 5 → bấm **Thêm bài này vào danh sách** → chép kết quả đè lên `index.json`
-
-Chi tiết từng bước kèm ảnh thao tác: xem `HUONG-DAN.md`.
-
-## Cú pháp file bài giảng
+## Lesson format
 
 ```markdown
 [[VIDEO]] https://youtu.be/xxxxxxxxxxx
 
-## Tiêu đề mục
+## A heading
 
-Chữ thường, **in đậm**, công thức trong dòng $a^2+b^2=c^2$.
+Plain text, **bold**, inline maths $a^2+b^2=c^2$.
 
 $$\int_{0}^{1} x\,dx = \frac{1}{2}$$
 
-> Khung ghi nhớ
+> A callout box
 
 [[BÀI TẬP]]
 
-[[Câu]] Đề bài câu 1
-[[Đáp án]] Lời giải câu 1
-
-[[Câu]] Đề bài câu 2
-[[Đáp án]] Lời giải câu 2
+[[Câu]] Question text
+[[Đáp án]] Answer, hidden until the student clicks
 ```
 
-| Thẻ | Bắt buộc | Ghi chú |
-|---|---|---|
-| `[[VIDEO]]` | Không | Bỏ dòng này nếu bài không có video |
-| `[[BÀI TẬP]]` | Không | Mọi thứ phía sau là bài tập |
-| `[[Câu]]` | Không | Mỗi câu một thẻ |
-| `[[Đáp án]]` | Không | Ẩn cho tới khi học sinh bấm |
+Every tag is optional. `[[VIDEO]]` must sit alone on its own line; everything after `[[BÀI TẬP]]` is parsed as exercises.
 
-## Tuỳ chỉnh
+## Adding a lesson
 
-| Muốn đổi | Sửa ở đâu |
-|---|---|
-| Màu chủ đạo | Dòng `--nhan:` đầu `index.html` (và `--nhan-mo:` cho nền nhạt) |
-| Tên web | `<title>` + `<b>AhaPi</b>` trong `index.html`, `document.title` cuối file; rồi `soan-bai.html`, `404.html` |
-| Biểu tượng logo | Chữ `π` trong `index.html`, `404.html` và `favicon.svg` |
-| Độ rộng cột đọc | `.trong{max-width:780px}` |
-| Độ rộng sidebar | Biến `--ben` |
+Open `soan-bai.html` by double-clicking it — it runs locally with a live preview. Fill in the form, download the `.md` into `lessons/`, then paste your current `index.json` into step 5 to get an updated copy. Commit both files; GitHub Pages redeploys itself in about a minute.
 
-## Thư viện dùng qua CDN
+Editing an existing lesson only touches its `.md`. Renaming, reordering or removing a lesson only touches `index.json`. Adding a new one needs both — a lesson missing from `index.json` will not appear in the menu.
 
-| Thư viện | Dùng để |
-|---|---|
-| KaTeX 0.16.9 | Render công thức toán |
-| marked 11.1.1 | Render Markdown |
-| Google Fonts | Be Vietnam Pro · Source Serif 4 · IBM Plex Mono |
+## Deploy
 
-Cần mạng để hiển thị công thức và video. Muốn chạy hoàn toàn offline thì phải tải các thư viện này về đặt trong repo.
+Push to a public GitHub repo, then **Settings → Pages → Branch: `main` / `(root)`**. Netlify and Vercel also work: drag the folder in, no build configuration needed.
 
-## Giới hạn cần biết
+## Customising
 
-- Tiến độ "đã học" lưu bằng `localStorage` trên máy từng học sinh. Không đồng bộ giữa các thiết bị, giáo viên không xem được ai học tới đâu.
-- Mở `index.html` bằng cách nhấp đúp trên máy sẽ báo lỗi vì trình duyệt chặn `fetch` với giao thức `file://`. Phải chạy qua GitHub Pages hoặc một server tĩnh bất kỳ.
-- Video để chế độ Riêng tư trên YouTube sẽ không nhúng được.
+The accent colour is the `--nhan:` variable at the top of `index.html`. The name appears in `<title>`, the header, `document.title`, `soan-bai.html` and `404.html`; the `π` logo lives in `index.html`, `404.html` and `favicon.svg`.
+
+## Known limits
+
+- Progress is stored per browser in `localStorage`. It does not sync across devices, and the teacher cannot see who has studied what.
+- `index.html` will not run from `file://` — browsers block `fetch` there. Use GitHub Pages or any static server. (`soan-bai.html` does run locally.)
+- KaTeX, marked and Google Fonts load from CDNs, so formulas and video need a connection. Vendoring them locally is the fix if you need full offline use.
+- Videos set to Private on YouTube cannot be embedded.

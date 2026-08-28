@@ -89,6 +89,17 @@ button.nut:focus-visible{outline:2px solid var(--tim);outline-offset:2px}
 .noi-dung th{background:rgba(28,58,49,.06);font-family:'Be Vietnam Pro',sans-serif;font-size:13.5px}
 .katex-display{margin:18px 0;overflow-x:auto;overflow-y:hidden}
 .loi-math{color:var(--le);background:rgba(200,69,60,.08);border-bottom:1px dashed var(--le);font-family:'IBM Plex Mono',monospace;font-size:.9em}
+/* ---- ảnh trong bài ---- */
+.noi-dung .hinh{margin:22px 0}
+.noi-dung .hinh img{
+  display:block;margin:0 auto;max-width:100%;height:auto;
+  border:1px solid var(--vien);border-radius:6px;background:var(--nen);
+}
+.noi-dung .hinh figcaption{
+  font-family:'Be Vietnam Pro',sans-serif;font-size:13px;line-height:1.5;
+  color:var(--chu-nhat);text-align:center;margin-top:9px;
+}
+.noi-dung p:empty{display:none}      /* figure tự tách khỏi <p>, chừa lại thẻ rỗng */
 .xt-tuvung{margin-top:36px}
 .xt-tuvung .nhan{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--tim);border-top:1.5px solid var(--tim);padding-top:11px;margin-bottom:14px;display:block}
 .xt-tu{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--o-ly);padding:9px 13px;margin-bottom:7px}
@@ -144,6 +155,11 @@ button.nut:focus-visible{outline:2px solid var(--tim);outline-offset:2px}
   <label for="noiDung">Nội dung <span class="goi-y">## đầu dòng = tiêu đề · **đậm** · $x^2$ = công thức · $$…$$ = công thức riêng dòng</span></label>
   <textarea id="noiDung" placeholder="## Công thức&#10;&#10;$$y' = f'(u)\cdot u'(x)$$&#10;&#10;Cách nhớ: **đạo hàm ngoài nhân đạo hàm trong.**"></textarea>
 
+  <div class="nhom-nut">
+    <button class="nut phu" type="button" id="chen-anh">🖼 Chèn ảnh</button>
+  </div>
+  <div class="ghi">Ảnh phải nằm trong thư mục <b>images</b> trên GitHub, hoặc dán thẳng một đường dẫn ảnh đầy đủ. Khung xem thử bên phải chỉ hiện được ảnh nếu bạn đang mở trình soạn bài ngay trong thư mục dự án.</div>
+
   <span class="buoc">Bước 3 · Từ vựng <span class="goi-y">bỏ trống nếu không cần</span></span>
   <label for="tuVung">Mỗi dòng một từ <span class="goi-y">tiếng anh /phiên âm/ : tiếng việt — phiên âm không bắt buộc</span></label>
   <textarea id="tuVung" style="min-height:110px" placeholder="ratio /&#712;re&#618;&#643;i&#601;&#650;/ : t&#7881; s&#7889;&#10;equivalent : t&#432;&#417;ng &#273;&#432;&#417;ng&#10;highest common factor : &#432;&#7899;c chung l&#7899;n nh&#7845;t"></textarea>
@@ -188,6 +204,15 @@ button.nut:focus-visible{outline:2px solid var(--tim);outline-offset:2px}
 
 <script>
 marked.setOptions({breaks:true,gfm:true});
+/* ảnh: bọc figure + chú thích lấy từ alt */
+marked.use({renderer:{
+  image(href,title,text){
+    const src=String(href||'').replace(/"/g,'&quot;');
+    const alt=String(text||'').replace(/"/g,'&quot;');
+    return `<figure class="hinh"><img src="${src}" alt="${alt}" loading="lazy">`
+         + (text?`<figcaption>${text}</figcaption>`:'') + `</figure>`;
+  }
+}});
 
 function render(md){
   const kho=[];
@@ -197,7 +222,7 @@ function render(md){
     const{t,d}=kho[+i];
     try{return katex.renderToString(t,{displayMode:d,throwOnError:true});}
     catch(e){return `<code class="loi-math">${t}</code>`;}
-  });
+  }).replace(/<p>\s*(<figure[\s\S]*?<\/figure>)\s*<\/p>/g,'$1');   // figure không được nằm trong <p>
 }
 function idYoutube(u){const m=String(u).match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([A-Za-z0-9_-]{11})/);return m?m[1]:null;}
 
@@ -227,6 +252,14 @@ function danhSo(){
   document.querySelectorAll('#ds-cau .cau-soan').forEach((e,i)=>e.querySelector('.stt').textContent=`Câu ${i+1}`);
 }
 $('them-cau').onclick=()=>{themCau();ve();};
+
+$('chen-anh').onclick=()=>{
+  const t=$('noiDung'), doan='\n![Chú thích ảnh](images/ten-file.png)\n';
+  const i=t.selectionStart;
+  t.value = t.value.slice(0,i) + doan + t.value.slice(t.selectionEnd);
+  t.focus(); t.selectionStart=t.selectionEnd=i+doan.length;
+  ve();
+};
 
 /* ---- gom dữ liệu ---- */
 function layDuLieu(){

@@ -14,6 +14,7 @@ A static site for publishing maths lessons — YouTube video, LaTeX theory, and 
 | `soan-bai.html` | Lesson editor for the teacher — fill a form, download a `.md`, get the JSON line |
 | `index.json` | Table of contents. **Row order = teaching order** |
 | `lessons/*.md` | One file per lesson. Filename must match its `id` |
+| `images/` | Pictures used inside lessons |
 | `.nojekyll` | **Keep this.** Without it GitHub Pages runs Jekyll and the `.md` lessons stop loading |
 | `HUONG-DAN.md` | Vietnamese step-by-step guide, written for a non-technical teacher |
 
@@ -42,6 +43,8 @@ $$\int_{0}^{1} x\,dx = \frac{1}{2}$$
 
 > A callout box
 
+![Caption shown under the picture](images/diagram.png)
+
 [[TỪ VỰNG]]
 ratio /ˈreɪʃiəʊ/ : tỉ số
 highest common factor : ước chung lớn nhất
@@ -53,6 +56,8 @@ highest common factor : ước chung lớn nhất
 ```
 
 Every tag is optional. `[[VIDEO]]` must sit alone on its own line; everything after `[[BÀI TẬP]]` is parsed as exercises.
+
+Images use ordinary Markdown, `![caption](images/file.png)`. Paths resolve from the site root, so `images/…` is what you want; a full external URL works too. The alt text becomes a caption under the picture — leave the brackets empty for no caption.
 
 Each `[[TỪ VỰNG]]` line is `english /ipa/ : vietnamese`, with the IPA optional. Every entry gets a speaker button — pronunciation comes from the browser's own speech engine, so it needs no files, no API key and no network — plus a link out to Oxford Learner's Dictionaries for the full entry.
 

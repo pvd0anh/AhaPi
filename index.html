@@ -147,6 +147,17 @@ h1.ten-bai{font-size:clamp(24px,3.4vw,32px);font-weight:800;letter-spacing:-.025
 .katex-display{margin:22px 0;overflow-x:auto;overflow-y:hidden;padding:2px 0}
 .loi-math{color:var(--do)!important;background:#FCEEED!important;border-color:#F3C9C6!important}
 
+/* ---- ảnh trong bài ---- */
+.noi-dung .hinh{margin:22px 0}
+.noi-dung .hinh img{
+  display:block;margin:0 auto;max-width:100%;height:auto;
+  border:1px solid var(--vien);border-radius:6px;background:var(--nen);
+}
+.noi-dung .hinh figcaption{
+  font-family:'Be Vietnam Pro',sans-serif;font-size:13px;line-height:1.5;
+  color:var(--chu-nhat);text-align:center;margin-top:9px;
+}
+.noi-dung p:empty{display:none}      /* figure tự tách khỏi <p>, chừa lại thẻ rỗng */
 .bai-tap{margin-top:54px}
 .bai-tap .nhan{
   display:flex;align-items:center;gap:10px;margin-bottom:20px;
@@ -324,6 +335,15 @@ body.gap-ben .thanh-duoi{right:0}
 
 <script>
 marked.setOptions({breaks:true,gfm:true});
+/* ảnh: bọc figure + chú thích lấy từ alt */
+marked.use({renderer:{
+  image(href,title,text){
+    const src=String(href||'').replace(/"/g,'&quot;');
+    const alt=String(text||'').replace(/"/g,'&quot;');
+    return `<figure class="hinh"><img src="${src}" alt="${alt}" loading="lazy">`
+         + (text?`<figcaption>${text}</figcaption>`:'') + `</figure>`;
+  }
+}});
 const $=id=>document.getElementById(id);
 const KHOA='ahapi-da-hoc';
 
@@ -339,7 +359,7 @@ function render(md){
     const{t,d}=kho[+i];
     try{return katex.renderToString(t,{displayMode:d,throwOnError:true});}
     catch(e){return `<code class="loi-math">${t}</code>`;}
-  });
+  }).replace(/<p>\s*(<figure[\s\S]*?<\/figure>)\s*<\/p>/g,'$1');   // figure không được nằm trong <p>
 }
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function idYoutube(u){const m=String(u).match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([A-Za-z0-9_-]{11})/);return m?m[1]:null;}

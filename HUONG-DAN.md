@@ -43,6 +43,24 @@ Sau 1–2 phút bài mới xuất hiện trên web.
 | `$x^2 + 1$` | Công thức nằm trong dòng |
 | `$$\int x\,dx$$` | Công thức riêng một dòng, căn giữa |
 
+## C1. Chèn ảnh vào bài
+
+| Bước | Việc cần làm |
+|---|---|
+| 1 | Trên GitHub, mở thư mục **images** → **Add file → Upload files** → thả ảnh vào → **Commit** |
+| 2 | Trong trình soạn bài, đặt con trỏ vào chỗ muốn chèn rồi bấm **🖼 Chèn ảnh** |
+| 3 | Sửa `ten-file.png` thành đúng tên ảnh vừa tải lên, sửa phần trong ngoặc vuông thành chú thích |
+
+```
+![Sơ đồ tỉ số 2 : 3](images/so-do-ti-so.png)
+```
+
+Chữ trong ngoặc vuông hiện thành dòng chú thích nhỏ ngay dưới ảnh. Không muốn chú thích thì để trống: `![](images/so-do-ti-so.png)`.
+
+Ảnh to mấy cũng tự co cho vừa khung, không cần chỉnh kích thước trước. Đặt tên file **không dấu, không khoảng trắng** — dùng gạch ngang thay khoảng trắng.
+
+> Khung xem thử bên phải sẽ hiện ô ảnh vỡ, vì máy bạn chưa có file ảnh đó. Bình thường — lên web là hiện đúng.
+
 ## C2. Gõ từ vựng
 
 Ô **Bước 3** trong trình soạn bài, mỗi dòng một từ:

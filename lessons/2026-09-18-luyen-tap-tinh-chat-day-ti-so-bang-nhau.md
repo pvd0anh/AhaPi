@@ -33,13 +33,13 @@ Thử lại: $12 + 20 = 32$ ✓ và $\dfrac{12}{3} = \dfrac{20}{5} = 4$ ✓
 3. Tính giá trị chung của dãy tỉ số (thường gọi là $k$).
 4. Nhân ngược lại để tìm từng ẩn, rồi thử lại.
 
-[[BÀI TẬP]]
+[[EXERCISES]]
 
-[[Câu]] Tìm $x, y$ biết $\dfrac{x}{2} = \dfrac{y}{7}$ và $x + y = 45$.
-[[Đáp án]] $\dfrac{x}{2}=\dfrac{y}{7}=\dfrac{x+y}{2+7}=\dfrac{45}{9}=5$. Vậy $x = 10$, $y = 35$. Thử lại: $10+35=45$ ✓
+[[Q]] Tìm $x, y$ biết $\dfrac{x}{2} = \dfrac{y}{7}$ và $x + y = 45$.
+[[A]] $\dfrac{x}{2}=\dfrac{y}{7}=\dfrac{x+y}{2+7}=\dfrac{45}{9}=5$. Vậy $x = 10$, $y = 35$. Thử lại: $10+35=45$ ✓
 
-[[Câu]] Tìm $a, b, c$ biết $\dfrac{a}{2}=\dfrac{b}{3}=\dfrac{c}{5}$ và $a+b+c = 60$.
-[[Đáp án]] $\dfrac{a}{2}=\dfrac{b}{3}=\dfrac{c}{5}=\dfrac{a+b+c}{2+3+5}=\dfrac{60}{10}=6$. Vậy $a=12$, $b=18$, $c=30$.
+[[Q]] Tìm $a, b, c$ biết $\dfrac{a}{2}=\dfrac{b}{3}=\dfrac{c}{5}$ và $a+b+c = 60$.
+[[A]] $\dfrac{a}{2}=\dfrac{b}{3}=\dfrac{c}{5}=\dfrac{a+b+c}{2+3+5}=\dfrac{60}{10}=6$. Vậy $a=12$, $b=18$, $c=30$.
 
-[[Câu]] Ba lớp 7A, 7B, 7C trồng cây theo tỉ lệ $4 : 5 : 6$, tổng cộng 90 cây. Mỗi lớp trồng bao nhiêu cây?
-[[Đáp án]] Gọi số cây ba lớp là $a, b, c$. Ta có $\dfrac{a}{4}=\dfrac{b}{5}=\dfrac{c}{6}=\dfrac{a+b+c}{15}=\dfrac{90}{15}=6$. Vậy $a=24$, $b=30$, $c=36$ cây.
+[[Q]] Ba lớp 7A, 7B, 7C trồng cây theo tỉ lệ $4 : 5 : 6$, tổng cộng 90 cây. Mỗi lớp trồng bao nhiêu cây?
+[[A]] Gọi số cây ba lớp là $a, b, c$. Ta có $\dfrac{a}{4}=\dfrac{b}{5}=\dfrac{c}{6}=\dfrac{a+b+c}{15}=\dfrac{90}{15}=6$. Vậy $a=24$, $b=30$, $c=36$ cây.

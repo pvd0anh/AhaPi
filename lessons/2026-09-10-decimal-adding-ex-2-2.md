@@ -25,19 +25,19 @@ $$6 + 0.375 + 12.9 \;=\; 6.000 + 0.375 + 12.900 \;=\; 19.275$$
 
 A whole number has an invisible decimal point after it: $6 = 6.000$.
 
-[[TỪ VỰNG]]
+[[VOCABULARY]]
 carry /ˈkæri/ : nhớ, số nhớ khi cộng
 estimate /ˈestɪmət/ : ước lượng
 whole number : số nguyên
 sensible /ˈsensəbl/ : hợp lý
 
-[[BÀI TẬP]]
+[[EXERCISES]]
 
-[[Câu]] Work out $45.68 + 7.59$.
-[[Đáp án]] $45.68 + 7.59 = 53.27$. Estimate check: about $46 + 7.6 = 53.6$, so the answer is sensible.
+[[Q]] Work out $45.68 + 7.59$.
+[[A]] $45.68 + 7.59 = 53.27$. Estimate check: about $46 + 7.6 = 53.6$, so the answer is sensible.
 
-[[Câu]] Work out $3 + 0.85 + 11.4$.
-[[Đáp án]] Write as $3.00 + 0.85 + 11.40 = 15.25$.
+[[Q]] Work out $3 + 0.85 + 11.4$.
+[[A]] Write as $3.00 + 0.85 + 11.40 = 15.25$.
 
-[[Câu]] Without calculating exactly, decide which of $18.7 + 4.62$ and $2.65 + 21.4$ is larger. Then check.
-[[Đáp án]] Estimates: about $23.3$ and about $24$, so the second is larger. Exactly: $23.32$ and $24.05$. ✓
+[[Q]] Without calculating exactly, decide which of $18.7 + 4.62$ and $2.65 + 21.4$ is larger. Then check.
+[[A]] Estimates: about $23.3$ and about $24$, so the second is larger. Exactly: $23.32$ and $24.05$. ✓

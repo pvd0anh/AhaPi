@@ -29,20 +29,20 @@ Expanding lets you scale a recipe or a plan up to the size you actually need.
 | Recipe for 2 people, cooking for 6 | $1:2$ | $3$ | $3:6$ |
 | Model car, 1 cm stands for 20 cm | $1:20$ | $5$ | $5:100$ |
 
-[[TỪ VỰNG]]
+[[VOCABULARY]]
 expand /ɪkˈspænd/ : mở rộng, nhân lên
 multiply /ˈmʌltɪplaɪ/ : nhân
 divide /dɪˈvaɪd/ : chia
 recipe /ˈresəpi/ : công thức nấu ăn
 equivalent fraction : phân số tương đương
 
-[[BÀI TẬP]]
+[[EXERCISES]]
 
-[[Câu]] Expand the ratio $3:5$ by a factor of 6.
-[[Đáp án]] Multiply both parts: $3\times 6=18$ and $5\times 6=30$, giving $18:30$.
+[[Q]] Expand the ratio $3:5$ by a factor of 6.
+[[A]] Multiply both parts: $3\times 6=18$ and $5\times 6=30$, giving $18:30$.
 
-[[Câu]] A paint mix uses blue and white in the ratio $2:7$. You need 21 litres of white. How much blue do you need?
-[[Đáp án]] To get from 7 to 21 you multiply by 3, so multiply both parts by 3: $2:7=6:21$. You need **6 litres of blue**.
+[[Q]] A paint mix uses blue and white in the ratio $2:7$. You need 21 litres of white. How much blue do you need?
+[[A]] To get from 7 to 21 you multiply by 3, so multiply both parts by 3: $2:7=6:21$. You need **6 litres of blue**.
 
-[[Câu]] Is $4:6$ the same ratio as $10:15$? Justify your answer.
-[[Đáp án]] Yes. Divide $4:6$ by 2 to get $2:3$, and divide $10:15$ by 5 to also get $2:3$. Both reduce to the same simplest form, so they are equivalent.
+[[Q]] Is $4:6$ the same ratio as $10:15$? Justify your answer.
+[[A]] Yes. Divide $4:6$ by 2 to get $2:3$, and divide $10:15$ by 5 to also get $2:3$. Both reduce to the same simplest form, so they are equivalent.

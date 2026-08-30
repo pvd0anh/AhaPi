@@ -16,20 +16,20 @@ Every one of these follows the same three steps.
 
 > **Watch out:** a problem often gives you more numbers than you need. In the rock example there are three kinds of rock, but the question only asks about two of them — granite is not part of the answer.
 
-[[TỪ VỰNG]]
+[[VOCABULARY]]
 collection /kəˈlekʃn/ : bộ sưu tập
 granite /ˈɡrænɪt/ : đá hoa cương
 marble /ˈmɑːbl/ : đá cẩm thạch
 sandstone /ˈsændstəʊn/ : đá sa thạch
 equivalent /ɪˈkwɪvələnt/ : tương đương
 
-[[BÀI TẬP]]
+[[EXERCISES]]
 
-[[Câu]] In the first example (0:04 - 0:55) there are 4 monkeys and 5 bananas. If you add 4 more monkeys and 5 more bananas, what is the new ratio of monkeys to bananas?
-[[Đáp án]] $8:10$. The ratio stays equivalent, because both quantities were doubled.
+[[Q]] In the first example (0:04 - 0:55) there are 4 monkeys and 5 bananas. If you add 4 more monkeys and 5 more bananas, what is the new ratio of monkeys to bananas?
+[[A]] $8:10$. The ratio stays equivalent, because both quantities were doubled.
 
-[[Câu]] Regarding the final example (2:16 - 3:37), Daphne has 12 pieces of food in her bowl and 7 in her hair. If she eats 2 pieces from the bowl, what is the new ratio of bowl to hair?
-[[Đáp án]] $10:7$. Subtracting 2 from 12 leaves 10 pieces in the bowl, while the hair still has 7.
+[[Q]] Regarding the final example (2:16 - 3:37), Daphne has 12 pieces of food in her bowl and 7 in her hair. If she eats 2 pieces from the bowl, what is the new ratio of bowl to hair?
+[[A]] $10:7$. Subtracting 2 from 12 leaves 10 pieces in the bowl, while the hair still has 7.
 
-[[Câu]] Using Donna's rock collection, what is the ratio of granite to the total number of rocks?
-[[Đáp án]] The total is $6+3+14=23$ rocks, so the ratio is $6:23$. Granite is $\frac{6}{23}$ of the collection.
+[[Q]] Using Donna's rock collection, what is the ratio of granite to the total number of rocks?
+[[A]] The total is $6+3+14=23$ rocks, so the ratio is $6:23$. Granite is $\frac{6}{23}$ of the collection.

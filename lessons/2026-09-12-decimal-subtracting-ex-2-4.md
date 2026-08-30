@@ -24,19 +24,19 @@ Whole numbers hide their zeros, which is where mistakes creep in.
 | $50 - 12.75$ | $50.00 - 12.75 = 37.25$ |
 | $1 - 0.001$ | $1.000 - 0.001 = 0.999$ |
 
-[[TỪ VỰNG]]
+[[VOCABULARY]]
 repeated /rɪˈpiːtɪd/ : lặp lại nhiều lần
 verify /ˈverɪfaɪ/ : kiểm chứng lại
 remaining /rɪˈmeɪnɪŋ/ : còn lại
 patiently /ˈpeɪʃntli/ : kiên nhẫn
 
-[[BÀI TẬP]]
+[[EXERCISES]]
 
-[[Câu]] Work out $40.1 - 26.375$.
-[[Đáp án]] Write $40.100 - 26.375 = 13.725$. Check: $13.725 + 26.375 = 40.100$. ✓
+[[Q]] Work out $40.1 - 26.375$.
+[[A]] Write $40.100 - 26.375 = 13.725$. Check: $13.725 + 26.375 = 40.100$. ✓
 
-[[Câu]] Work out $100 - 3.06$.
-[[Đáp án]] Write $100.00 - 3.06 = 96.94$.
+[[Q]] Work out $100 - 3.06$.
+[[A]] Write $100.00 - 3.06 = 96.94$.
 
-[[Câu]] A bottle holds $1.5$ litres. After pouring out $0.85$ litres, then a further $0.4$ litres, how much is left?
-[[Đáp án]] Poured out in total: $0.85 + 0.40 = 1.25$ litres. Remaining: $1.50 - 1.25 = 0.25$ litres.
+[[Q]] A bottle holds $1.5$ litres. After pouring out $0.85$ litres, then a further $0.4$ litres, how much is left?
+[[A]] Poured out in total: $0.85 + 0.40 = 1.25$ litres. Remaining: $1.50 - 1.25 = 0.25$ litres.

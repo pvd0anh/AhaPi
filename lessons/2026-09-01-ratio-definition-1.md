@@ -1,5 +1,5 @@
 [[VIDEO]] https://www.youtube.com/watch?v=0x9fKjNJtdk
-[[TÊN VI]] Tỉ số là gì?
+[[TITLE VI]] Tỉ số là gì?
 
 [[EN]]
 ## What Is a Ratio?
@@ -79,7 +79,7 @@ Với 3 quả táo và 4 quả cam thì có tất cả $3+4=7$ quả.
 
 Tỉ số phần với tổng còn đọc được thành phân số của tổng: táo chiếm $\frac{3}{7}$ cái giỏ.
 
-[[TỪ VỰNG]]
+[[VOCABULARY]]
 ratio /ˈreɪʃiəʊ/ : tỉ số
 quantity /ˈkwɒntəti/ : đại lượng, số lượng
 compare /kəmˈpeə(r)/ : so sánh
@@ -87,19 +87,19 @@ fraction /ˈfrækʃn/ : phân số
 total /ˈtəʊtl/ : tổng
 part-to-whole : phần so với tổng
 
-[[BÀI TẬP]]
+[[EXERCISES]]
 
-[[Câu]] A box contains 5 red pens and 8 blue pens. Write the ratio of red pens to blue pens in all three forms.
+[[Q]] A box contains 5 red pens and 8 blue pens. Write the ratio of red pens to blue pens in all three forms.
 [[VI]] Một hộp có 5 cái bút đỏ và 8 cái bút xanh. Hãy viết tỉ số của bút đỏ so với bút xanh bằng cả ba cách.
-[[Đáp án]] $5:8$, or $\frac{5}{8}$, or "5 to 8".
+[[A]] $5:8$, or $\frac{5}{8}$, or "5 to 8".
 [[VI]] $5:8$, hoặc $\frac{5}{8}$, hoặc "5 so với 8".
 
-[[Câu]] Using the same box, what is the ratio of blue pens to the total number of pens?
+[[Q]] Using the same box, what is the ratio of blue pens to the total number of pens?
 [[VI]] Vẫn hộp bút đó, tỉ số của bút xanh so với tổng số bút là bao nhiêu?
-[[Đáp án]] The total is $5+8=13$ pens, so the ratio is $8:13$. Blue pens make up $\frac{8}{13}$ of the box.
+[[A]] The total is $5+8=13$ pens, so the ratio is $8:13$. Blue pens make up $\frac{8}{13}$ of the box.
 [[VI]] Tổng cộng có $5+8=13$ cái bút, nên tỉ số là $8:13$. Bút xanh chiếm $\frac{8}{13}$ cái hộp.
 
-[[Câu]] A class has 12 girls and 15 boys. A student writes "the ratio of boys to girls is $12:15$". Explain the mistake and give the correct answer.
+[[Q]] A class has 12 girls and 15 boys. A student writes "the ratio of boys to girls is $12:15$". Explain the mistake and give the correct answer.
 [[VI]] Một lớp có 12 bạn nữ và 15 bạn nam. Một học sinh viết "tỉ số của nam so với nữ là $12:15$". Hãy chỉ ra chỗ sai và viết lại cho đúng.
-[[Đáp án]] The question asks for **boys first**, so the numbers are in the wrong order. The correct ratio is $15:12$. The student wrote the ratio of girls to boys instead.
+[[A]] The question asks for **boys first**, so the numbers are in the wrong order. The correct ratio is $15:12$. The student wrote the ratio of girls to boys instead.
 [[VI]] Đề hỏi **nam trước**, nên bạn đó đã viết ngược thứ tự. Tỉ số đúng là $15:12$. Bạn ấy viết nhầm thành tỉ số của nữ so với nam.

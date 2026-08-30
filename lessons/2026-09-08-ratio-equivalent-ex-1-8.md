@@ -31,20 +31,20 @@ $$50\ \text{cm} : 2\ \text{m} \;=\; 50:200 \;=\; 1:4$$
 | 30 min : 2 hours | $30:120$ | $1:4$ |
 | 200 g : 1 kg | $200:1000$ | $1:5$ |
 
-[[TỪ VỰNG]]
+[[VOCABULARY]]
 equivalent /ɪˈkwɪvələnt/ : tương đương
 convert /kənˈvɜːt/ : chuyển đổi
 unit /ˈjuːnɪt/ : đơn vị
 cross multiply : nhân chéo
 common factor : ước chung
 
-[[BÀI TẬP]]
+[[EXERCISES]]
 
-[[Câu]] Write $45:60$ in its simplest form.
-[[Đáp án]] The highest common factor is 15, so $45:60=3:4$.
+[[Q]] Write $45:60$ in its simplest form.
+[[A]] The highest common factor is 15, so $45:60=3:4$.
 
-[[Câu]] Are $9:12$ and $15:20$ equivalent? Show your working with cross multiplication.
-[[Đáp án]] $9\times 20=180$ and $12\times 15=180$. The products are equal, so yes, they are equivalent — both simplify to $3:4$.
+[[Q]] Are $9:12$ and $15:20$ equivalent? Show your working with cross multiplication.
+[[A]] $9\times 20=180$ and $12\times 15=180$. The products are equal, so yes, they are equivalent — both simplify to $3:4$.
 
-[[Câu]] Simplify the ratio 40 minutes to 1 hour.
-[[Đáp án]] Convert to the same unit first: 1 hour is 60 minutes, so the ratio is $40:60$, which simplifies to $2:3$.
+[[Q]] Simplify the ratio 40 minutes to 1 hour.
+[[A]] Convert to the same unit first: 1 hour is 60 minutes, so the ratio is $40:60$, which simplifies to $2:3$.

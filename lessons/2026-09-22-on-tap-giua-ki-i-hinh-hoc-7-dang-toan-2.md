@@ -33,13 +33,13 @@ $$\widehat{ACB} = 40^\circ + 35^\circ = 75^\circ$$
 2. Mỗi lần khẳng định hai góc bằng nhau, ghi kèm lý do và cặp đường song song đang dùng.
 3. Cộng hoặc trừ các góc thành phần để ra kết quả.
 
-[[BÀI TẬP]]
+[[EXERCISES]]
 
-[[Câu]] Cho $a \parallel m$ và $b \parallel m$. Chứng minh $a \parallel b$.
-[[Đáp án]] Hai đường thẳng phân biệt cùng song song với đường thẳng thứ ba thì song song với nhau, do đó $a \parallel b$.
+[[Q]] Cho $a \parallel m$ và $b \parallel m$. Chứng minh $a \parallel b$.
+[[A]] Hai đường thẳng phân biệt cùng song song với đường thẳng thứ ba thì song song với nhau, do đó $a \parallel b$.
 
-[[Câu]] Cho $Ax \parallel By$, $\widehat{xAC} = 50^\circ$ và $\widehat{ACB} = 90^\circ$. Tính $\widehat{yBC}$.
-[[Đáp án]] Kẻ $Ct \parallel Ax$, khi đó $Ct \parallel By$. Ta có $\widehat{ACt} = 50^\circ$ (so le trong), nên $\widehat{tCB} = 90^\circ - 50^\circ = 40^\circ$. Vậy $\widehat{yBC} = 40^\circ$ (so le trong).
+[[Q]] Cho $Ax \parallel By$, $\widehat{xAC} = 50^\circ$ và $\widehat{ACB} = 90^\circ$. Tính $\widehat{yBC}$.
+[[A]] Kẻ $Ct \parallel Ax$, khi đó $Ct \parallel By$. Ta có $\widehat{ACt} = 50^\circ$ (so le trong), nên $\widehat{tCB} = 90^\circ - 50^\circ = 40^\circ$. Vậy $\widehat{yBC} = 40^\circ$ (so le trong).
 
-[[Câu]] Cho $\widehat{xAC} = 130^\circ$, $\widehat{yBC} = 140^\circ$ và $\widehat{ACB} = 90^\circ$ với $Ax$, $By$ nằm hai phía. Hỏi $Ax$ có song song với $By$ không?
-[[Đáp án]] Nếu $Ax \parallel By$ thì kẻ $Ct$ song song với cả hai, và $\widehat{ACB}$ phải bằng $(180^\circ - 130^\circ) + (180^\circ - 140^\circ) = 50^\circ + 40^\circ = 90^\circ$. Kết quả đúng bằng số đo đã cho, nên $Ax \parallel By$.
+[[Q]] Cho $\widehat{xAC} = 130^\circ$, $\widehat{yBC} = 140^\circ$ và $\widehat{ACB} = 90^\circ$ với $Ax$, $By$ nằm hai phía. Hỏi $Ax$ có song song với $By$ không?
+[[A]] Nếu $Ax \parallel By$ thì kẻ $Ct$ song song với cả hai, và $\widehat{ACB}$ phải bằng $(180^\circ - 130^\circ) + (180^\circ - 140^\circ) = 50^\circ + 40^\circ = 90^\circ$. Kết quả đúng bằng số đo đã cho, nên $Ax \parallel By$.

@@ -38,20 +38,20 @@ A relationship is proportional when **all three** of these hold:
 
 The ratio changes, so this is not proportional — even though $y$ rises steadily.
 
-[[TỪ VỰNG]]
+[[VOCABULARY]]
 proportional /prəˈpɔːʃənl/ : tỉ lệ thuận
 constant /ˈkɒnstənt/ : hằng số
 graph /ɡrɑːf/ : đồ thị
 origin /ˈɒrɪdʒɪn/ : gốc toạ độ
 straight line : đường thẳng
 
-[[BÀI TẬP]]
+[[EXERCISES]]
 
-[[Câu]] A table shows $x=4, y=10$ and $x=6, y=15$. Is the relationship proportional? If so, give $k$.
-[[Đáp án]] $\frac{10}{4}=2.5$ and $\frac{15}{6}=2.5$. The ratio is constant, so yes — the relationship is proportional with $k=2.5$, and $y=2.5x$.
+[[Q]] A table shows $x=4, y=10$ and $x=6, y=15$. Is the relationship proportional? If so, give $k$.
+[[A]] $\frac{10}{4}=2.5$ and $\frac{15}{6}=2.5$. The ratio is constant, so yes — the relationship is proportional with $k=2.5$, and $y=2.5x$.
 
-[[Câu]] A gym charges a 20 joining fee plus 15 per month. Is the total cost proportional to the number of months? Explain.
-[[Đáp án]] No. The cost is $y=15x+20$, so for 1 month $\frac{35}{1}=35$ but for 2 months $\frac{50}{2}=25$. The ratio changes and the graph misses the origin.
+[[Q]] A gym charges a 20 joining fee plus 15 per month. Is the total cost proportional to the number of months? Explain.
+[[A]] No. The cost is $y=15x+20$, so for 1 month $\frac{35}{1}=35$ but for 2 months $\frac{50}{2}=25$. The ratio changes and the graph misses the origin.
 
-[[Câu]] If $y$ is proportional to $x$ and $y=18$ when $x=4$, find $y$ when $x=10$.
-[[Đáp án]] $k=\frac{18}{4}=4.5$, so $y=4.5x$. When $x=10$, $y=45$.
+[[Q]] If $y$ is proportional to $x$ and $y=18$ when $x=4$, find $y$ when $x=10$.
+[[A]] $k=\frac{18}{4}=4.5$, so $y=4.5x$. When $x=10$, $y=45$.

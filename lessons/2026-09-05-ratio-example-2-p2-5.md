@@ -29,20 +29,20 @@ Check: $20+25=45$. ✓
 
 Reading which of the two you have is the hardest step. "Share 45 sweets" gives a total; "there are 12 red marbles" gives one part.
 
-[[TỪ VỰNG]]
+[[VOCABULARY]]
 share /ʃeə(r)/ : chia, phần chia
 total /ˈtəʊtl/ : tổng
 split /splɪt/ : chia tách
 ribbon /ˈrɪbən/ : dải ruy băng
 unit method : phương pháp chia phần bằng nhau
 
-[[BÀI TẬP]]
+[[EXERCISES]]
 
-[[Câu]] Share 60 marbles between two players in the ratio $2:3$.
-[[Đáp án]] Shares: $2+3=5$. One share: $\dfrac{60}{5}=12$. So the players get $2\times12=24$ and $3\times12=36$. Check: $24+36=60$. ✓
+[[Q]] Share 60 marbles between two players in the ratio $2:3$.
+[[A]] Shares: $2+3=5$. One share: $\dfrac{60}{5}=12$. So the players get $2\times12=24$ and $3\times12=36$. Check: $24+36=60$. ✓
 
-[[Câu]] A 84 cm ribbon is cut in the ratio $3:4$. How long is each piece?
-[[Đáp án]] Shares: $3+4=7$. One share: $\dfrac{84}{7}=12$ cm. The pieces are $36$ cm and $48$ cm.
+[[Q]] A 84 cm ribbon is cut in the ratio $3:4$. How long is each piece?
+[[A]] Shares: $3+4=7$. One share: $\dfrac{84}{7}=12$ cm. The pieces are $36$ cm and $48$ cm.
 
-[[Câu]] Money is split between three people in the ratio $1:2:5$, and the total is 96. How much does each person get, and what fraction of the total does the last person receive?
-[[Đáp án]] Shares: $1+2+5=8$. One share: $\dfrac{96}{8}=12$. The amounts are $12$, $24$ and $60$. The last person gets $\dfrac{5}{8}$ of the total.
+[[Q]] Money is split between three people in the ratio $1:2:5$, and the total is 96. How much does each person get, and what fraction of the total does the last person receive?
+[[A]] Shares: $1+2+5=8$. One share: $\dfrac{96}{8}=12$. The amounts are $12$, $24$ and $60$. The last person gets $\dfrac{5}{8}$ of the total.

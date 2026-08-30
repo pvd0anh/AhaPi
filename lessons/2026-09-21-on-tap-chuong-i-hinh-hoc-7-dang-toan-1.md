@@ -32,13 +32,13 @@ Cho $a \parallel b$, cát tuyến $c$ cắt $a$ tại $A$ và cắt $b$ tại $B
 
 Cứ mỗi bước nêu rõ lý do: đối đỉnh, kề bù, so le trong hay đồng vị.
 
-[[BÀI TẬP]]
+[[EXERCISES]]
 
-[[Câu]] Cho $a \parallel b$, một góc so le trong bằng $63^\circ$. Tính góc trong cùng phía với nó.
-[[Đáp án]] Góc so le trong còn lại bằng $63^\circ$. Góc trong cùng phía kề bù với góc đó nên bằng $180^\circ - 63^\circ = 117^\circ$.
+[[Q]] Cho $a \parallel b$, một góc so le trong bằng $63^\circ$. Tính góc trong cùng phía với nó.
+[[A]] Góc so le trong còn lại bằng $63^\circ$. Góc trong cùng phía kề bù với góc đó nên bằng $180^\circ - 63^\circ = 117^\circ$.
 
-[[Câu]] Hai đường thẳng song song bị cắt bởi một cát tuyến tạo ra hai góc trong cùng phía, trong đó góc này gấp đôi góc kia. Tính hai góc.
-[[Đáp án]] Gọi hai góc là $x$ và $2x$. Vì bù nhau nên $x + 2x = 180^\circ$, suy ra $x = 60^\circ$. Hai góc là $60^\circ$ và $120^\circ$.
+[[Q]] Hai đường thẳng song song bị cắt bởi một cát tuyến tạo ra hai góc trong cùng phía, trong đó góc này gấp đôi góc kia. Tính hai góc.
+[[A]] Gọi hai góc là $x$ và $2x$. Vì bù nhau nên $x + 2x = 180^\circ$, suy ra $x = 60^\circ$. Hai góc là $60^\circ$ và $120^\circ$.
 
-[[Câu]] Cho $a \parallel b$ và $c \perp a$. Chứng minh $c \perp b$.
-[[Đáp án]] Vì $c \perp a$ nên góc giữa $c$ và $a$ bằng $90^\circ$. Do $a \parallel b$, góc đồng vị tương ứng giữa $c$ và $b$ cũng bằng $90^\circ$. Vậy $c \perp b$.
+[[Q]] Cho $a \parallel b$ và $c \perp a$. Chứng minh $c \perp b$.
+[[A]] Vì $c \perp a$ nên góc giữa $c$ và $a$ bằng $90^\circ$. Do $a \parallel b$, góc đồng vị tương ứng giữa $c$ và $b$ cũng bằng $90^\circ$. Vậy $c \perp b$.

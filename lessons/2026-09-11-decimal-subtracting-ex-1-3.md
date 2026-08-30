@@ -26,19 +26,19 @@ Adding a zero anywhere else does change it — $15.07$ is a different number ent
 
 > **Check by adding back.** If $15.70 - 8.24 = 7.46$, then $7.46 + 8.24$ should return $15.70$. It does.
 
-[[TỪ VỰNG]]
+[[VOCABULARY]]
 subtract /səbˈtrækt/ : trừ
 borrow /ˈbɒrəʊ/ : mượn, khi trừ phải mượn
 unchanged /ʌnˈtʃeɪndʒd/ : không đổi
 pad with zeros : thêm số 0 cho đủ chữ số
 
-[[BÀI TẬP]]
+[[EXERCISES]]
 
-[[Câu]] Work out $24.5 - 9.38$.
-[[Đáp án]] Write $24.50 - 9.38 = 15.12$. Check: $15.12 + 9.38 = 24.50$. ✓
+[[Q]] Work out $24.5 - 9.38$.
+[[A]] Write $24.50 - 9.38 = 15.12$. Check: $15.12 + 9.38 = 24.50$. ✓
 
-[[Câu]] Work out $7 - 2.65$.
-[[Đáp án]] Write the whole number as $7.00$, then $7.00 - 2.65 = 4.35$.
+[[Q]] Work out $7 - 2.65$.
+[[A]] Write the whole number as $7.00$, then $7.00 - 2.65 = 4.35$.
 
-[[Câu]] Explain why $3.5$ and $3.50$ are equal, but $3.5$ and $3.05$ are not.
-[[Đáp án]] In $3.50$ the extra zero sits in the hundredths place and contributes nothing, so the value is unchanged. In $3.05$ the zero sits in the **tenths** place, pushing the 5 into the hundredths: $3.05$ means $3+\frac{5}{100}$, while $3.5$ means $3+\frac{5}{10}$.
+[[Q]] Explain why $3.5$ and $3.50$ are equal, but $3.5$ and $3.05$ are not.
+[[A]] In $3.50$ the extra zero sits in the hundredths place and contributes nothing, so the value is unchanged. In $3.05$ the zero sits in the **tenths** place, pushing the 5 into the hundredths: $3.05$ means $3+\frac{5}{100}$, while $3.5$ means $3+\frac{5}{10}$.

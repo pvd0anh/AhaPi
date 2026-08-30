@@ -1,7 +1,20 @@
-# Ảnh dùng trong bài giảng
+# Lesson images
 
-Đặt file ảnh vào thư mục này, rồi trong bài giảng viết:
+Drop image files into this folder, then reference them from a lesson with ordinary
+Markdown image syntax:
 
-    ![Chú thích ảnh](images/ten-file.png)
+    ![Caption text](images/file-name.png)
 
-Dòng chú thích hiện ngay dưới ảnh. Bỏ trống phần trong ngoặc vuông thì không có chú thích.
+The alt text renders as a caption underneath the picture. Leave the square brackets
+empty for no caption:
+
+    ![](images/file-name.png)
+
+Paths resolve from the site root, so `images/…` is what you want. A full external URL
+works too.
+
+## Conventions
+
+- Name files in lowercase ASCII with hyphens — no accents, no spaces.
+- Any size works; images are scaled down to fit the column automatically.
+- Prefer PNG for diagrams and JPEG for photographs.

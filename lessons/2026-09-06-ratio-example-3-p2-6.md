@@ -26,20 +26,20 @@ Check: $35-15=20$. ✓
 
 Once you can name which row you are on, every ratio problem becomes the same problem.
 
-[[TỪ VỰNG]]
+[[VOCABULARY]]
 difference /ˈdɪfrəns/ : hiệu, kết quả phép trừ
 exceed /ɪkˈsiːd/ : vượt quá
 larger /ˈlɑːdʒə(r)/ : lớn hơn
 smaller /ˈsmɔːlə(r)/ : nhỏ hơn
 car park : bãi đỗ xe
 
-[[BÀI TẬP]]
+[[EXERCISES]]
 
-[[Câu]] Two numbers are in the ratio $2:5$ and differ by 18. Find them.
-[[Đáp án]] Difference in shares: $5-2=3$. One share: $\dfrac{18}{3}=6$. The numbers are $12$ and $30$. Check: $30-12=18$. ✓
+[[Q]] Two numbers are in the ratio $2:5$ and differ by 18. Find them.
+[[A]] Difference in shares: $5-2=3$. One share: $\dfrac{18}{3}=6$. The numbers are $12$ and $30$. Check: $30-12=18$. ✓
 
-[[Câu]] In a car park the ratio of cars to vans is $9:4$. There are 45 more cars than vans. How many vehicles are there in total?
-[[Đáp án]] Difference in shares: $9-4=5$, so one share $=\dfrac{45}{5}=9$. Cars $=81$, vans $=36$, total $=117$.
+[[Q]] In a car park the ratio of cars to vans is $9:4$. There are 45 more cars than vans. How many vehicles are there in total?
+[[A]] Difference in shares: $9-4=5$, so one share $=\dfrac{45}{5}=9$. Cars $=81$, vans $=36$, total $=117$.
 
-[[Câu]] Sam and Lily share stickers in the ratio $5:8$. Lily has 12 more than Sam. How many does Sam have?
-[[Đáp án]] Difference in shares: $8-5=3$, so one share $=\dfrac{12}{3}=4$. Sam has $5\times 4=20$ stickers.
+[[Q]] Sam and Lily share stickers in the ratio $5:8$. Lily has 12 more than Sam. How many does Sam have?
+[[A]] Difference in shares: $8-5=3$, so one share $=\dfrac{12}{3}=4$. Sam has $5\times 4=20$ stickers.

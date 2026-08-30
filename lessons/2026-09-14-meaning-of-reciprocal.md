@@ -28,20 +28,20 @@ $$\frac{3}{4} \div \frac{2}{5} \;=\; \frac{3}{4} \times \frac{5}{2} \;=\; \frac{
 
 > **"Keep, change, flip."** Keep the first fraction, change the division to multiplication, flip the second fraction. That instruction is just the reciprocal rule in disguise.
 
-[[TỪ VỰNG]]
+[[VOCABULARY]]
 reciprocal /rɪˈsɪprəkl/ : số nghịch đảo
 numerator /ˈnjuːməreɪtə(r)/ : tử số
 denominator /dɪˈnɒmɪneɪtə(r)/ : mẫu số
 flip /flɪp/ : lật ngược
 undefined /ˌʌndɪˈfaɪnd/ : không xác định
 
-[[BÀI TẬP]]
+[[EXERCISES]]
 
-[[Câu]] Write the reciprocal of $\frac{7}{9}$, and of $12$.
-[[Đáp án]] The reciprocals are $\frac{9}{7}$ and $\frac{1}{12}$.
+[[Q]] Write the reciprocal of $\frac{7}{9}$, and of $12$.
+[[A]] The reciprocals are $\frac{9}{7}$ and $\frac{1}{12}$.
 
-[[Câu]] Work out $\frac{5}{6} \div \frac{2}{3}$ using reciprocals.
-[[Đáp án]] $\frac{5}{6} \times \frac{3}{2} = \frac{15}{12} = \frac{5}{4}$.
+[[Q]] Work out $\frac{5}{6} \div \frac{2}{3}$ using reciprocals.
+[[A]] $\frac{5}{6} \times \frac{3}{2} = \frac{15}{12} = \frac{5}{4}$.
 
-[[Câu]] Explain why $0$ has no reciprocal.
-[[Đáp án]] A reciprocal of $0$ would be a number $x$ with $0 \times x = 1$. But $0$ times anything is $0$, never $1$, so no such number exists. This is why $\frac{1}{0}$ is undefined.
+[[Q]] Explain why $0$ has no reciprocal.
+[[A]] A reciprocal of $0$ would be a number $x$ with $0 \times x = 1$. But $0$ times anything is $0$, never $1$, so no such number exists. This is why $\frac{1}{0}$ is undefined.

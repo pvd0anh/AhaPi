@@ -25,13 +25,13 @@ $$\frac{a}{2}=\frac{b}{3} \Rightarrow \frac{a}{8}=\frac{b}{12} \qquad \frac{b}{4
 
 $$\Longrightarrow \frac{a}{8}=\frac{b}{12}=\frac{c}{15}$$
 
-[[BÀI TẬP]]
+[[EXERCISES]]
 
-[[Câu]] Tìm $x, y$ biết $\dfrac{x}{2} = \dfrac{y}{7}$ và $xy = 56$.
-[[Đáp án]] Đặt $\dfrac{x}{2}=\dfrac{y}{7}=k$, ta có $x=2k$, $y=7k$, nên $14k^2 = 56$, suy ra $k^2 = 4$ và $k = \pm 2$. Nghiệm: $x=4, y=14$ hoặc $x=-4, y=-14$.
+[[Q]] Tìm $x, y$ biết $\dfrac{x}{2} = \dfrac{y}{7}$ và $xy = 56$.
+[[A]] Đặt $\dfrac{x}{2}=\dfrac{y}{7}=k$, ta có $x=2k$, $y=7k$, nên $14k^2 = 56$, suy ra $k^2 = 4$ và $k = \pm 2$. Nghiệm: $x=4, y=14$ hoặc $x=-4, y=-14$.
 
-[[Câu]] Cho $\dfrac{a}{3}=\dfrac{b}{4}$ và $\dfrac{b}{6}=\dfrac{c}{7}$. Hãy viết thành một dãy tỉ số bằng nhau.
-[[Đáp án]] Bội chung nhỏ nhất của 4 và 6 là 12. Nhân dãy đầu với 3: $\dfrac{a}{9}=\dfrac{b}{12}$. Nhân dãy sau với 2: $\dfrac{b}{12}=\dfrac{c}{14}$. Vậy $\dfrac{a}{9}=\dfrac{b}{12}=\dfrac{c}{14}$.
+[[Q]] Cho $\dfrac{a}{3}=\dfrac{b}{4}$ và $\dfrac{b}{6}=\dfrac{c}{7}$. Hãy viết thành một dãy tỉ số bằng nhau.
+[[A]] Bội chung nhỏ nhất của 4 và 6 là 12. Nhân dãy đầu với 3: $\dfrac{a}{9}=\dfrac{b}{12}$. Nhân dãy sau với 2: $\dfrac{b}{12}=\dfrac{c}{14}$. Vậy $\dfrac{a}{9}=\dfrac{b}{12}=\dfrac{c}{14}$.
 
-[[Câu]] Một hình chữ nhật có hai cạnh tỉ lệ với $3$ và $8$, diện tích bằng $96\ \text{cm}^2$. Tính hai cạnh.
-[[Đáp án]] Đặt hai cạnh là $3k$ và $8k$ với $k>0$. Diện tích: $24k^2 = 96$, suy ra $k^2 = 4$ và $k = 2$ (loại $k=-2$ vì độ dài phải dương). Hai cạnh là $6\ \text{cm}$ và $16\ \text{cm}$.
+[[Q]] Một hình chữ nhật có hai cạnh tỉ lệ với $3$ và $8$, diện tích bằng $96\ \text{cm}^2$. Tính hai cạnh.
+[[A]] Đặt hai cạnh là $3k$ và $8k$ với $k>0$. Diện tích: $24k^2 = 96$, suy ra $k^2 = 4$ và $k = 2$ (loại $k=-2$ vì độ dài phải dương). Hai cạnh là $6\ \text{cm}$ và $16\ \text{cm}$.

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Soạn bài · AhaPi</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+<style>
+:root{
+  --board:#1C3A31;--chalk:#EAF0EA;--chalk-gold:#E3C25F;
+  --paper:#FCFCFA;--grid-line:#D8E4EA;--ink:#17313D;
+  --red:#C8453C;--accent:#5B3FA8;--muted:#6D8794;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Be Vietnam Pro',sans-serif;background:var(--paper);color:var(--ink);font-size:15px}
+.topbar{background:var(--board);color:var(--chalk);padding:16px 26px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.topbar b{font-weight:800;font-size:17px}
+.topbar span{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--chalk-gold)}
+.topbar a{margin-left:auto;color:var(--chalk);font-size:13px;text-decoration:none;border-bottom:1px solid var(--chalk-gold);padding-bottom:1px}
+
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:calc(100vh - 56px)}
+.pane-form{padding:26px;border-right:1px solid var(--grid-line)}
+.pane-preview{padding:26px;background:
+  linear-gradient(var(--grid-line) 1px,transparent 1px),
+  linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);
+  background-size:26px 26px;overflow-x:hidden}
+
+.step{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--red);border-top:1.5px solid var(--red);
+  padding-top:10px;margin:32px 0 16px;display:block}
+.step:first-child{margin-top:0}
+
+label{display:block;font-weight:500;font-size:13px;margin:14px 0 5px}
+label .hint{font-weight:400;color:var(--muted);font-size:12px}
+input,textarea,select{
+  width:100%;font-family:'IBM Plex Mono',monospace;font-size:14px;
+  padding:9px 11px;border:1px solid var(--grid-line);border-radius:2px;
+  background:#fff;color:var(--ink);line-height:1.6;
+}
+input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
+textarea{resize:vertical}
+#theory{min-height:260px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.q-editor{border:1px solid var(--grid-line);border-left:3px solid var(--ink);padding:14px 16px;margin-bottom:12px;background:#fff}
+.q-editor .head{display:flex;align-items:center;justify-content:space-between}
+.q-editor .head span{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--muted)}
+.q-editor .remove{background:none;border:0;color:var(--red);cursor:pointer;font-size:12px;padding:2px 4px}
+.q-editor textarea{min-height:62px;margin-top:4px}
+
+button.btn{
+  font-family:'Be Vietnam Pro',sans-serif;font-weight:500;font-size:13.5px;
+  padding:9px 16px;cursor:pointer;border-radius:2px;
+  border:1px solid var(--ink);background:var(--ink);color:#fff;
+}
+button.btn.ghost{background:transparent;color:var(--ink)}
+button.btn.danger{background:var(--red);border-color:var(--red)}
+button.btn:hover{opacity:.86}
+button.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+
+.card{background:#fff;border:1px solid var(--grid-line);padding:14px 16px;margin-bottom:14px}
+.card .name{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--accent);word-break:break-all}
+.note{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.6}
+.msg{font-size:13px;margin-top:9px;font-weight:500}
+.msg.ok{color:#1C6B4A}.msg.err{color:var(--red)}
+
+/* ================= PREVIEW ================= */
+.pv-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--red);margin-bottom:8px}
+.pv-title{font-weight:800;font-size:28px;line-height:1.15;letter-spacing:-.02em;margin-bottom:26px}
+.video-frame{position:relative;padding-top:56.25%;margin-bottom:26px;background:var(--board);border-radius:3px;overflow:hidden}
+.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.content{font-family:'Source Serif 4',serif;font-size:17px;line-height:1.7}
+.content h2{font-family:'Be Vietnam Pro',sans-serif;font-weight:700;color:var(--accent);font-size:21px;margin:32px 0 10px}
+.content h3{font-family:'Be Vietnam Pro',sans-serif;font-weight:700;color:var(--accent);font-size:17px;margin:24px 0 8px}
+.content p{margin:0 0 14px}
+.content ul,.content ol{margin:0 0 14px;padding-left:22px}
+.content strong{color:var(--accent);font-weight:600}
+.content blockquote{border-left:3px solid var(--accent);background:rgba(91,63,168,.05);padding:11px 16px;margin:0 0 16px}
+.content blockquote p:last-child{margin:0}
+.content table{border-collapse:collapse;width:100%;margin:0 0 16px;font-size:15.5px;background:var(--paper)}
+.content th,.content td{border:1px solid var(--grid-line);padding:7px 11px;text-align:left}
+.content th{background:rgba(28,58,49,.06);font-family:'Be Vietnam Pro',sans-serif;font-size:13.5px}
+.katex-display{margin:18px 0;overflow-x:auto;overflow-y:hidden}
+.math-error{color:var(--red);background:rgba(200,69,60,.08);border-bottom:1px dashed var(--red);font-family:'IBM Plex Mono',monospace;font-size:.9em}
+/* ---- images inside a lesson ---- */
+.content .figure{margin:22px 0}
+.content .figure img{
+  display:block;margin:0 auto;max-width:100%;height:auto;
+  border:1px solid var(--grid-line);border-radius:6px;background:#fff;
+}
+.content .figure figcaption{
+  font-family:'Be Vietnam Pro',sans-serif;font-size:13px;line-height:1.5;
+  color:var(--muted);text-align:center;margin-top:9px;
+}
+.content p:empty{display:none}      /* the figure is lifted out of its <p>, leaving an empty tag */
+/* ---- bilingual ---- */
+.pv-title-vi{font-family:'Source Serif 4',serif;font-size:19px;color:var(--muted);margin:-20px 0 26px}
+.pv-lang{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.pv-lang .lbl{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.lang-picker{margin-left:auto;display:inline-flex;gap:2px;padding:2px;border:1px solid var(--grid-line);border-radius:8px;background:#fff}
+.lang-picker button{border:0;background:none;border-radius:6px;padding:4px 10px;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer}
+.lang-picker button.active{background:var(--accent);color:#fff}
+.col-heads{display:grid;grid-template-columns:1fr 1fr;padding:7px 0;margin-bottom:12px;
+  border-bottom:1px solid var(--grid-line);font-family:'IBM Plex Mono',monospace;
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.col-heads span+span{padding-left:20px}
+.pair{display:grid;grid-template-columns:1fr 1fr;align-items:start;margin-bottom:16px}
+.pair.has-heading{margin-top:28px}
+.shared{margin-bottom:16px}
+.pair .side{min-width:0}
+.pair .side > :first-child{margin-top:0}
+.pair .side > :last-child{margin-bottom:0}
+.pair .side.en{padding-right:20px}
+.pair .side.vi{padding-left:20px;border-left:1px solid var(--grid-line)}
+.pair .flip{grid-column:1/-1;order:3;justify-self:start;margin-top:7px;display:none;
+  font-family:'Be Vietnam Pro',sans-serif;font-size:12px;font-weight:500;color:var(--muted);
+  padding:3px 10px;border-radius:999px;border:1px dashed var(--grid-line);background:#fff;cursor:pointer}
+.flip .lbl{display:none}
+#preview:not([data-lang="both"]) .col-heads{display:none}
+#preview:not([data-lang="both"]) .pair{grid-template-columns:1fr}
+#preview:not([data-lang="both"]) .pair .side{padding:0;border-left:0}
+#preview:not([data-lang="both"]) .pair .flip{display:inline-flex}
+#preview[data-lang="en"] .pair:not(.open) .side.vi,
+#preview[data-lang="vi"] .pair:not(.open) .side.en{display:none}
+#preview[data-lang="vi"] .pair .side.en{order:2}
+#preview[data-lang="en"] .pair.open .side.vi,
+#preview[data-lang="vi"] .pair.open .side.en{margin-top:10px;padding-left:13px;border-left:3px solid rgba(91,63,168,.18)}
+#preview[data-lang="en"] .pair:not(.open) .flip .lbl-vi{display:inline}
+#preview[data-lang="vi"] .pair:not(.open) .flip .lbl-en{display:inline}
+.pair.open .flip .lbl-hide{display:inline}
+#preview[data-lang="en"] .pv-title-vi{display:none}
+
+.pv-vocab{margin-top:36px}
+.pv-vocab .label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);border-top:1.5px solid var(--accent);padding-top:11px;margin-bottom:14px;display:block}
+.pv-word{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--grid-line);padding:9px 13px;margin-bottom:7px}
+.pv-word .speak{width:30px;height:30px;flex-shrink:0;border-radius:50%;border:1px solid var(--grid-line);background:var(--paper);color:var(--accent);cursor:pointer;font-size:13px}
+.pv-word .speak:hover{background:rgba(91,63,168,.08)}
+.pv-word .en{font-weight:700;font-size:14.5px}
+.pv-word .ipa{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);margin-left:8px}
+.pv-word .vi{font-family:'Source Serif 4',serif;font-size:15px}
+.pv-exercises{margin-top:44px}
+.pv-exercises .label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--red);border-top:1.5px solid var(--red);padding-top:11px;margin-bottom:18px;display:block}
+.pv-question{background:var(--paper);border:1px solid var(--grid-line);border-left:3px solid var(--ink);padding:15px 18px;margin-bottom:12px}
+.pv-question .num{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--muted);display:block;margin-bottom:5px}
+.pv-answer{margin-top:12px;padding-top:12px;border-top:1px dashed rgba(200,69,60,.45);color:var(--red)}
+.pv-answer .katex{color:var(--red)}
+.pv-answer .answer-label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:5px;opacity:.75}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .pane-form{border-right:0;border-bottom:1px solid var(--grid-line)}
+  .row2{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <b>AhaPi · Trình soạn bài</b>
+  <span>Điền → tải file → tải lên GitHub</span>
+  <a href="index.html">Xem trang học sinh →</a>
+</div>
+
+<div class="layout">
+<!-- ============ LEFT: THE FORM ============ -->
+<div class="pane-form">
+
+  <span class="step">Bước 1 · Thông tin bài</span>
+  <div class="row2">
+    <div>
+      <label for="date">Ngày dạy</label>
+      <input type="date" id="date">
+    </div>
+    <div>
+      <label for="chapter">Chương <span class="hint">gom nhóm ở menu</span></label>
+      <input id="chapter" placeholder="Chương 1 · Đạo hàm">
+    </div>
+  </div>
+  <div class="row2">
+    <div>
+      <label for="title">Tên bài</label>
+      <input id="title" placeholder="What Is a Ratio?">
+    </div>
+    <div>
+      <label for="titleVi">Tên bài tiếng Việt <span class="hint">không bắt buộc</span></label>
+      <input id="titleVi" placeholder="Tỉ số là gì?">
+    </div>
+  </div>
+  <label for="video">Link YouTube <span class="hint">bỏ trống nếu không có</span></label>
+  <input id="video" placeholder="https://youtu.be/...">
+
+  <span class="step">Bước 2 · Lý thuyết</span>
+  <label for="theory">Nội dung <span class="hint">## đầu dòng = tiêu đề · **đậm** · $x^2$ = công thức · $$…$$ = công thức riêng dòng</span></label>
+  <textarea id="theory" placeholder="## Công thức&#10;&#10;$$y' = f'(u)\cdot u'(x)$$&#10;&#10;Cách nhớ: **đạo hàm ngoài nhân đạo hàm trong.**"></textarea>
+
+  <div class="btn-row">
+    <button class="btn ghost" type="button" id="insert-pair">⇄ Chèn khối song ngữ</button>
+    <button class="btn ghost" type="button" id="insert-shared">▭ Chèn khối dùng chung</button>
+    <button class="btn ghost" type="button" id="insert-image">🖼 Chèn ảnh</button>
+  </div>
+  <div class="note"><b>Song ngữ:</b> phần dưới <code>[[EN]]</code> nằm cột trái, phần dưới <code>[[VI]]</code> nằm cột phải, hai bên thẳng đầu nhau. Mỗi ý một khối — đừng gộp cả bài vào một khối, hai cột sẽ lệch nhau. Công thức, hình, bảng không cần dịch thì đặt dưới <code>[[SHARED]]</code> để chạy hết chiều ngang. Khối nào chỉ có <code>[[EN]]</code> mà quên dịch thì cũng tự chạy hết chiều ngang.</div>
+  <div class="note">Ảnh phải nằm trong thư mục <b>images</b> trên GitHub, hoặc dán thẳng một đường dẫn ảnh đầy đủ. Khung xem thử bên phải chỉ hiện được ảnh nếu bạn đang mở trình soạn bài ngay trong thư mục dự án.</div>
+
+  <span class="step">Bước 3 · Từ vựng <span class="hint">bỏ trống nếu không cần</span></span>
+  <label for="vocab">Mỗi dòng một từ <span class="hint">tiếng anh /phiên âm/ : tiếng việt — phiên âm không bắt buộc</span></label>
+  <textarea id="vocab" style="min-height:110px" placeholder="ratio /&#712;re&#618;&#643;i&#601;&#650;/ : t&#7881; s&#7889;&#10;equivalent : t&#432;&#417;ng &#273;&#432;&#417;ng&#10;highest common factor : &#432;&#7899;c chung l&#7899;n nh&#7845;t"></textarea>
+
+  <span class="step">Bước 4 · Bài tập</span>
+  <div id="question-list"></div>
+  <div class="btn-row">
+    <button class="btn ghost" type="button" id="add-question">+ Thêm câu</button>
+  </div>
+
+  <span class="step">Bước 5 · Tải file bài giảng</span>
+  <div class="card">
+    <div class="name" id="file-name">—</div>
+    <div class="note">Bấm nút bên dưới để tải file về máy, rồi tải file đó lên thư mục <b>lessons</b> trên GitHub.</div>
+    <div class="btn-row">
+      <button class="btn" type="button" id="download-md">⬇ Tải file .md</button>
+      <button class="btn ghost" type="button" id="copy-md">Chép nội dung file</button>
+    </div>
+    <div class="msg" id="msg-md"></div>
+  </div>
+
+  <span class="step">Bước 6 · Cập nhật danh sách</span>
+  <label for="jsonOld">Dán toàn bộ nội dung file <b>index.json</b> hiện tại vào đây</label>
+  <textarea id="jsonOld" style="min-height:90px" placeholder="[&#10;  { &quot;id&quot;: ... }&#10;]"></textarea>
+  <div class="btn-row">
+    <button class="btn danger" type="button" id="merge">Thêm bài này vào danh sách</button>
+  </div>
+  <div class="msg" id="msg-json"></div>
+  <label for="jsonNew" style="margin-top:14px">Kết quả — chép đè lên file index.json</label>
+  <textarea id="jsonNew" style="min-height:110px" readonly></textarea>
+  <div class="btn-row">
+    <button class="btn ghost" type="button" id="copy-json">Chép kết quả</button>
+  </div>
+
+</div>
+
+<!-- ============ RIGHT: LIVE PREVIEW ============ -->
+<div class="pane-preview">
+  <div id="preview"></div>
+</div>
+</div>
+
+<script>
+marked.setOptions({breaks:true,gfm:true});
+/* images: wrap in a figure, caption comes from the alt text */
+marked.use({renderer:{
+  image(href,title,text){
+    const src=String(href||'').replace(/"/g,'&quot;');
+    const alt=String(text||'').replace(/"/g,'&quot;');
+    return `<figure class="figure"><img src="${src}" alt="${alt}" loading="lazy">`
+         + (text?`<figcaption>${text}</figcaption>`:'') + `</figure>`;
+  }
+}});
+
+function render(md){
+  const store=[];
+  let s=md.replace(/\$\$([\s\S]+?)\$\$/g,(_,t)=>{store.push({t,display:true});return `@@M${store.length-1}@@`;})
+          .replace(/\$([^$\n]+?)\$/g,(_,t)=>{store.push({t,display:false});return `@@M${store.length-1}@@`;});
+  return marked.parse(s).replace(/@@M(\d+)@@/g,(_,i)=>{
+    const{t,display}=store[+i];
+    try{return katex.renderToString(t,{displayMode:display,throwOnError:true});}
+    catch(e){return `<code class="math-error">${t}</code>`;}
+  }).replace(/<p>\s*(<figure[\s\S]*?<\/figure>)\s*<\/p>/g,'$1');   // a figure must not sit inside a <p>
+}
+function youtubeId(u){const m=String(u).match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([A-Za-z0-9_-]{11})/);return m?m[1]:null;}
+
+function slugify(s){
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/đ/g,'d').replace(/Đ/g,'D')
+    .toLowerCase().replace(/[^a-z0-9\s-]/g,'')
+    .trim().replace(/\s+/g,'-').replace(/-+/g,'-').slice(0,60);
+}
+const $=id=>document.getElementById(id);
+
+/* ---- exercise rows, added on demand ---- */
+function addQuestion(prompt='',answer=''){
+  const row=document.createElement('div');
+  row.className='q-editor';
+  row.innerHTML=`<div class="head"><span class="num"></span><button class="remove" type="button">Xoá</button></div>
+    <div class="row2">
+      <div><label>Đề bài</label><textarea class="prompt"></textarea></div>
+      <div><label>Đề bài — tiếng Việt <span class="hint">bỏ trống nếu không cần</span></label><textarea class="promptVi"></textarea></div>
+    </div>
+    <div class="row2">
+      <div><label>Đáp án <span class="hint">học sinh phải bấm mới thấy</span></label><textarea class="answer"></textarea></div>
+      <div><label>Đáp án — tiếng Việt</label><textarea class="answerVi"></textarea></div>
+    </div>`;
+  row.querySelector('.prompt').value=prompt; row.querySelector('.answer').value=answer;
+  row.querySelector('.remove').onclick=()=>{row.remove();renumber();renderPreview();};
+  row.querySelectorAll('textarea').forEach(t=>t.oninput=renderPreview);
+  $('question-list').appendChild(row); renumber();
+}
+function renumber(){
+  document.querySelectorAll('#question-list .q-editor').forEach((el,i)=>el.querySelector('.num').textContent=`Câu ${i+1}`);
+}
+$('add-question').onclick=()=>{addQuestion();renderPreview();};
+
+function insert(snippet,backUp=0){
+  const t=$('theory'), at=t.selectionStart;
+  t.value = t.value.slice(0,at) + snippet + t.value.slice(t.selectionEnd);
+  t.focus(); t.selectionStart=t.selectionEnd=at+snippet.length-backUp;
+  renderPreview();
+}
+$('insert-image').onclick =()=>insert('\n![Chú thích ảnh](images/ten-file.png)\n');
+$('insert-pair').onclick  =()=>insert('\n[[EN]]\n\n[[VI]]\n\n',2);
+$('insert-shared').onclick=()=>insert('\n[[SHARED]]\n\n',1);
+
+/* ---- gather the form into one object ---- */
+function collect(){
+  const date=$('date').value;
+  const title=$('title').value.trim();
+  const field=(el,cls)=>el.querySelector('.'+cls).value.trim();
+  const questions=[...document.querySelectorAll('#question-list .q-editor')]
+    .map(el=>({prompt:field(el,'prompt'),promptVi:field(el,'promptVi'),answer:field(el,'answer'),answerVi:field(el,'answerVi')}))
+    .filter(q=>q.prompt);
+  const id = date && title ? `${date}-${slugify(title)}` : '';
+  const dateVN = date ? date.split('-').reverse().join('/') : '';
+  const vocab=$('vocab').value.split('\n').map(l=>l.trim()).filter(Boolean).map(line=>{
+    const k=line.indexOf(':'); if(k<0) return null;
+    let en=line.slice(0,k).trim(); const vi=line.slice(k+1).trim();
+    const mi=en.match(/\/[^\/]+\//); const ipa=mi?mi[0]:'';
+    en=en.replace(/\/[^\/]+\//,'').trim();
+    return (en&&vi)?{en,ipa,vi}:null;
+  }).filter(Boolean);
+  return {date,dateVN,id,title,titleVi:$('titleVi').value.trim(),
+          chapter:$('chapter').value.trim(),video:$('video').value.trim(),
+          theory:$('theory').value,vocab,questions};
+}
+function buildMarkdown(d){
+  let s='';
+  if(d.video) s+=`[[VIDEO]] ${d.video}\n`;
+  if(d.titleVi) s+=`[[TITLE VI]] ${d.titleVi}\n`;
+  if(s) s+='\n';
+  s+=d.theory.trim()+'\n';
+  if(d.vocab.length){
+    s+='\n[[VOCABULARY]]\n';
+    d.vocab.forEach(w=>{ s+=`${w.en}${w.ipa?' '+w.ipa:''} : ${w.vi}\n`; });
+  }
+  if(d.questions.length){
+    s+='\n[[EXERCISES]]\n';
+    d.questions.forEach(q=>{
+      s+=`\n[[Q]] ${q.prompt}\n`;
+      if(q.promptVi) s+=`[[VI]] ${q.promptVi}\n`;
+      if(q.answer)   s+=`[[A]] ${q.answer}\n`;
+      if(q.answer&&q.answerVi) s+=`[[VI]] ${q.answerVi}\n`;
+    });
+  }
+  return s;
+}
+
+/* ---- bilingual: cut the theory into EN / VI pairs ---- */
+function splitPairs(md){
+  const parts=String(md).split(/^[ \t]*\[\[(EN|VI|SHARED)\]\][ \t]*/m);
+  const blocks=[];
+  const lead=(parts[0]||'').trim();
+  if(lead) blocks.push({kind:'shared',en:lead});
+  for(let i=1;i<parts.length;i+=2){
+    const tag=parts[i], body=(parts[i+1]||'').trim();
+    if(!body) continue;
+    const last=blocks[blocks.length-1];
+    if(tag==='EN') blocks.push({kind:'pair',en:body,vi:''});
+    else if(tag==='VI'&&last&&last.kind==='pair'&&!last.vi) last.vi=body;
+    else blocks.push({kind:'shared',en:body});
+  }
+  return blocks.map(b=>(b.kind==='pair'&&!b.vi)?{kind:'shared',en:b.en}:b);
+}
+const hasPair=blocks=>blocks.some(b=>b.kind==='pair');
+function renderPair(en,vi){
+  const heading=/^\s*#{2,3}\s/.test(en)?' has-heading':'';
+  return `<div class="pair${heading}">
+    <div class="side en" lang="en">${render(en)}</div>
+    <div class="side vi" lang="vi">${render(vi)}</div>
+    <button class="flip" type="button"
+      ><span class="lbl lbl-vi">👁 Click to Translate</span
+      ><span class="lbl lbl-en">👁 Xem bản tiếng Anh</span
+      ><span class="lbl lbl-hide">Ẩn bản dịch</span></button>
+  </div>`;
+}
+const renderMaybePair=(en,vi)=> vi ? renderPair(en,vi) : render(en);
+const renderBody=blocks=>blocks.map(b=>b.kind==='pair'?renderPair(b.en,b.vi):`<div class="shared">${render(b.en)}</div>`).join('');
+let lang='both';
+
+/* ---- live preview ---- */
+function renderPreview(){
+  const d=collect();
+  $('file-name').textContent = d.id ? `lessons/${d.id}.md` : '— điền Ngày dạy và Tên bài —';
+  const vid=youtubeId(d.video);
+  const blocks=splitPairs(d.theory.trim());
+  const bilingual = hasPair(blocks) || d.questions.some(q=>q.promptVi||q.answerVi) || !!d.titleVi;
+  let h=`<div class="pv-eyebrow">${d.dateVN||'ngày…'} · ${d.chapter||'chương…'}</div>
+         <div class="pv-title">${d.title||'Tên bài giảng'}</div>`;
+  if(d.titleVi) h+=`<div class="pv-title-vi" lang="vi">${d.titleVi}</div>`;
+  if(vid) h+=`<div class="video-frame"><iframe src="https://www.youtube.com/embed/${vid}" allowfullscreen loading="lazy" title="Video"></iframe></div>`;
+  if(bilingual) h+=`<div class="pv-lang"><span class="lbl">Học sinh thấy</span>
+    <div class="lang-picker">
+      <button type="button" data-lang="en">English</button>
+      <button type="button" data-lang="both">Cả hai</button>
+      <button type="button" data-lang="vi">Tiếng Việt</button>
+    </div></div>`;
+  if(blocks.length){
+    const heads = hasPair(blocks) ? `<div class="col-heads"><span>English</span><span>Tiếng Việt</span></div>` : '';
+    h+=`<div class="content">${heads}${renderBody(blocks)}</div>`;
+  }
+  if(d.vocab.length){
+    h+=`<div class="pv-vocab"><span class="label">Từ vựng · ${d.vocab.length} từ</span>`;
+    d.vocab.forEach(w=>{
+      h+=`<div class="pv-word"><button class="speak" type="button" data-speak="${w.en.replace(/"/g,'&quot;')}">🔊</button>
+        <div><div><span class="en">${w.en}</span>${w.ipa?`<span class="ipa">${w.ipa}</span>`:''}</div>
+        <div class="vi">${w.vi}</div></div></div>`;
+    });
+    h+=`</div>`;
+  }
+  if(d.questions.length){
+    h+=`<div class="pv-exercises"><span class="label">Bài tập · ${d.questions.length} câu</span>`;
+    d.questions.forEach((q,i)=>{
+      h+=`<div class="pv-question"><span class="num">Câu ${i+1}</span>
+        <div class="content">${renderMaybePair(q.prompt,q.promptVi)}</div>
+        ${q.answer?`<div class="pv-answer content"><span class="answer-label">Đáp án</span>${renderMaybePair(q.answer,q.answerVi)}</div>`:''}
+      </div>`;
+    });
+    h+=`</div>`;
+  }
+  $('preview').innerHTML=h;
+  $('preview').dataset.lang=lang;
+  document.querySelectorAll('.lang-picker button').forEach(b=>{
+    b.classList.toggle('active',b.dataset.lang===lang);
+    b.onclick=()=>{ lang=b.dataset.lang; renderPreview(); };
+  });
+  document.querySelectorAll('.pair .flip').forEach(b=>{
+    b.onclick=()=>b.parentElement.classList.toggle('open');
+  });
+  document.querySelectorAll('.pv-word .speak').forEach(b=>b.onclick=()=>{
+    if(!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(b.dataset.speak);
+    u.lang='en-US'; u.rate=.85; speechSynthesis.speak(u);
+  });
+}
+['date','chapter','title','titleVi','video','theory','vocab'].forEach(id=>$(id).oninput=renderPreview);
+$('date').onchange=renderPreview;
+
+/* ---- download / copy ---- */
+function notify(el,text,ok=true){el.textContent=text;el.className='msg '+(ok?'ok':'err');setTimeout(()=>el.textContent='',3500);}
+async function copy(text,el,msg){
+  try{ await navigator.clipboard.writeText(text); notify(el,msg); }
+  catch(e){ notify(el,'Trình duyệt chặn. Hãy bôi đen rồi Ctrl+C.',false); }
+}
+$('download-md').onclick=()=>{
+  const d=collect();
+  if(!d.id) return notify($('msg-md'),'Cần điền Ngày dạy và Tên bài trước.',false);
+  const blob=new Blob([buildMarkdown(d)],{type:'text/markdown;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=`${d.id}.md`; a.click();
+  URL.revokeObjectURL(a.href);
+  notify($('msg-md'),`Đã tải ${d.id}.md — hãy tải file này lên thư mục lessons.`);
+};
+$('copy-md').onclick=()=>{
+  const d=collect();
+  if(!d.id) return notify($('msg-md'),'Cần điền Ngày dạy và Tên bài trước.',false);
+  copy(buildMarkdown(d),$('msg-md'),'Đã chép nội dung file.');
+};
+
+/* ---- merge the lesson into index.json ---- */
+$('merge').onclick=()=>{
+  const d=collect();
+  if(!d.id||!d.chapter) return notify($('msg-json'),'Cần điền đủ Ngày dạy, Tên bài và Chương.',false);
+  let rows;
+  const raw=$('jsonOld').value.trim();
+  try{ rows = raw ? JSON.parse(raw) : []; }
+  catch(e){ return notify($('msg-json'),'Nội dung index.json dán vào bị sai cú pháp. Hãy chép lại toàn bộ file.',false); }
+  if(!Array.isArray(rows)) return notify($('msg-json'),'index.json phải là một danh sách bắt đầu bằng [ và kết thúc bằng ].',false);
+  const row={id:d.id,date:d.dateVN,chapter:d.chapter,title:d.title};
+  const at = rows.findIndex(r=>r.id===d.id);
+  if(at>-1) rows[at]=row; else rows.push(row);   /* append — the array order is the teaching order */
+  $('jsonNew').value='[\n'+rows.map(r=>'  '+JSON.stringify(r)).join(',\n')+'\n]\n';
+  notify($('msg-json'), at>-1 ? 'Đã thay bài trùng id. Chép kết quả đè lên index.json.'
+                              : `Xong — bài mới nằm cuối danh sách (${rows.length} bài). Muốn đổi vị trí thì kéo dòng đó lên trên.`);
+};
+$('copy-json').onclick=()=>{
+  if(!$('jsonNew').value.trim()) return notify($('msg-json'),'Chưa có kết quả. Bấm "Thêm bài này vào danh sách" trước.',false);
+  copy($('jsonNew').value,$('msg-json'),'Đã chép. Dán đè toàn bộ file index.json trên GitHub.');
+};
+
+/* ---- start up ---- */
+$('date').value=new Date().toISOString().slice(0,10);
+addQuestion(); renderPreview();
+</script>
+</body>
+</html>

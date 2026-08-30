@@ -27,20 +27,20 @@ The third response is a skill, and like any skill it improves with practice.
 
 Silence reads as agreement. A short sentence — "That wasn't funny, let them finish" — costs little and changes the room more than anything the target can say.
 
-[[TỪ VỰNG]]
+[[VOCABULARY]]
 mock /mɒk/ : chế giễu, chê cười
 bully /ˈbʊli/ : bắt nạt
 bystander /ˈbaɪstændə(r)/ : người đứng ngoài chứng kiến
 acknowledge /əkˈnɒlɪdʒ/ : thừa nhận, ghi nhận
 redirect /ˌriːdəˈrekt/ : chuyển hướng trở lại
 
-[[BÀI TẬP]]
+[[EXERCISES]]
 
-[[Câu]] A classmate laughs when you give a wrong answer in class. Write down what you would say, using the four steps above.
-[[Đáp án]] There is no single right answer, but a good one is calm and brief: pause, then "That was unnecessary," then turn back to the teacher with "Could you show me where I went wrong?" The wrong answer becomes a question, and the joke goes nowhere.
+[[Q]] A classmate laughs when you give a wrong answer in class. Write down what you would say, using the four steps above.
+[[A]] There is no single right answer, but a good one is calm and brief: pause, then "That was unnecessary," then turn back to the teacher with "Could you show me where I went wrong?" The wrong answer becomes a question, and the joke goes nowhere.
 
-[[Câu]] Explain the difference between a one-off joke and bullying, and why the response should be different.
-[[Đáp án]] A one-off joke is a single thoughtless comment and can usually be handled on the spot. Bullying is repeated and deliberate, aimed at the same person over time. Because a pattern is designed to wear someone down, it needs an adult involved — handling it alone rarely stops it.
+[[Q]] Explain the difference between a one-off joke and bullying, and why the response should be different.
+[[A]] A one-off joke is a single thoughtless comment and can usually be handled on the spot. Bullying is repeated and deliberate, aimed at the same person over time. Because a pattern is designed to wear someone down, it needs an adult involved — handling it alone rarely stops it.
 
-[[Câu]] You see someone else being mocked for asking a question. What is the cost of saying nothing, and what could you say instead?
-[[Đáp án]] Saying nothing signals that the group agrees, which makes the target less likely to speak again. A short intervention such as "That was a fair question — let them finish" shifts the room's expectation and costs almost nothing.
+[[Q]] You see someone else being mocked for asking a question. What is the cost of saying nothing, and what could you say instead?
+[[A]] Saying nothing signals that the group agrees, which makes the target less likely to speak again. A short intervention such as "That was a fair question — let them finish" shifts the room's expectation and costs almost nothing.

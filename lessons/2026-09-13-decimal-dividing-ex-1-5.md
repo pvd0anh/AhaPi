@@ -24,19 +24,19 @@ $$9.45 \div 5 = 1.89$$
 
 > **Sanity check:** dividing by a number smaller than 1 makes the answer **bigger** than what you started with. $7.36 \div 0.4 = 18.4$ is larger than $7.36$, and that is correct, not a mistake.
 
-[[TỪ VỰNG]]
+[[VOCABULARY]]
 divide /dɪˈvaɪd/ : chia
 divisor /dɪˈvaɪzə(r)/ : số chia
 power of ten : luỹ thừa của mười
 check /tʃek/ : kiểm tra lại
 
-[[BÀI TẬP]]
+[[EXERCISES]]
 
-[[Câu]] Work out $8.4 \div 0.7$.
-[[Đáp án]] Multiply both by 10: $84 \div 7 = 12$.
+[[Q]] Work out $8.4 \div 0.7$.
+[[A]] Multiply both by 10: $84 \div 7 = 12$.
 
-[[Câu]] Work out $6.25 \div 0.05$.
-[[Đáp án]] Multiply both by 100: $625 \div 5 = 125$.
+[[Q]] Work out $6.25 \div 0.05$.
+[[A]] Multiply both by 100: $625 \div 5 = 125$.
 
-[[Câu]] Work out $14.7 \div 3$, and explain why the answer is smaller than $14.7$ while the answer to question 1 was larger than $8.4$.
-[[Đáp án]] $14.7 \div 3 = 4.9$. Dividing by a number **greater than 1** shrinks the value; dividing by a number **less than 1** (such as $0.7$) grows it, because you are asking how many small pieces fit inside.
+[[Q]] Work out $14.7 \div 3$, and explain why the answer is smaller than $14.7$ while the answer to question 1 was larger than $8.4$.
+[[A]] $14.7 \div 3 = 4.9$. Dividing by a number **greater than 1** shrinks the value; dividing by a number **less than 1** (such as $0.7$) grows it, because you are asking how many small pieces fit inside.

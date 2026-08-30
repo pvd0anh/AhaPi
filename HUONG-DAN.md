@@ -19,7 +19,7 @@ Mở file **soan-bai.html** trên máy bằng cách nhấp đúp. Bên trái đi
 | Bước | Việc cần làm | Ở đâu |
 |---|---|---|
 | 1 | Điền Ngày dạy, Chương, Tên bài, dán link YouTube | soan-bai.html |
-| 2 | Gõ lý thuyết, thêm từ vựng, thêm các câu bài tập kèm đáp án | soan-bai.html |
+| 2 | Gõ lý thuyết (một hay hai thứ tiếng — xem mục C2), thêm từ vựng, thêm các câu bài tập kèm đáp án | soan-bai.html |
 | 3 | Bấm **⬇ Tải file .md** → file lưu về máy | soan-bai.html |
 | 4 | Lên GitHub, mở thư mục `lessons` → **Add file → Upload files** → thả file vừa tải → **Commit** | GitHub |
 | 5 | Mở file `index.json` trên GitHub → bấm ✏️ → chọn hết → chép vào ô "Bước 6" của soan-bai.html | Cả hai |
@@ -61,7 +61,46 @@ Chữ trong ngoặc vuông hiện thành dòng chú thích nhỏ ngay dưới �
 
 > Khung xem thử bên phải sẽ hiện ô ảnh vỡ, vì máy bạn chưa có file ảnh đó. Bình thường — lên web là hiện đúng.
 
-## C2. Gõ từ vựng
+## C2. Bài song ngữ — một bên tiếng Anh, một bên tiếng Việt
+
+Bài giảng có thể để **hai thứ tiếng nằm cạnh nhau**: cột trái tiếng Anh, cột phải tiếng Việt, từng ý thẳng đầu nhau.
+
+Trong ô **Bước 2**, đặt con trỏ vào chỗ muốn thêm rồi bấm **⇄ Chèn khối song ngữ**. Trình soạn bài chèn sẵn hai cái mốc:
+
+```
+[[EN]]
+## Order Matters
+
+A ratio is not just a pair of numbers — the **order** carries meaning.
+[[VI]]
+## Thứ tự có ý nghĩa
+
+Tỉ số không chỉ là một cặp số — **thứ tự** mang ý nghĩa riêng.
+```
+
+| Mốc | Nghĩa |
+|---|---|
+| `[[EN]]` | phần bên dưới nằm **cột trái** |
+| `[[VI]]` | bản dịch của khối đó, nằm **cột phải** |
+| `[[CHUNG]]` | phần không cần dịch — công thức, hình, bảng số — chạy hết chiều ngang |
+
+**Chia nhỏ theo từng ý.** Mỗi mục, mỗi đoạn là một khối riêng. Gộp cả bài vào một khối thì hai cột dài ngắn khác nhau, đọc tới đâu lệch tới đó.
+
+Khối nào mới viết tiếng Anh mà chưa dịch cũng không sao — nó tự chạy hết chiều ngang như bài thường. Dịch dần cũng được.
+
+Ô **Tên bài tiếng Việt** ở Bước 1 hiện thành dòng chữ nhỏ ngay dưới tên bài. Mỗi câu bài tập cũng có ô tiếng Việt riêng cho đề và cho đáp án.
+
+**Học sinh thấy gì?** Bài nào có ít nhất một khối song ngữ thì hiện thêm nút chọn **English · Cả hai · Tiếng Việt**:
+
+| Chọn | Kết quả |
+|---|---|
+| Cả hai | Hai cột cạnh nhau (điện thoại thì xếp trên dưới) |
+| English | Chỉ tiếng Anh; mỗi khối có nút **👁 Click to Translate** để hiện bản dịch |
+| Tiếng Việt | Chỉ tiếng Việt; mỗi khối có nút xem lại bản tiếng Anh |
+
+Máy học sinh nhớ lựa chọn đó cho mọi bài, tới khi em ấy đổi lại.
+
+## C3. Gõ từ vựng
 
 Ô **Bước 3** trong trình soạn bài, mỗi dòng một từ:
 
@@ -71,6 +110,8 @@ highest common factor : ước chung lớn nhất
 ```
 
 Bên trái dấu `:` là tiếng Anh, bên phải là tiếng Việt. Phần phiên âm trong hai dấu gạch chéo **không bắt buộc** — muốn có thì tra trên Oxford rồi chép vào.
+
+Phần nghĩa tiếng Việt **được che sẵn** — học sinh nhìn thấy từ tiếng Anh với phiên âm, bấm **👁 Click to Translate** mới hiện nghĩa. Chọn chế độ **Tiếng Việt** ở đầu bài thì mở sẵn hết.
 
 Học sinh bấm nút 🔊 là nghe được phát âm, và bấm mũi tên ↗ để mở thẳng mục từ đó trên từ điển Oxford. Giọng đọc lấy từ chính máy của học sinh nên không cần mạng, không cần cài gì thêm. Máy nào không có sẵn giọng tiếng Anh thì nút loa tự ẩn đi.
 

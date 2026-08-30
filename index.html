@@ -72,7 +72,8 @@ main{
   transition:margin-right .22s ease;
 }
 body.gap-ben main{margin-right:0}
-.trong{max-width:780px;margin:0 auto;padding:0 32px}
+.trong{max-width:780px;margin:0 auto;padding:0 32px;transition:max-width .2s ease}
+body[data-ngu="song"] .trong.rong{max-width:1080px}   /* hai cột mới cần khung rộng */
 
 .khung-video{position:relative;padding-top:56.25%;background:#101014;margin-bottom:0}
 .khung-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
@@ -158,6 +159,93 @@ h1.ten-bai{font-size:clamp(24px,3.4vw,32px);font-weight:800;letter-spacing:-.025
   color:var(--chu-nhat);text-align:center;margin-top:9px;
 }
 .noi-dung p:empty{display:none}      /* figure tự tách khỏi <p>, chừa lại thẻ rỗng */
+
+/* ================= SONG NGỮ ================= */
+.ten-vi{
+  font-family:'Source Serif 4',Georgia,serif;font-size:19.5px;line-height:1.35;
+  color:var(--chu-nhat);margin-top:8px;
+}
+body[data-ngu="en"] .ten-vi{display:none}
+
+.thanh-ngu{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.thanh-ngu .nhan-ngu{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--chu-nhat);
+}
+.chon-ngu{
+  margin-left:auto;display:inline-flex;gap:2px;padding:2px;
+  border:1px solid var(--vien);border-radius:9px;background:var(--nen-xam);
+}
+.chon-ngu button{
+  border:0;background:none;border-radius:7px;padding:5px 13px;
+  font-size:12.5px;font-weight:500;color:var(--chu-nhat);white-space:nowrap;
+}
+.chon-ngu button:hover{background:var(--nen);color:var(--chu)}
+.chon-ngu button.dang,.chon-ngu button.dang:hover{background:var(--nhan);color:#fff}
+
+/* nhãn hai cột — dính dưới header khi cuộn */
+.dau-cot{
+  position:sticky;top:var(--tren);z-index:5;
+  display:grid;grid-template-columns:1fr 1fr;
+  background:var(--giay);border-bottom:1px solid var(--vien);
+  padding:9px 0;margin-bottom:16px;
+  font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--chu-nhat);
+}
+.dau-cot span+span{padding-left:28px}
+
+/* một cặp = một hàng lưới, hai bản luôn thẳng đầu nhau */
+.cap{display:grid;grid-template-columns:1fr 1fr;align-items:start;margin-bottom:20px}
+.cap.co-de{margin-top:36px}
+.chung{margin-bottom:20px}
+.cau .cap,.dap-an .cap{margin-bottom:0}
+.cap .ben{min-width:0}
+.cap .ben > :first-child{margin-top:0}
+.cap .ben > :last-child{margin-bottom:0}
+.cap .ben::before{                     /* nhãn ngôn ngữ, chỉ bật khi hai bản xếp chồng */
+  display:none;content:"";margin-bottom:7px;
+  font-family:'IBM Plex Mono',monospace;font-size:9.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--chu-nhat);
+}
+.cap .ben.en{padding-right:28px}
+.cap .ben.vi{padding-left:28px;border-left:1px solid var(--o-ly);color:#2E2E35}
+.cap .lat{
+  grid-column:1/-1;order:3;justify-self:start;margin-top:9px;display:none;
+  align-items:center;gap:5px;font-family:'Be Vietnam Pro',sans-serif;
+  font-size:12.5px;font-weight:500;color:var(--chu-nhat);
+  padding:3px 11px;border-radius:999px;
+  border:1px dashed var(--vien);background:var(--nen-xam);
+  transition:background .15s ease,border-color .15s ease,color .15s ease;
+}
+.cap .lat:hover{background:var(--nhan-mo);border-color:var(--nhan);color:var(--nhan)}
+.lat .nh{display:none}
+
+/* chỉ một thứ tiếng: bản còn lại nấp sau nút, bấm mới hiện */
+body:not([data-ngu="song"]) .dau-cot{display:none}
+body:not([data-ngu="song"]) .cap{grid-template-columns:1fr}
+body:not([data-ngu="song"]) .cap .ben{padding:0;border-left:0}
+body:not([data-ngu="song"]) .cap .lat{display:inline-flex}
+body[data-ngu="en"] .cap:not(.mo) .ben.vi,
+body[data-ngu="vi"] .cap:not(.mo) .ben.en{display:none}
+body[data-ngu="vi"] .cap .ben.en{order:2}
+body[data-ngu="en"] .cap.mo .ben.vi,
+body[data-ngu="vi"] .cap.mo .ben.en{
+  margin-top:12px;padding-left:15px;border-left:3px solid var(--nhan-mo);
+}
+body[data-ngu="en"] .cap.mo .ben.vi::before{display:block;content:"Tiếng Việt"}
+body[data-ngu="vi"] .cap.mo .ben.en::before{display:block;content:"English"}
+body[data-ngu="en"] .cap:not(.mo) .lat .nh-vi{display:inline}
+body[data-ngu="vi"] .cap:not(.mo) .lat .nh-en{display:inline}
+.cap.mo .lat .nh-an{display:inline}
+
+@media(max-width:900px){
+  .dau-cot{display:none}
+  .cap{grid-template-columns:1fr}
+  .cap .ben.en{padding-right:0}
+  body[data-ngu="song"] .cap .ben.vi{padding-left:15px;border-left:3px solid var(--nhan-mo);margin-top:14px}
+  body[data-ngu="song"] .cap .ben.vi::before{display:block;content:"Tiếng Việt"}
+}
+
 .bai-tap{margin-top:54px}
 .bai-tap .nhan{
   display:flex;align-items:center;gap:10px;margin-bottom:20px;
@@ -209,6 +297,17 @@ h1.ten-bai{font-size:clamp(24px,3.4vw,32px);font-weight:800;letter-spacing:-.025
 .tu .en{font-weight:600;font-size:15.5px;letter-spacing:-.01em}
 .tu .ipa{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--chu-nhat);margin-left:9px}
 .tu .vi{font-family:'Source Serif 4',Georgia,serif;font-size:16px;color:#232327;margin-top:1px}
+.tu .vi.che{
+  font-family:'Be Vietnam Pro',sans-serif;font-size:12.5px;font-weight:500;
+  color:var(--chu-nhat);cursor:pointer;user-select:none;
+  display:inline-flex;align-items:center;gap:5px;
+  padding:2px 9px;border-radius:999px;margin-top:3px;
+  border:1px dashed var(--vien);background:var(--nen-xam);
+  transition:background .15s ease,border-color .15s ease,color .15s ease;
+}
+.tu .vi.che:hover{background:var(--nhan-mo);border-color:var(--nhan);color:var(--nhan)}
+.tu .vi.che .nghia{display:none}
+.tu .vi:not(.che) .goi{display:none}
 .tu .tra{
   flex-shrink:0;width:30px;height:30px;border-radius:6px;text-decoration:none;
   color:var(--chu-nhat);font-size:13px;display:grid;place-items:center;
@@ -364,10 +463,46 @@ function render(md){
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function idYoutube(u){const m=String(u).match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([A-Za-z0-9_-]{11})/);return m?m[1]:null;}
 
+/* ---- song ngữ: cắt thân bài thành từng cặp EN / VI ---- */
+function tachCap(md){
+  const p=String(md).split(/^[ \t]*\[\[(EN|VI|CHUNG)\]\][ \t]*/m);
+  const kh=[];
+  const dau=(p[0]||'').trim();
+  if(dau) kh.push({loai:'chung',en:dau});
+  for(let i=1;i<p.length;i+=2){
+    const nhan=p[i], noi=(p[i+1]||'').trim();
+    if(!noi) continue;
+    const cuoi=kh[kh.length-1];
+    if(nhan==='EN') kh.push({loai:'cap',en:noi,vi:''});
+    else if(nhan==='VI'&&cuoi&&cuoi.loai==='cap'&&!cuoi.vi) cuoi.vi=noi;
+    else kh.push({loai:'chung',en:noi});   /* [[CHUNG]] — công thức, hình, bảng dùng chung */
+  }
+  /* khối chưa dịch thì cho chạy hết chiều ngang, đừng bỏ trống một cột */
+  return kh.map(k=>(k.loai==='cap'&&!k.vi)?{loai:'chung',en:k.en}:k);
+}
+const tachDoi=s=>{const p=String(s).split(/\[\[VI\]\]/);return{en:(p[0]||'').trim(),vi:(p[1]||'').trim()};};
+const coCap=kh=>kh.some(k=>k.loai==='cap');
+
+function veCap(en,vi){
+  const de=/^\s*#{2,3}\s/.test(en)?' co-de':'';
+  return `<div class="cap${de}">
+    <div class="ben en" lang="en">${render(en)}</div>
+    <div class="ben vi" lang="vi">${render(vi)}</div>
+    <button class="lat" type="button" aria-expanded="false"
+      ><span class="nh nh-vi">👁 Click to Translate</span
+      ><span class="nh nh-en">👁 Xem bản tiếng Anh</span
+      ><span class="nh nh-an">Ẩn bản dịch</span></button>
+  </div>`;
+}
+const veDoi=(en,vi)=> vi ? veCap(en,vi) : render(en);
+const veThan=kh=>kh.map(k=>k.loai==='cap'?veCap(k.en,k.vi):`<div class="chung">${render(k.en)}</div>`).join('');
+
 function phanTich(raw){
-  let video='',than=raw;
+  let video='',tenVi='',than=raw;
   const mv=than.match(/^\s*\[\[VIDEO\]\]\s*(\S+)\s*$/m);
   if(mv){video=mv[1];than=than.replace(mv[0],'');}
+  const mt=than.match(/^\s*\[\[TÊN VI\]\]\s*(.+)$/m);
+  if(mt){tenVi=mt[1].trim();than=than.replace(mt[0],'');}
 
   const TV='[[TỪ VỰNG]]', BT='[[BÀI TẬP]]';
   let iTV=than.indexOf(TV), iBT=than.indexOf(BT);
@@ -392,11 +527,41 @@ function phanTich(raw){
   if(iBT>-1){
     than.slice(iBT+BT.length).split(/\[\[Câu\]\]/).slice(1).forEach(k=>{
       const p=k.split(/\[\[Đáp án\]\]/);
-      bt.push({de:p[0].trim(),da:(p[1]||'').trim()});
+      bt.push({de:tachDoi(p[0]),da:tachDoi(p[1]||'')});
     });
   }
-  return{video,lyThuyet:ly.trim(),tuVung:tv,baiTap:bt};
+  const khoi=tachCap(ly.trim());
+  const song = coCap(khoi) || bt.some(c=>c.de.vi||c.da.vi);
+  return{video,tenVi,khoi,song,tuVung:tv,baiTap:bt};
 }
+
+/* ---- chọn ngôn ngữ hiển thị: en · song · vi ---- */
+const KHOA_NGU='ahapi-ngon-ngu';
+let NGU='song';
+try{ NGU=localStorage.getItem(KHOA_NGU)||'song'; }catch(e){}
+if(!['en','song','vi'].includes(NGU)) NGU='song';
+function heNghia(v,che){
+  v.classList.toggle('che',che);
+  v.setAttribute('aria-expanded',!che);
+  v.title = che ? 'Bấm để xem nghĩa tiếng Việt' : 'Bấm để ẩn nghĩa';
+}
+function datNgu(n){
+  NGU=n;
+  document.body.dataset.ngu=n;
+  try{ localStorage.setItem(KHOA_NGU,n); }catch(e){}
+  document.querySelectorAll('.chon-ngu button').forEach(b=>{
+    const dang=b.dataset.ngu===n;
+    b.classList.toggle('dang',dang);
+    b.setAttribute('aria-pressed',dang);
+  });
+  document.querySelectorAll('.cap.mo').forEach(c=>{
+    c.classList.remove('mo');
+    const l=c.querySelector('.lat'); if(l) l.setAttribute('aria-expanded','false');
+  });
+  /* đọc bản tiếng Việt thì nghĩa từ vựng mở sẵn, khỏi phải bấm từng từ */
+  document.querySelectorAll('.tu .vi').forEach(v=>heNghia(v,n!=='vi'));
+}
+document.body.dataset.ngu=NGU;
 
 /* ---- phát âm: dùng bộ đọc sẵn có của trình duyệt ---- */
 const coTTS = 'speechSynthesis' in window;
@@ -485,7 +650,7 @@ async function moBai(i,dayHash=true){
     capNhatThanh(); danhDau(); return;
   }
 
-  const{video,lyThuyet,tuVung,baiTap}=phanTich(raw);
+  const{video,tenVi,khoi,song,tuVung,baiTap}=phanTich(raw);
   const vid=idYoutube(video);
   if(vid){
     $('video-day').innerHTML=`
@@ -509,13 +674,29 @@ async function moBai(i,dayHash=true){
 
   let h=`<div class="meta">${esc(bai.chapter)}</div>
     <h1 class="ten-bai">${esc(bai.title)}</h1>
+    ${tenVi?`<div class="ten-vi" lang="vi">${esc(tenVi)}</div>`:''}
     <div class="duoi-ten">
       <span class="chip">📅 ${esc(bai.date)}</span>
       <span class="chip">Bài ${i+1}/${DS.length}</span>
+      ${song?`<span class="chip">🌐 Song ngữ</span>`:''}
       ${tuVung.length?`<span class="chip">🔤 ${tuVung.length} từ vựng</span>`:''}
       ${baiTap.length?`<span class="chip">✎ ${baiTap.length} bài tập</span>`:''}
     </div>`;
-  if(lyThuyet) h+=`<div class="noi-dung to-giay">${render(lyThuyet)}</div>`;
+
+  if(song) h+=`<div class="thanh-ngu">
+      <span class="nhan-ngu">Hiển thị</span>
+      <div class="chon-ngu" role="group" aria-label="Chọn ngôn ngữ hiển thị">
+        <button type="button" data-ngu="en">English</button>
+        <button type="button" data-ngu="song">Cả hai</button>
+        <button type="button" data-ngu="vi">Tiếng Việt</button>
+      </div>
+    </div>`;
+
+  if(khoi.length){
+    const cot = song&&coCap(khoi)
+      ? `<div class="dau-cot"><span>English</span><span>Tiếng Việt</span></div>` : '';
+    h+=`<div class="noi-dung to-giay">${cot}${veThan(khoi)}</div>`;
+  }
 
   if(tuVung.length){
     h+=`<section class="tu-vung"><div class="nhan">Từ vựng<span class="gach"></span>
@@ -526,7 +707,8 @@ async function moBai(i,dayHash=true){
                   aria-label="Nghe phát âm: ${esc(t.en)}">🔊</button>`:''}
         <div class="chu">
           <div><span class="en">${esc(t.en)}</span>${t.ipa?`<span class="ipa">${esc(t.ipa)}</span>`:''}</div>
-          <div class="vi">${esc(t.vi)}</div>
+          <div class="vi che" role="button" tabindex="0" aria-expanded="false"
+               title="Bấm để xem nghĩa tiếng Việt"><span class="goi">👁 Click to Translate</span><span class="nghia">${esc(t.vi)}</span></div>
         </div>
         <a class="tra" href="${OXFORD}${encodeURIComponent(t.en)}" target="_blank" rel="noopener"
            aria-label="Tra ${esc(t.en)} trên Oxford Learner's Dictionaries"
@@ -539,17 +721,35 @@ async function moBai(i,dayHash=true){
     h+=`<section class="bai-tap"><div class="nhan">Bài tập</div>`;
     baiTap.forEach((c,n)=>{
       h+=`<div class="cau"><span class="so">Câu ${n+1}</span>
-        <div class="de noi-dung">${render(c.de)}</div>
-        ${c.da?`<button class="xem" type="button" aria-expanded="false">Xem đáp án</button>
-        <div class="dap-an noi-dung"><span class="nhan-da">Đáp án</span>${render(c.da)}</div>`:''}
+        <div class="de noi-dung">${veDoi(c.de.en,c.de.vi)}</div>
+        ${c.da.en?`<button class="xem" type="button" aria-expanded="false">Xem đáp án</button>
+        <div class="dap-an noi-dung"><span class="nhan-da">Đáp án</span>${veDoi(c.da.en,c.da.vi)}</div>`:''}
       </div>`;
     });
     h+=`</section>`;
   }
+  $('than-bai').className = song ? 'trong rong' : 'trong';
   $('than-bai').innerHTML=h;
+
+  document.querySelectorAll('.chon-ngu button').forEach(b=>{
+    b.onclick=()=>datNgu(b.dataset.ngu);
+  });
+  datNgu(NGU);
+  document.querySelectorAll('.cap .lat').forEach(b=>{
+    b.onclick=()=>{
+      const mo=b.parentElement.classList.toggle('mo');
+      b.setAttribute('aria-expanded',mo);
+    };
+  });
 
   document.querySelectorAll('.tu .loa').forEach(b=>{
     b.onclick=()=>doc(b.dataset.doc,b);
+  });
+  document.querySelectorAll('.tu .vi').forEach(v=>{
+    const bat=()=>heNghia(v,!v.classList.contains('che'));
+    heNghia(v,NGU!=='vi');
+    v.onclick=bat;
+    v.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); bat(); } };
   });
   const dh=document.querySelector('.tu-vung .doc-het');
   if(dh) dh.onclick=()=>{

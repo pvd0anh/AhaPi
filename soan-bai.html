@@ -100,6 +100,43 @@ button.nut:focus-visible{outline:2px solid var(--tim);outline-offset:2px}
   color:var(--chu-nhat);text-align:center;margin-top:9px;
 }
 .noi-dung p:empty{display:none}      /* figure tự tách khỏi <p>, chừa lại thẻ rỗng */
+/* ---- song ngữ ---- */
+.xt-tenvi{font-family:'Source Serif 4',serif;font-size:19px;color:var(--nhat);margin:-20px 0 26px}
+.xt-ngu{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.xt-ngu .nh{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--nhat)}
+.chon-ngu{margin-left:auto;display:inline-flex;gap:2px;padding:2px;border:1px solid var(--o-ly);border-radius:8px;background:#fff}
+.chon-ngu button{border:0;background:none;border-radius:6px;padding:4px 10px;font-family:inherit;font-size:12px;font-weight:500;color:var(--nhat);cursor:pointer}
+.chon-ngu button.dang{background:var(--tim);color:#fff}
+.dau-cot{display:grid;grid-template-columns:1fr 1fr;padding:7px 0;margin-bottom:12px;
+  border-bottom:1px solid var(--o-ly);font-family:'IBM Plex Mono',monospace;
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--nhat)}
+.dau-cot span+span{padding-left:20px}
+.cap{display:grid;grid-template-columns:1fr 1fr;align-items:start;margin-bottom:16px}
+.cap.co-de{margin-top:28px}
+.chung{margin-bottom:16px}
+.cap .ben{min-width:0}
+.cap .ben > :first-child{margin-top:0}
+.cap .ben > :last-child{margin-bottom:0}
+.cap .ben.en{padding-right:20px}
+.cap .ben.vi{padding-left:20px;border-left:1px solid var(--o-ly)}
+.cap .lat{grid-column:1/-1;order:3;justify-self:start;margin-top:7px;display:none;
+  font-family:'Be Vietnam Pro',sans-serif;font-size:12px;font-weight:500;color:var(--nhat);
+  padding:3px 10px;border-radius:999px;border:1px dashed var(--o-ly);background:#fff;cursor:pointer}
+.lat .nh{display:none}
+#xem-thu:not([data-ngu="song"]) .dau-cot{display:none}
+#xem-thu:not([data-ngu="song"]) .cap{grid-template-columns:1fr}
+#xem-thu:not([data-ngu="song"]) .cap .ben{padding:0;border-left:0}
+#xem-thu:not([data-ngu="song"]) .cap .lat{display:inline-flex}
+#xem-thu[data-ngu="en"] .cap:not(.mo) .ben.vi,
+#xem-thu[data-ngu="vi"] .cap:not(.mo) .ben.en{display:none}
+#xem-thu[data-ngu="vi"] .cap .ben.en{order:2}
+#xem-thu[data-ngu="en"] .cap.mo .ben.vi,
+#xem-thu[data-ngu="vi"] .cap.mo .ben.en{margin-top:10px;padding-left:13px;border-left:3px solid rgba(91,63,168,.18)}
+#xem-thu[data-ngu="en"] .cap:not(.mo) .lat .nh-vi{display:inline}
+#xem-thu[data-ngu="vi"] .cap:not(.mo) .lat .nh-en{display:inline}
+.cap.mo .lat .nh-an{display:inline}
+#xem-thu[data-ngu="en"] .xt-tenvi{display:none}
+
 .xt-tuvung{margin-top:36px}
 .xt-tuvung .nhan{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--tim);border-top:1.5px solid var(--tim);padding-top:11px;margin-bottom:14px;display:block}
 .xt-tu{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--o-ly);padding:9px 13px;margin-bottom:7px}
@@ -146,8 +183,16 @@ button.nut:focus-visible{outline:2px solid var(--tim);outline-offset:2px}
       <input id="chuong" placeholder="Chương 1 · Đạo hàm">
     </div>
   </div>
-  <label for="tieuDe">Tên bài</label>
-  <input id="tieuDe" placeholder="Đạo hàm của hàm hợp">
+  <div class="hang2">
+    <div>
+      <label for="tieuDe">Tên bài</label>
+      <input id="tieuDe" placeholder="What Is a Ratio?">
+    </div>
+    <div>
+      <label for="tieuDeVi">Tên bài tiếng Việt <span class="goi-y">không bắt buộc</span></label>
+      <input id="tieuDeVi" placeholder="Tỉ số là gì?">
+    </div>
+  </div>
   <label for="video">Link YouTube <span class="goi-y">bỏ trống nếu không có</span></label>
   <input id="video" placeholder="https://youtu.be/...">
 
@@ -156,8 +201,11 @@ button.nut:focus-visible{outline:2px solid var(--tim);outline-offset:2px}
   <textarea id="noiDung" placeholder="## Công thức&#10;&#10;$$y' = f'(u)\cdot u'(x)$$&#10;&#10;Cách nhớ: **đạo hàm ngoài nhân đạo hàm trong.**"></textarea>
 
   <div class="nhom-nut">
+    <button class="nut phu" type="button" id="chen-song">⇄ Chèn khối song ngữ</button>
+    <button class="nut phu" type="button" id="chen-chung">▭ Chèn khối dùng chung</button>
     <button class="nut phu" type="button" id="chen-anh">🖼 Chèn ảnh</button>
   </div>
+  <div class="ghi"><b>Song ngữ:</b> phần dưới <code>[[EN]]</code> nằm cột trái, phần dưới <code>[[VI]]</code> nằm cột phải, hai bên thẳng đầu nhau. Mỗi ý một khối — đừng gộp cả bài vào một khối, hai cột sẽ lệch nhau. Công thức, hình, bảng không cần dịch thì đặt dưới <code>[[CHUNG]]</code> để chạy hết chiều ngang. Khối nào chỉ có <code>[[EN]]</code> mà quên dịch thì cũng tự chạy hết chiều ngang.</div>
   <div class="ghi">Ảnh phải nằm trong thư mục <b>images</b> trên GitHub, hoặc dán thẳng một đường dẫn ảnh đầy đủ. Khung xem thử bên phải chỉ hiện được ảnh nếu bạn đang mở trình soạn bài ngay trong thư mục dự án.</div>
 
   <span class="buoc">Bước 3 · Từ vựng <span class="goi-y">bỏ trống nếu không cần</span></span>
@@ -241,8 +289,14 @@ function themCau(de='',da=''){
   const d=document.createElement('div');
   d.className='cau-soan';
   d.innerHTML=`<div class="dau"><span class="stt"></span><button class="xoa" type="button">Xoá</button></div>
-    <label>Đề bài</label><textarea class="de"></textarea>
-    <label>Đáp án <span class="goi-y">học sinh phải bấm mới thấy</span></label><textarea class="da"></textarea>`;
+    <div class="hang2">
+      <div><label>Đề bài</label><textarea class="de"></textarea></div>
+      <div><label>Đề bài — tiếng Việt <span class="goi-y">bỏ trống nếu không cần</span></label><textarea class="deVi"></textarea></div>
+    </div>
+    <div class="hang2">
+      <div><label>Đáp án <span class="goi-y">học sinh phải bấm mới thấy</span></label><textarea class="da"></textarea></div>
+      <div><label>Đáp án — tiếng Việt</label><textarea class="daVi"></textarea></div>
+    </div>`;
   d.querySelector('.de').value=de; d.querySelector('.da').value=da;
   d.querySelector('.xoa').onclick=()=>{d.remove();danhSo();ve();};
   d.querySelectorAll('textarea').forEach(t=>t.oninput=ve);
@@ -253,20 +307,23 @@ function danhSo(){
 }
 $('them-cau').onclick=()=>{themCau();ve();};
 
-$('chen-anh').onclick=()=>{
-  const t=$('noiDung'), doan='\n![Chú thích ảnh](images/ten-file.png)\n';
-  const i=t.selectionStart;
+function chen(doan,luiCuoi=0){
+  const t=$('noiDung'), i=t.selectionStart;
   t.value = t.value.slice(0,i) + doan + t.value.slice(t.selectionEnd);
-  t.focus(); t.selectionStart=t.selectionEnd=i+doan.length;
+  t.focus(); t.selectionStart=t.selectionEnd=i+doan.length-luiCuoi;
   ve();
-};
+}
+$('chen-anh').onclick  =()=>chen('\n![Chú thích ảnh](images/ten-file.png)\n');
+$('chen-song').onclick =()=>chen('\n[[EN]]\n\n[[VI]]\n\n',2);
+$('chen-chung').onclick=()=>chen('\n[[CHUNG]]\n\n',1);
 
 /* ---- gom dữ liệu ---- */
 function layDuLieu(){
   const ngay=$('ngay').value;
   const tieuDe=$('tieuDe').value.trim();
+  const o=(e,k)=>e.querySelector('.'+k).value.trim();
   const cau=[...document.querySelectorAll('#ds-cau .cau-soan')]
-    .map(e=>({de:e.querySelector('.de').value.trim(),da:e.querySelector('.da').value.trim()}))
+    .map(e=>({de:o(e,'de'),deVi:o(e,'deVi'),da:o(e,'da'),daVi:o(e,'daVi')}))
     .filter(c=>c.de);
   const id = ngay && tieuDe ? `${ngay}-${boDau(tieuDe)}` : '';
   const ngayVN = ngay ? ngay.split('-').reverse().join('/') : '';
@@ -277,12 +334,15 @@ function layDuLieu(){
     en=en.replace(/\/[^\/]+\//,'').trim();
     return (en&&vi)?{en,ipa,vi}:null;
   }).filter(Boolean);
-  return {ngay,ngayVN,id,tieuDe,chuong:$('chuong').value.trim(),video:$('video').value.trim(),
+  return {ngay,ngayVN,id,tieuDe,tieuDeVi:$('tieuDeVi').value.trim(),
+          chuong:$('chuong').value.trim(),video:$('video').value.trim(),
           noiDung:$('noiDung').value,tuVung,cau};
 }
 function taoMD(d){
   let s='';
-  if(d.video) s+=`[[VIDEO]] ${d.video}\n\n`;
+  if(d.video) s+=`[[VIDEO]] ${d.video}\n`;
+  if(d.tieuDeVi) s+=`[[TÊN VI]] ${d.tieuDeVi}\n`;
+  if(s) s+='\n';
   s+=d.noiDung.trim()+'\n';
   if(d.tuVung.length){
     s+='\n[[TỪ VỰNG]]\n';
@@ -290,20 +350,69 @@ function taoMD(d){
   }
   if(d.cau.length){
     s+='\n[[BÀI TẬP]]\n';
-    d.cau.forEach(c=>{ s+=`\n[[Câu]] ${c.de}\n`; if(c.da) s+=`[[Đáp án]] ${c.da}\n`; });
+    d.cau.forEach(c=>{
+      s+=`\n[[Câu]] ${c.de}\n`;
+      if(c.deVi) s+=`[[VI]] ${c.deVi}\n`;
+      if(c.da)   s+=`[[Đáp án]] ${c.da}\n`;
+      if(c.da&&c.daVi) s+=`[[VI]] ${c.daVi}\n`;
+    });
   }
   return s;
 }
+
+/* ---- song ngữ: cắt nội dung thành từng cặp EN / VI ---- */
+function tachCap(md){
+  const p=String(md).split(/^[ \t]*\[\[(EN|VI|CHUNG)\]\][ \t]*/m);
+  const kh=[];
+  const dau=(p[0]||'').trim();
+  if(dau) kh.push({loai:'chung',en:dau});
+  for(let i=1;i<p.length;i+=2){
+    const nhan=p[i], noi=(p[i+1]||'').trim();
+    if(!noi) continue;
+    const cuoi=kh[kh.length-1];
+    if(nhan==='EN') kh.push({loai:'cap',en:noi,vi:''});
+    else if(nhan==='VI'&&cuoi&&cuoi.loai==='cap'&&!cuoi.vi) cuoi.vi=noi;
+    else kh.push({loai:'chung',en:noi});
+  }
+  return kh.map(k=>(k.loai==='cap'&&!k.vi)?{loai:'chung',en:k.en}:k);
+}
+const coCap=kh=>kh.some(k=>k.loai==='cap');
+function veCap(en,vi){
+  const de=/^\s*#{2,3}\s/.test(en)?' co-de':'';
+  return `<div class="cap${de}">
+    <div class="ben en" lang="en">${render(en)}</div>
+    <div class="ben vi" lang="vi">${render(vi)}</div>
+    <button class="lat" type="button"
+      ><span class="nh nh-vi">👁 Click to Translate</span
+      ><span class="nh nh-en">👁 Xem bản tiếng Anh</span
+      ><span class="nh nh-an">Ẩn bản dịch</span></button>
+  </div>`;
+}
+const veDoi=(en,vi)=> vi ? veCap(en,vi) : render(en);
+const veThan=kh=>kh.map(k=>k.loai==='cap'?veCap(k.en,k.vi):`<div class="chung">${render(k.en)}</div>`).join('');
+let NGU='song';
 
 /* ---- xem thử ---- */
 function ve(){
   const d=layDuLieu();
   $('ten-file').textContent = d.id ? `lessons/${d.id}.md` : '— điền Ngày dạy và Tên bài —';
   const vid=idYoutube(d.video);
+  const khoi=tachCap(d.noiDung.trim());
+  const song = coCap(khoi) || d.cau.some(c=>c.deVi||c.daVi) || !!d.tieuDeVi;
   let h=`<div class="xt-meta">${d.ngayVN||'ngày…'} · ${d.chuong||'chương…'}</div>
          <div class="xt-tieude">${d.tieuDe||'Tên bài giảng'}</div>`;
+  if(d.tieuDeVi) h+=`<div class="xt-tenvi" lang="vi">${d.tieuDeVi}</div>`;
   if(vid) h+=`<div class="khung-video"><iframe src="https://www.youtube.com/embed/${vid}" allowfullscreen loading="lazy" title="Video"></iframe></div>`;
-  if(d.noiDung.trim()) h+=`<div class="noi-dung">${render(d.noiDung)}</div>`;
+  if(song) h+=`<div class="xt-ngu"><span class="nh">Học sinh thấy</span>
+    <div class="chon-ngu">
+      <button type="button" data-ngu="en">English</button>
+      <button type="button" data-ngu="song">Cả hai</button>
+      <button type="button" data-ngu="vi">Tiếng Việt</button>
+    </div></div>`;
+  if(khoi.length){
+    const cot = coCap(khoi) ? `<div class="dau-cot"><span>English</span><span>Tiếng Việt</span></div>` : '';
+    h+=`<div class="noi-dung">${cot}${veThan(khoi)}</div>`;
+  }
   if(d.tuVung.length){
     h+=`<div class="xt-tuvung"><span class="nhan">Từ vựng · ${d.tuVung.length} từ</span>`;
     d.tuVung.forEach(t=>{
@@ -317,13 +426,21 @@ function ve(){
     h+=`<div class="xt-batap"><span class="nhan">Bài tập · ${d.cau.length} câu</span>`;
     d.cau.forEach((c,i)=>{
       h+=`<div class="xt-cau"><span class="so">Câu ${i+1}</span>
-        <div class="noi-dung">${render(c.de)}</div>
-        ${c.da?`<div class="xt-da noi-dung"><span class="nhan-da">Đáp án</span>${render(c.da)}</div>`:''}
+        <div class="noi-dung">${veDoi(c.de,c.deVi)}</div>
+        ${c.da?`<div class="xt-da noi-dung"><span class="nhan-da">Đáp án</span>${veDoi(c.da,c.daVi)}</div>`:''}
       </div>`;
     });
     h+=`</div>`;
   }
   $('xem-thu').innerHTML=h;
+  $('xem-thu').dataset.ngu=NGU;
+  document.querySelectorAll('.chon-ngu button').forEach(b=>{
+    b.classList.toggle('dang',b.dataset.ngu===NGU);
+    b.onclick=()=>{ NGU=b.dataset.ngu; ve(); };
+  });
+  document.querySelectorAll('.cap .lat').forEach(b=>{
+    b.onclick=()=>b.parentElement.classList.toggle('mo');
+  });
   document.querySelectorAll('.xt-tu .loa').forEach(b=>b.onclick=()=>{
     if(!('speechSynthesis' in window)) return;
     speechSynthesis.cancel();
@@ -331,7 +448,7 @@ function ve(){
     u.lang='en-US'; u.rate=.85; speechSynthesis.speak(u);
   });
 }
-['ngay','chuong','tieuDe','video','noiDung','tuVung'].forEach(id=>$(id).oninput=ve);
+['ngay','chuong','tieuDe','tieuDeVi','video','noiDung','tuVung'].forEach(id=>$(id).oninput=ve);
 $('ngay').onchange=ve;
 
 /* ---- tải / chép ---- */

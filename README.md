@@ -34,6 +34,7 @@ A static site for publishing maths lessons — YouTube video, LaTeX theory, and 
 
 ```markdown
 [[VIDEO]] https://youtu.be/xxxxxxxxxxx
+[[TÊN VI]] Tên bài bằng tiếng Việt
 
 ## A heading
 
@@ -55,11 +56,43 @@ highest common factor : ước chung lớn nhất
 [[Đáp án]] Answer, hidden until the student clicks
 ```
 
-Every tag is optional. `[[VIDEO]]` must sit alone on its own line; everything after `[[BÀI TẬP]]` is parsed as exercises.
+Every tag is optional. `[[VIDEO]]` and `[[TÊN VI]]` must sit alone on their own line; everything after `[[BÀI TẬP]]` is parsed as exercises.
 
 Images use ordinary Markdown, `![caption](images/file.png)`. Paths resolve from the site root, so `images/…` is what you want; a full external URL works too. The alt text becomes a caption under the picture — leave the brackets empty for no caption.
 
 Each `[[TỪ VỰNG]]` line is `english /ipa/ : vietnamese`, with the IPA optional. Every entry gets a speaker button — pronunciation comes from the browser's own speech engine, so it needs no files, no API key and no network — plus a link out to Oxford Learner's Dictionaries for the full entry.
+
+## Bilingual lessons
+
+The audience reads Vietnamese and studies maths in English, so a lesson can carry both languages side by side. Mark up the theory in pairs — `[[EN]]` opens the English side of a block, `[[VI]]` its translation:
+
+```markdown
+[[EN]]
+## Order Matters
+
+A ratio is not just a pair of numbers — the **order** carries meaning.
+[[VI]]
+## Thứ tự có ý nghĩa
+
+Tỉ số không chỉ là một cặp số — **thứ tự** mang ý nghĩa riêng.
+
+[[CHUNG]]
+
+$$a : b = \frac{a}{b}$$
+
+[[Câu]] A box contains 5 red pens and 8 blue pens. Write the ratio.
+[[VI]] Một hộp có 5 cái bút đỏ và 8 cái bút xanh. Hãy viết tỉ số.
+[[Đáp án]] $5:8$
+[[VI]] $5:8$
+```
+
+Each pair renders as one grid row, so the two languages stay level with each other no matter how the translation runs long. `[[CHUNG]]` marks a block that needs no translation — a formula, a picture, a table of numbers — and it spans the full width. A block left untranslated (an `[[EN]]` with no `[[VI]]`) does the same, so a half-translated lesson still reads correctly.
+
+A lesson containing at least one pair gets a display switch: **English · Cả hai · Tiếng Việt**. In the two single-language modes each block keeps a *Click to Translate* button that reveals its counterpart in place; the choice is remembered in `localStorage` and applies to every lesson. Below 900px the columns stack, each translation labelled and rule-marked rather than side by side.
+
+Vocabulary meanings are hidden behind the same click — the English word, its IPA and its speaker button show, the Vietnamese waits until asked. Switching to **Tiếng Việt** reveals them all at once.
+
+Exercises take `[[VI]]` inline the same way, on the question and on the answer.
 
 ## Adding a lesson
 

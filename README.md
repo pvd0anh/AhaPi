@@ -6,11 +6,16 @@ A static site for publishing maths lessons — YouTube video, LaTeX theory, and 
 
 ## How it works
 
-`index.html` reads `index.json` (the table of contents) and fetches each lesson from `lessons/<id>.md` on demand. Formulas render with KaTeX, Markdown with marked. That is the whole architecture — two HTML files and a folder of text.
+`lessons.html` reads `index.json` (the table of contents) and fetches each lesson from `lessons/<id>.md` on demand. Formulas render with KaTeX, Markdown with marked. That is the whole architecture — two HTML files and a folder of text.
+
+`index.html` is the home page: a card per section linking to `lessons.html`, the interactive pages and the editor. Each sub-page links back to it. Old links of the form `index.html#<lesson-id>` are redirected to `lessons.html#<lesson-id>`.
 
 | Path | Role |
 |---|---|
-| `index.html` | The student-facing app |
+| `index.html` | Home page — links to every section below |
+| `lessons.html` | The student-facing lesson app |
+| `cgc-model.html` | Interactive model: two triangles equal by side-angle-side (Toán 7) |
+| `cgc-check.html` | Exercise: find pairs of equal triangles by overlaying them |
 | `editor.html` | Lesson editor for the teacher — fill a form, download a `.md`, get the JSON line |
 | `index.json` | Table of contents. **Row order = teaching order** |
 | `lessons/*.md` | One file per lesson. Filename must match its `id` |
@@ -111,13 +116,15 @@ Push to a public GitHub repo, then **Settings → Pages → Branch: `main` / `(r
 
 ## Customising
 
-The accent colour is the `--accent:` variable at the top of `index.html`. Changing it site-wide means four files: `--accent` in `index.html`, `--accent` in `editor.html`, the two hardcoded `#5B3FA8` in `404.html`, and `fill` in `favicon.svg`.
+The accent colour is the `--accent:` variable at the top of `lessons.html`. Changing it site-wide means: `--accent` in `index.html` and `lessons.html`, the `.home-link b` badge in `cgc-model.html` and `cgc-check.html`, `--accent` in `editor.html`, the two hardcoded `#5B3FA8` in `404.html`, and `fill` in `favicon.svg`.
 
-The ruled-paper backdrop behind the theory of each lesson is `--paper`, `--grid-line` and `--grid-size` next to it. The name appears in `<title>`, the header, `document.title`, `editor.html` and `404.html`; the `π` logo lives in `index.html`, `404.html` and `favicon.svg`.
+The ruled-paper backdrop behind the theory of each lesson is `--paper`, `--grid-line` and `--grid-size` next to it. The name appears in `<title>`, the header, `document.title`, `editor.html` and `404.html`; the `π` logo lives in `index.html`, `lessons.html`, `404.html` and `favicon.svg`.
+
+A new standalone page goes in the root as one self-contained `.html`, gets a card in `index.html`, and a `<a class="home-link" href="index.html">` back link (copy the CSS block from `cgc-model.html`).
 
 ## Known limits
 
 - Progress is stored per browser in `localStorage`. It does not sync across devices, and the teacher cannot see who has studied what.
-- `index.html` will not run from `file://` — browsers block `fetch` there. Use GitHub Pages or any static server. (`editor.html` does run locally.)
+- `lessons.html` will not run from `file://` — browsers block `fetch` there. Use GitHub Pages or any static server. (`editor.html` does run locally.)
 - KaTeX, marked and Google Fonts load from CDNs, so formulas and video need a connection. Vendoring them locally is the fix if you need full offline use.
 - Videos set to Private on YouTube cannot be embedded.

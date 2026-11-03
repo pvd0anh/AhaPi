@@ -21,7 +21,9 @@ command is a broken feature.
 
 | File | Role |
 |---|---|
-| `index.html` | The student-facing app. CSS, HTML and JS in one file |
+| `index.html` | Home page: one card per section, legacy `#<lesson-id>` redirect to `lessons.html` |
+| `lessons.html` | The student-facing lesson app. CSS, HTML and JS in one file |
+| `cgc-model.html`, `cgc-check.html` | Standalone interactive pages (side-angle-side triangles); each has a `.home-link` back to `index.html` |
 | `editor.html` | Lesson editor for the teacher, runs offline from `file://` |
 | `index.json` | Table of contents. **Array order = teaching order** |
 | `lessons/*.md` | 23 lessons, one file each, in the `[[TAG]]` format of §5 |
@@ -40,7 +42,7 @@ External dependencies, all via CDN, all version-pinned:
 python3 -m http.server 8000     # then open http://localhost:8000/
 ```
 
-- `index.html` **must** be served over http(s) — it calls `fetch('index.json')`, which the browser
+- `lessons.html` **must** be served over http(s) — it calls `fetch('index.json')`, which the browser
   blocks under `file://`, and the page then reports "Chưa đọc được danh sách bài".
 - `editor.html` is the opposite: double-clicking it to open over `file://` works, and that is how the
   teacher uses it. Do not add anything to it that requires a server.
@@ -90,9 +92,9 @@ Consequences worth remembering when authoring:
 raw HTML. Lesson content is trusted content (the teacher writes it), which makes this acceptable —
 but **do not open any path for untrusted content to reach `render()`**.
 
-Data from `index.json` and the vocabulary list does go through `esc()` in `index.html`. The preview
+Data from `index.json` and the vocabulary list does go through `esc()` in `lessons.html`. The preview
 pane in `editor.html` escapes **nothing** — acceptable because it runs locally, but do not copy that
-pattern into `index.html`.
+pattern into `lessons.html`.
 
 ### 4.6 `localStorage`
 Exactly two keys. Renaming them wipes the progress of every student already using the site, so both
@@ -108,7 +110,7 @@ been through the site at least once.
 
 ## 5. Lesson file grammar
 
-The parser is `parseLesson()` in `index.html`. It is **not** extended Markdown, it is a handful of
+The parser is `parseLesson()` in `lessons.html`. It is **not** extended Markdown, it is a handful of
 string slices. Every tag is optional, but its position is not.
 
 ```markdown
@@ -163,7 +165,7 @@ A lesson counts as bilingual when it has **at least one pair**, or any exercise 
 
 ## 6. Code duplicated across the two HTML files — risk source number one
 
-`index.html` and `editor.html` each keep their **own copy** of:
+`lessons.html` and `editor.html` each keep their **own copy** of:
 
 `marked.use({renderer:{image}})` · `render()` · `youtubeId()` · `splitPairs()` · `hasPair` ·
 `renderPair()` · `renderMaybePair()` · `renderBody()`
@@ -173,7 +175,7 @@ preview starts lying about what the student sees.
 
 Some things differ **on purpose** — do not "fix" them without asking:
 
-| | `index.html` | `editor.html` |
+| | `lessons.html` | `editor.html` |
 |---|---|---|
 | YouTube embed | `hqdefault` image facade → `youtube-nocookie.com` on click | `<iframe>` on `youtube.com/embed` immediately |
 | HTML escaping | has `esc()` | none |
@@ -184,7 +186,7 @@ Some things differ **on purpose** — do not "fix" them without asking:
 That last row is a **genuine divergence**: a lesson with only a Vietnamese title shows the language
 picker in the preview but not on the student page. If you fix it, fix it in both files.
 
-If `buildMarkdown()` in `editor.html` changes how it emits files, `parseLesson()` in `index.html`
+If `buildMarkdown()` in `editor.html` changes how it emits files, `parseLesson()` in `lessons.html`
 must change at the same time — and vice versa. The 23 existing lessons will not migrate themselves.
 
 ## 7. Code conventions
@@ -241,8 +243,8 @@ Commit messages: English, imperative mood, one line, no Conventional Commits pre
 ## 11. Do not do the following (unless explicitly asked)
 
 - Add `package.json`, npm, a bundler, TypeScript, a framework, or any build step.
-- Split `index.html` into separate `.js` / `.css` files. One file per page is a deliberate design choice.
-- Rename `index.html`, `editor.html`, `index.json`, `lessons/`, `images/` — `AUTHORING.md` walks the
+- Split `lessons.html` into separate `.js` / `.css` files. One file per page is a deliberate design choice.
+- Rename `index.html`, `lessons.html`, `editor.html`, `index.json`, `lessons/`, `images/` — `AUTHORING.md` walks the
   teacher through those exact names.
 - Delete `.nojekyll`.
 - Re-sort `index.json`.
@@ -251,10 +253,10 @@ Commit messages: English, imperative mood, one line, no Conventional Commits pre
 - Change the `localStorage` keys, or drop the legacy-key fallback reads.
 - Translate the student-facing UI strings. They are Vietnamese by design (§7).
 
-Changing the accent colour means editing **all four places**: `--accent` in `index.html`, `--accent`
-in `editor.html`, the two hardcoded `#5B3FA8` in `404.html`, and `fill` in `favicon.svg`.
+Changing the accent colour means editing **every place**: `--accent` in `index.html` and `lessons.html`, `--accent`
+in `editor.html`, the `.home-link b` badge in `cgc-*.html`, the two hardcoded `#5B3FA8` in `404.html`, and `fill` in `favicon.svg`.
 Changing the product name means editing `<title>`, the header, `document.title`, `editor.html` and
-`404.html`; the `π` logo lives in `index.html`, `404.html` and `favicon.svg`.
+`404.html`; the `π` logo lives in `index.html`, `lessons.html`, `404.html` and `favicon.svg`.
 
 ## 12. Quick verification commands
 
@@ -288,5 +290,5 @@ grep -oh 'images/[^)]*' lessons/*.md | sort -u | while read p; do [ -f "$p" ] ||
 awk '{n=gsub(/\$/,"$")} n%2 {print FILENAME":"FNR": odd number of $"}' lessons/*.md
 
 # no Vietnamese identifiers crept back into the code
-grep -nE '\-\-(nhan|chu|vien|nen|giay|do|xanh)|function (ve|tach|phan|lay|tao)[A-Z]' index.html editor.html
+grep -nE '\-\-(nhan|chu|vien|nen|giay|do|xanh)|function (ve|tach|phan|lay|tao)[A-Z]' lessons.html editor.html
 ```

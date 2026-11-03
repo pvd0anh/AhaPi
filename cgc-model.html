@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mô hình c.g.c – Hai tam giác bằng nhau</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=STIX+Two+Text:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef2f6; --paper:#fbfcfd; --ink:#1b2a41; --muted:#5b6b80; --line:#d5dde7; --grid:#e3e9f0;
+  --t1:#2f5fd0; --t1f:rgba(47,95,208,.16); --t2:#b03a7a; --t2f:rgba(176,58,122,.16);
+  --ok:#1f8a5b; --okf:rgba(31,138,91,.18); --bad:#c43c3c; --badf:rgba(196,60,60,.13);
+  --warn:#9a6a00; --warnf:rgba(154,106,0,.10);
+  --btn:#1b2a41; --btnt:#fbfcfd; --field:#ffffff; --hover:#e6ecf3;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121821; --paper:#18202b; --ink:#e4eaf2; --muted:#9aa8ba; --line:#2b3644; --grid:#1f2935;
+    --t1:#7ea2ff; --t1f:rgba(126,162,255,.18); --t2:#f08cc0; --t2f:rgba(240,140,192,.18);
+    --ok:#4fd39a; --okf:rgba(79,211,154,.18); --bad:#ff7d7d; --badf:rgba(255,125,125,.14);
+    --warn:#f2c14e; --warnf:rgba(242,193,78,.12);
+    --btn:#e4eaf2; --btnt:#121821; --field:#121821; --hover:#223042; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121821; --paper:#18202b; --ink:#e4eaf2; --muted:#9aa8ba; --line:#2b3644; --grid:#1f2935;
+  --t1:#7ea2ff; --t1f:rgba(126,162,255,.18); --t2:#f08cc0; --t2f:rgba(240,140,192,.18);
+  --ok:#4fd39a; --okf:rgba(79,211,154,.18); --bad:#ff7d7d; --badf:rgba(255,125,125,.14);
+  --warn:#f2c14e; --warnf:rgba(242,193,78,.12);
+  --btn:#e4eaf2; --btnt:#121821; --field:#121821; --hover:#223042; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:15px;line-height:1.5}
+.wrap{max-width:1320px;margin:0 auto;padding:20px 18px 32px}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}
+header.top h1{margin:0;font-size:24px;line-height:1.2;font-weight:700;letter-spacing:-.01em}
+header.top p{margin:4px 0 0;color:var(--muted);font-size:14px}
+.m{font-family:"STIX Two Text","Times New Roman",serif}
+.mi{font-family:"STIX Two Text","Times New Roman",serif;font-style:italic}
+.preset{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
+select,input{font:inherit;color:var(--ink);background:var(--field);border:1.5px solid var(--line);border-radius:8px}
+select{padding:7px 10px;max-width:100%}
+.layout{display:grid;grid-template-columns:350px minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:920px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px}
+.panel h2,.card h2{margin:0;font-size:16px;font-weight:700}
+.tri-card{border-left:4px solid var(--line);padding:6px 0 10px 12px;margin-top:14px}
+.tri-card.pa{border-left-color:var(--t1)} .tri-card.pb{border-left-color:var(--t2)}
+.tri-title{display:flex;align-items:center;justify-content:space-between;font-weight:700;margin-bottom:6px}
+.tri-card.pa .tri-title>span{color:var(--t1)} .tri-card.pb .tri-title>span{color:var(--t2)}
+.lab{font-size:13px;color:var(--muted);margin:6px 0 4px}
+.lab2{width:42px;font-size:13px;color:var(--muted)}
+.row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.sym{font-family:"STIX Two Text","Times New Roman",serif;font-size:20px;width:20px;text-align:center}
+.eqs{width:10px;text-align:center;color:var(--muted)}
+.unit{color:var(--muted);font-size:14px}
+.chip{min-width:52px;text-align:center;padding:5px 8px;border-radius:8px;background:var(--hover);font-family:"STIX Two Text","Times New Roman",serif;font-size:17px}
+.chip i{font-style:italic}
+.nlab{font-weight:700;white-space:nowrap}
+input{padding:6px 8px;outline:none}
+input:focus,select:focus{border-color:var(--t1);box-shadow:0 0 0 3px var(--t1f)}
+input.name{width:110px;font-family:"STIX Two Text","Times New Roman",serif;font-style:italic;font-size:17px}
+input.lbl{width:74px;font-family:"STIX Two Text","Times New Roman",serif;font-style:italic;font-size:17px}
+input.num{width:70px;text-align:right}
+.info{font-size:13px;color:var(--muted);margin-top:6px}
+.cerr{font-size:13.5px;color:var(--bad);margin-top:6px}
+.cerr:empty{display:none}
+button{font:inherit;cursor:pointer;border-radius:9px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);padding:8px 14px;font-weight:600}
+button:hover{background:var(--hover)}
+button:focus-visible{outline:3px solid var(--t1);outline-offset:2px}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.primary{background:var(--btn);color:var(--btnt);border-color:var(--btn)}
+button.primary:hover{opacity:.9;background:var(--btn)}
+button.draw{margin:4px 0 6px;padding:8px 22px}
+button.del{padding:3px 10px;font-size:13px;font-weight:500;color:var(--muted)}
+#bNew{width:100%;margin-top:16px;padding:11px;border-style:dashed}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.seg button{padding:6px 12px;font-size:14px}
+.seg button[aria-pressed="true"]{border-color:var(--t1);color:var(--t1);background:var(--t1f)}
+.stage{display:grid;gap:16px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.legend,.pairsel{display:flex;align-items:center;gap:6px;font-family:"STIX Two Text","Times New Roman",serif;font-size:17px;flex-wrap:wrap}
+.sw{display:inline-block;width:16px;height:12px;border-radius:3px}
+.sw.t1{background:var(--t1f);border:2px solid var(--t1)} .sw.t2{background:var(--t2f);border:2px solid var(--t2)}
+.pairsel select{font-family:"STIX Two Text","Times New Roman",serif;font-style:italic;font-size:16px;padding:4px 8px}
+.pairsel .and{font-family:"Be Vietnam Pro",system-ui,sans-serif;font-size:14px;color:var(--muted)}
+.tag{font-size:13px;padding:3px 10px;border-radius:999px;background:var(--hover);color:var(--muted)}
+.fig{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.fig.has-prob{grid-template-columns:minmax(0,1fr) 340px}
+@media (max-width:760px){.fig.has-prob{grid-template-columns:minmax(0,1fr)}}
+.problem{border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:21px;line-height:1.6;background:var(--paper)}
+.problem h3{margin:0 0 8px;font-size:21px}
+.problem p{margin:0 0 8px}
+svg.canvas{display:block;width:100%;border:1px solid var(--line);border-radius:10px;background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px}
+#svgTop{height:calc(440px * var(--z,1));width:calc(100% * var(--z,1))} #svgWork{height:calc(420px * var(--z,1));width:calc(100% * var(--z,1));touch-action:none;cursor:grab}
+.zwrap{overflow:auto;border-radius:10px;min-width:0}
+.tools{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--muted)}
+.tools button{padding:4px 10px;font-size:14px}
+.tools .zl{min-width:42px;text-align:center}
+.card.max{position:fixed;inset:0;z-index:100;border-radius:0;overflow:auto;padding:calc(14px + env(safe-area-inset-top,0px)) 14px calc(14px + env(safe-area-inset-bottom,0px))}
+.card.max .problem{font-size:26px}
+.card.max #svgTop{height:calc((100vh - 120px) * var(--z,1))} .card.max #svgWork{height:calc((100vh - 200px) * var(--z,1))}
+body.noscroll{overflow:hidden}
+.failc{fill:none;stroke:var(--bad);stroke-width:2;stroke-dasharray:7 5}
+.faild{stroke:var(--bad);stroke-width:1.6;stroke-dasharray:4 4}
+.valbad{font-size:13.5px;fill:var(--bad);font-weight:600}
+.hl{stroke:var(--warn);stroke-width:9;stroke-linecap:round;opacity:.45}
+.hlarc{fill:none;stroke:var(--warn);stroke-width:5}
+.amb{font-size:13px;background:var(--warnf);border-radius:8px;padding:8px 10px;margin:6px 0}
+.amb label{display:flex;align-items:center;gap:6px;cursor:pointer;margin-top:3px}
+.btns button{flex:1 1 110px}
+@media (max-width:600px){#svgTop{height:calc(320px * var(--z,1))}#svgWork{height:calc(320px * var(--z,1))}}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.btns button{flex:1 1 120px}
+.note{font-size:14px;color:var(--muted);margin:10px 0 0;min-height:1.5em}
+.seg-l{stroke:var(--ink);stroke-width:2.8;stroke-linecap:round;fill:none}
+.ray{stroke:var(--ink);stroke-width:2;fill:none}
+.fa{fill:var(--t1f)} .fb{fill:var(--t2f)}
+.tri{stroke-width:3;stroke-linejoin:round}
+.tri.t1{stroke:var(--t1);fill:var(--t1f)} .tri.t2{stroke:var(--t2);fill:var(--t2f)}
+.tri.dash{stroke-dasharray:8 6}
+svg.ok .tri{fill:var(--okf)} svg.bad .tri.t2{fill:var(--badf)}
+.mk{fill:none;stroke-width:2.4;stroke-linecap:round}
+.mk.t1{stroke:var(--t1)} .mk.t2{stroke:var(--t2)} .mk.t0{stroke:var(--ink)}
+.arc0{fill:none;stroke-width:1.4;stroke:var(--muted)}
+.vl{font-family:"STIX Two Text","Times New Roman",serif;font-style:italic;font-weight:500;font-size:34px;fill:var(--ink)}
+.vl .t1{fill:var(--t1)} .vl .t2{fill:var(--t2)} .vl .eqv{fill:var(--muted);font-style:normal}
+.rl{font-family:"STIX Two Text","Times New Roman",serif;font-style:italic;font-size:24px;fill:var(--ink)}
+.val{font-size:13px;fill:var(--muted)}
+.swapbtn{display:block;margin-top:8px;font-size:14px;color:var(--ink);font-weight:600}
+.valbig{font-size:24px;font-weight:700;fill:var(--ink)}
+.empty{font-size:15px;fill:var(--muted)}
+.banner.ok rect{fill:var(--ok)} .banner.bad rect{fill:var(--bad)}
+.banner text{fill:#fff;font-weight:700;font-size:15px}
+.result{font-size:15px}
+.badge{display:inline-block;font-weight:700;padding:4px 12px;border-radius:999px;margin-bottom:10px}
+.badge.ok{background:var(--okf);color:var(--ok)} .badge.bad{background:var(--badf);color:var(--bad)} .badge.warn{background:var(--warnf);color:var(--warn)}
+.tbl{overflow-x:auto}
+.result table{border-collapse:collapse;width:100%;margin:6px 0 12px;font-size:14px}
+.result th,.result td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.result th{background:var(--hover);font-weight:600}
+.proof{border-left:3px solid var(--ink);padding:4px 0 4px 12px;margin:8px 0}
+.proof div{margin:2px 0}
+.wh{position:relative;display:inline-block;font-family:"STIX Two Text","Times New Roman",serif;font-style:italic;padding-top:.18em}
+.wh::before{content:"";position:absolute;left:6%;right:6%;top:.02em;height:.42em;border-top:1.4px solid currentColor;border-radius:50% 50% 0 0/100% 100% 0 0}
+.hint{color:var(--muted)}
+.warnbox{font-size:13.5px;background:var(--warnf);border-radius:8px;padding:8px 10px;margin-top:10px}
+ul.why{margin:6px 0 0;padding-left:20px}
+/* back-to-home link, shared look across AhaPi sub-pages */
+.home-link{display:inline-flex;align-items:center;gap:6px;margin:0 0 12px;padding:6px 12px 6px 8px;border-radius:99px;
+  border:1.5px solid var(--line);background:var(--paper);color:var(--muted);font-size:13.5px;font-weight:600;text-decoration:none}
+.home-link:hover{color:var(--ink);border-color:var(--muted)}
+.home-link:focus-visible{outline:3px solid currentColor;outline-offset:2px}
+.home-link b{display:grid;place-items:center;width:20px;height:20px;border-radius:6px;background:#5B3FA8;color:#fff;
+  font-family:Georgia,serif;font-style:italic;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="home-link" href="index.html"><b>π</b>← Trang chủ AhaPi</a>
+  <header class="top">
+    <div>
+      <h1>Hai tam giác bằng nhau <span class="m">(c.g.c)</span></h1>
+      <p>Toán 7 · Vẽ góc, vẽ tam giác, rồi tách – xoay – xếp chồng để kiểm tra sự chồng khít.</p>
+    </div>
+    <label class="preset">Ví dụ
+      <select id="preset" aria-label="Chọn ví dụ">
+        <option value="0">Tự nhập (vẽ góc xAy)</option>
+        <option value="1">Ví dụ 1: Hai tam giác rời nhau (Hình 4.31)</option>
+        <option value="2">Ví dụ 2: Có cạnh chung</option>
+        <option value="3">Ví dụ 3: Hai góc đối đỉnh</option>
+        <option value="4">Ví dụ 4: Có góc chung</option>
+        <option value="5">Ví dụ 5: Vận dụng (Hình 4.32)</option>
+        <option value="6">Phản ví dụ 1: Góc không xen giữa (nhọn – tù)</option>
+        <option value="7">Phản ví dụ 2: Một góc xen giữa, một góc không</option>
+        <option value="8">Ví dụ 6: Góc không xen giữa nhưng vẫn bằng nhau</option>
+      </select>
+    </label>
+  </header>
+
+  <div class="layout">
+    <aside class="panel">
+      <h2>Nhập liệu</h2>
+      <div id="cards"></div>
+      <button id="bNew" type="button">+ Tạo tam giác mới</button>
+      <p class="info" style="margin-top:12px">Tên góc: đỉnh ở giữa, VD <span class="mi">xAy</span> (tia <span class="mi">Ax</span>, <span class="mi">Ay</span>) hoặc <span class="mi">BAC</span>. Tam giác dùng chung tên đỉnh sẽ được vẽ chung điểm đó.</p>
+    </aside>
+
+    <section class="stage">
+      <div class="card">
+        <div class="card-h"><h2>Hình ban đầu</h2><span class="legend" id="legend"></span><button id="bHide" type="button" hidden>Ẩn đề</button><span class="tools" data-z="svgTop"><button type="button" data-d="-1" aria-label="Thu nhỏ hình">−</button><span class="zl">100%</span><button type="button" data-d="1">＋ Phóng to</button><button type="button" data-max aria-label="Toàn màn hình">⛶</button></span></div>
+        <div class="fig" id="fig">
+          <div class="zwrap"><svg id="svgTop" class="canvas" role="img" aria-label="Hình vẽ ban đầu"></svg></div>
+          <div id="problem" class="problem" hidden></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <h2>Khu thao tác</h2>
+          <div class="pairsel"><span class="sw t1"></span><select id="selA" aria-label="Tam giác thứ nhất"></select><span class="and">và</span><span class="sw t2"></span><select id="selB" aria-label="Tam giác thứ hai"></select></div>
+          <span id="tag" class="tag"></span>
+          <span class="tools" data-z="svgWork"><button type="button" data-d="-1" aria-label="Thu nhỏ hình">−</button><span class="zl">100%</span><button type="button" data-d="1">＋ Phóng to</button><button type="button" data-max aria-label="Toàn màn hình">⛶</button></span>
+        </div>
+        <div class="zwrap"><svg id="svgWork" class="canvas" role="img" aria-label="Khu thao tác tách, xếp chồng"></svg></div>
+        <div class="btns">
+          <button id="bSep" type="button">Tách hình</button>
+          <button id="bStack" type="button">Xếp chồng</button>
+          <button id="bReset" type="button">Làm mới</button>
+        </div>
+        <p id="note" class="note"></p>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h2>Kiểm tra góc xen giữa</h2></div>
+        <div class="row" style="flex-wrap:wrap;gap:8px"><span>Chọn tam giác:</span><select id="selG" aria-label="Chọn tam giác cần kiểm tra"></select><button id="bG" class="primary" type="button">Kiểm tra góc xen giữa</button></div>
+        <div id="gres" class="result" style="margin-top:8px"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h2>Kết luận</h2><button id="bCheck" class="primary" type="button">Kết luận</button></div>
+        <div id="result" class="result"></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+/* ===== tiện ích ===== */
+const $=id=>document.getElementById(id);
+const sub=(a,b)=>[a[0]-b[0],a[1]-b[1]], add=(a,b)=>[a[0]+b[0],a[1]+b[1]], mul=(a,k)=>[a[0]*k,a[1]*k];
+const cross=(a,b)=>a[0]*b[1]-a[1]*b[0], dot=(a,b)=>a[0]*b[0]+a[1]*b[1], len=a=>Math.hypot(a[0],a[1]);
+const unit=a=>{const l=len(a)||1;return [a[0]/l,a[1]/l]};
+const rot=(p,t)=>[p[0]*Math.cos(t)-p[1]*Math.sin(t),p[0]*Math.sin(t)+p[1]*Math.cos(t)];
+const refl=(p,s)=>[p[0],p[1]*s];
+const ang=a=>Math.atan2(a[1],a[0]);
+const normA=t=>{while(t>Math.PI)t-=2*Math.PI;while(t<=-Math.PI)t+=2*Math.PI;return t};
+const sgn=x=>x<0?-1:1;
+const eq=(a,b)=>Math.abs(a-b)<=1e-6+1e-4*Math.max(Math.abs(a),Math.abs(b));
+const near=(a,b)=>Math.abs(a-b)<=1e-6+5e-3*Math.max(Math.abs(a),Math.abs(b));
+const fmt=x=>String(Math.round(x*100)/100).replace('.',',');
+const disp=s=>s.replace(/'/g,'′');
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const hat=s=>`<span class="wh">${disp(s)}</span>`;
+const mi=s=>`<span class="mi">${disp(s)}</span>`;
+const centroid=(P,names)=>{let x=0,y=0;names.forEach(n=>{x+=P[n][0];y+=P[n][1]});return [x/names.length,y/names.length]};
+const bbox=pts=>{const b={minX:Infinity,maxX:-Infinity,minY:Infinity,maxY:-Infinity};pts.forEach(p=>{b.minX=Math.min(b.minX,p[0]);b.maxX=Math.max(b.maxX,p[0]);b.minY=Math.min(b.minY,p[1]);b.maxY=Math.max(b.maxY,p[1])});return b};
+const f1=v=>v.toFixed(1);
+const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const strip=raw=>(raw||'').replace(/[\u0394\u2206\u2220\s]/g,'').replace(/[’‘`´′]/g,"'");
+function tokU(raw){const s=strip(raw).toUpperCase();if(!s)return null;const m=s.match(/[A-Z]'*/g);return m&&m.join('')===s?m:null}
+function tokC(raw){const s=strip(raw);if(!s)return null;const m=s.match(/[A-Za-z]'*/g);return m&&m.join('')===s?m:null}
+function num(s){s=(s||'').trim().replace(',','.');return /^\d+(\.\d+)?$/.test(s)?parseFloat(s):NaN}
+const other=(s,x)=>s.a===x?s.b:s.a;
+const nbr=(T,x)=>T.nm.filter(y=>y!==x);
+const isH=(f,i)=>f===true||(Array.isArray(f)&&f.includes(i));
+
+/* ===== trạng thái ===== */
+const st={tris:[],pair:[-1,-1],busy:false,stage:'init',display:{},fig:null,W:null};
+const newTri=()=>({type:'tri',name:'',g:'',gv:'',s1:'',v1:'',s2:'',v2:'',sol:0,drawn:false,mode:'doi',rot:Math.round(40+Math.random()*280),flip:Math.random()<.5});
+const PERMS=[[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]];
+
+/* ===== đọc dữ liệu ===== */
+function mkT(T){
+  T.L=(x,y)=>len(sub(T.local[x],T.local[y]));
+  T.angAt=x=>{const [u,w]=nbr(T,x);const a=sub(T.local[u],T.local[x]),b=sub(T.local[w],T.local[x]);return Math.acos(Math.max(-1,Math.min(1,dot(a,b)/(len(a)*len(b)))))*180/Math.PI};
+  T.nb=T.nb||[other(T.sides[0],T.V),other(T.sides[1],T.V)];
+  if(T.inc===undefined)T.inc=true;
+  T.angName=()=>T.nb[0]+T.V+T.nb[1];
+  return T;
+}
+function shape(V,P1,v1,P2,v2,gv){const a=gv*Math.PI/180;return {[V]:[0,0],[P1]:[v1*Math.cos(a),v1*Math.sin(a)],[P2]:[v2,0]}}
+function ptName(raw,V){const k=tokU(raw);if(!k)return null;if(k.length===1)return k[0];if(k.length===2&&k[0]===V)return k[1];return null}
+function parseAng(d){
+  const E=m=>({err:m});
+  const t=tokC(d.ang);
+  if(!t||t.length!==3) return E('Tên góc gồm 3 kí hiệu, đỉnh ở giữa (VD: xAy hoặc BAC).');
+  const [r1,V,r2]=t;
+  if(!/^[A-Z]/.test(V)) return E('Đỉnh góc (kí hiệu ở giữa) phải là chữ in hoa, VD: xAy.');
+  if(r1===r2||r1===V||r2===V) return E('Hai tia của góc phải có tên khác nhau.');
+  const gv=num(d.angV); if(!(gv>0&&gv<180)) return E('Số đo góc phải lớn hơn 0° và nhỏ hơn 180°.');
+  const up1=/^[A-Z]/.test(r1), up2=/^[A-Z]/.test(r2);
+  if(!d.v1.trim()&&!d.v2.trim()) return {angleOnly:true,V,r1,r2,gv};
+  const P1=d.p1.trim()?ptName(d.p1,V):(up1?r1:''), P2=d.p2.trim()?ptName(d.p2,V):(up2?r2:'');
+  if(P1===null||!P1) return E(`Nhập điểm trên tia ${disp(V+r1)} dạng ${disp(V)}B.`);
+  if(P2===null||!P2) return E(`Nhập điểm trên tia ${disp(V+r2)} dạng ${disp(V)}C.`);
+  if(up1&&P1!==r1) return E(`Tia ${disp(V+r1)} đi qua ${disp(r1)}, hãy nhập ${disp(V+r1)}.`);
+  if(up2&&P2!==r2) return E(`Tia ${disp(V+r2)} đi qua ${disp(r2)}, hãy nhập ${disp(V+r2)}.`);
+  if(P1===P2||P1===V||P2===V) return E('Ba điểm phải có tên khác nhau.');
+  const v1=num(d.v1), v2=num(d.v2);
+  if(!(v1>0)) return E(`Độ dài ${disp(V+P1)} phải là số dương.`);
+  if(!(v2>0)) return E(`Độ dài ${disp(V+P2)} phải là số dương.`);
+  let nm=[V,P1,P2];
+  const k=tokU(d.name);
+  if(d.name.trim()){
+    if(!k||k.length!==3||new Set(k).size!==3||!k.every(x=>nm.includes(x))) return E(`Tên tam giác phải gồm đúng 3 điểm ${disp(V)}, ${disp(P1)}, ${disp(P2)}.`);
+    nm=k;
+  }
+  return mkT({nm,V,gv,sides:[{a:V,b:P1,v:v1},{a:V,b:P2,v:v2}],local:shape(V,P1,v1,P2,v2,gv),rays:{r1,r2,up1,up2,P1,P2},rot:d.rot||0,flip:!!d.flip});
+}
+function parseTri(d){
+  const E=m=>({err:m});
+  const nm=tokU(d.name);
+  if(!nm||nm.length!==3||new Set(nm).size!==3) return E('Tên tam giác phải gồm 3 đỉnh khác nhau (VD: DEF, MNP, A′B′C′).');
+  const N=disp(nm.join(''));
+  const gt=tokU(d.g); let V=null;
+  if(gt&&gt.length===1&&nm.includes(gt[0])) V=gt[0];
+  else if(gt&&gt.length===3&&new Set(gt).size===3&&gt.every(x=>nm.includes(x))) V=gt[1];
+  if(!V) return E(`Góc phải là một góc của Δ${N} (gõ 1 đỉnh như ${disp(nm[0])} hoặc 3 đỉnh).`);
+  const gv=num(d.gv); if(!(gv>0&&gv<180)) return E('Số đo góc phải lớn hơn 0° và nhỏ hơn 180°.');
+  const sides=[];
+  for(const [sl,sv] of [['s1','v1'],['s2','v2']]){
+    const t=tokU(d[sl]), val=num(d[sv]);
+    if(!t||t.length!==2||t[0]===t[1]||!nm.includes(t[0])||!nm.includes(t[1])) return E(`Cạnh “${d[sl]||'…'}” phải gồm 2 đỉnh của Δ${N}.`);
+    if(!(val>0)) return E(`Độ dài cạnh ${disp(t.join(''))} phải là số dương.`);
+    sides.push({a:t[0],b:t[1],v:val});
+  }
+  const key=x=>[x.a,x.b].sort().join('|');
+  if(key(sides[0])===key(sides[1])) return E('Hai cạnh đã nhập phải là hai cạnh khác nhau.');
+  const inc=sides.every(x=>x.a===V||x.b===V);
+  const T={nm,V,gv,sides,inc,rot:d.rot||0,flip:!!d.flip,mode:d.mode};
+  if(inc){
+    const P1=other(sides[0],V),P2=other(sides[1],V);
+    T.local=shape(V,P1,sides[0].v,P2,sides[1].v,gv);
+  }else{
+    const adj=sides.find(x=>x.a===V||x.b===V),opp=sides.find(x=>x!==adj);
+    const W=other(adj,V),U=nm.find(x=>x!==V&&x!==W);
+    const al=gv*Math.PI/180,c=adj.v,a=opp.v,D=a*a-c*c*Math.sin(al)**2,cands=[];
+    if(D>=-1e-9){const q=Math.sqrt(Math.max(D,0));for(const x of [c*Math.cos(al)+q,c*Math.cos(al)-q]) if(x>1e-9&&!cands.some(y=>eq(x,y)))cands.push(x)}
+    if(!cands.length){
+      const O=disp(opp.a+opp.b),A=disp(adj.a+adj.b),dist=gv<90?c*Math.sin(al):c;
+      const msg=gv<90
+        ?`Không vẽ được: cạnh ${mi(A)} chứa đỉnh ${mi(V)} nên phải nằm trên một tia của ${hat(V)}, tức là ${mi(A)} = ${fmt(c)} cm được vẽ trước. Đường tròn tâm ${mi(W)} bán kính ${mi(O)} = ${fmt(a)} cm không cắt tia còn lại, vì khoảng cách từ ${mi(W)} đến tia đó là ${fmt(dist)} cm (xem hình).`
+        :`Không vẽ được: ${mi(O)} đối diện ${hat(V)} ${gv>90?'tù':'vuông'} nên phải là cạnh lớn nhất, cần ${mi(O)} > ${mi(A)} = ${fmt(c)} cm (xem hình).`;
+      const swap=Math.abs(c-a)>1e-9?`<button type="button" class="swapbtn" data-act="swap">Đổi thành ${mi(A)} = ${fmt(a)} cm, ${mi(O)} = ${fmt(c)} cm rồi vẽ</button>`:'';
+      return {err:msg+swap,fail:{V,W,U,gv,c,a,dist,nm}};
+    }
+    T.types=cands.map(x=>{const q=[c,a,x].sort((m,n)=>m-n),d2=q[2]*q[2]-q[0]*q[0]-q[1]*q[1];return Math.abs(d2)<1e-6*q[2]*q[2]?'vuông':d2>0?'tù':'nhọn'});
+    const si=Math.min(d.sol||0,cands.length-1);
+    Object.assign(T,{cands,solIdx:si,unknownName:V+U,nb:[W,U],local:shape(V,W,c,U,cands[si],gv)});
+  }
+  return mkT(T);
+}
+
+/* ===== tương ứng đỉnh ===== */
+function dataCorr(T1,T2){
+  const v1=T1.V,v2=T2.V,n1=T1.nb,n2=T2.nb;
+  const s=Math.abs(T2.L(v2,n2[0])-T1.L(v1,n1[0]))+Math.abs(T2.L(v2,n2[1])-T1.L(v1,n1[1]));
+  const x=Math.abs(T2.L(v2,n2[1])-T1.L(v1,n1[0]))+Math.abs(T2.L(v2,n2[0])-T1.L(v1,n1[1]));
+  return s<=x+1e-9?{[v2]:v1,[n2[0]]:n1[0],[n2[1]]:n1[1]}:{[v2]:v1,[n2[1]]:n1[0],[n2[0]]:n1[1]};
+}
+function congCorr(T1,T2,pref){
+  const a=T1.nm, idx=[[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]];
+  const list=idx.map(q=>q.map(i=>T2.nm[i]));
+  const pb=a.map(x=>Object.keys(pref).find(b=>pref[b]===x)).join('|');
+  list.sort((u,w)=>(w.join('|')===pb)-(u.join('|')===pb));
+  for(const b of list){
+    if(eq(T1.L(a[0],a[1]),T2.L(b[0],b[1]))&&eq(T1.L(a[1],a[2]),T2.L(b[1],b[2]))&&eq(T1.L(a[0],a[2]),T2.L(b[0],b[2])))
+      return {[b[0]]:a[0],[b[1]]:a[1],[b[2]]:a[2]};
+  }
+  return null;
+}
+const invert=m=>{const r={};for(const k in m) r[m[k]]=k;return r};
+function rigid(a0,a1,b0,b1,s){
+  const th=normA(ang(sub(b1,b0))-ang(refl(sub(a1,a0),s)));
+  const t=sub(b0,rot(refl(a0,s),th));
+  return {th,s,f:q=>add(rot(refl(q,s),th),t)};
+}
+function mapTri(P2,P1,corr,T2){
+  const x0=T2.V,[x1,x2]=nbr(T2,x0);
+  const o2=sgn(cross(sub(P2[x1],P2[x0]),sub(P2[x2],P2[x0])));
+  const o1=sgn(cross(sub(P1[corr[x1]],P1[corr[x0]]),sub(P1[corr[x2]],P1[corr[x0]])));
+  return rigid(P2[x0],P2[x1],P1[corr[x0]],P1[corr[x1]],o1*o2);
+}
+
+/* ===== dựng hình ban đầu (nhiều tam giác, chung điểm theo tên) ===== */
+function localOf(T){
+  if(!T.rot&&!T.flip) return T.local;
+  const c=centroid(T.local,T.nm), r={};
+  T.nm.forEach(n=>{let p=sub(T.local[n],c);if(T.flip)p=[-p[0],p[1]];r[n]=add(rot(p,T.rot*Math.PI/180),c)});
+  return r;
+}
+function buildFigure(Ts,fails){
+  const F={pts:{},placed:[],segs:[],rays:[],angle:null,pos:{}},pts=F.pts;
+  const allPts=()=>[...Object.values(pts),...F.rays.map(r=>r.end),...F.placed.filter(T=>T.sepDraw).flatMap(T=>T.nm.map(n=>T.P[n]))];
+  const ext=()=>{const b=bbox(allPts());return Math.max(b.maxX-b.minX,b.maxY-b.minY,1)};
+  const lines=()=>[...F.segs.map(([a,b])=>[pts[a],pts[b]]),...F.rays.map(r=>[r.from,r.end])];
+  const segKey=(a,b)=>[a,b].sort().join('|');
+  const right=(loc,T)=>{const b=bbox(allPts()),bl=bbox(T.nm.map(n=>loc[n]));const gap=0.45*Math.max(b.maxX-b.minX,bl.maxX-bl.minX,1);
+    const d=[b.maxX+gap-bl.minX,(b.minY+b.maxY)/2-(bl.minY+bl.maxY)/2],P={};T.nm.forEach(x=>P[x]=add(loc[x],d));return P};
+  const placeSep=(T,loc,why)=>{T.P=right(loc,T);T.sepDraw=true;T.note=why;F.pos[T.i]=T.P;F.placed.push(T)};
+  const AO=Ts.find(T=>T.angleOnly);
+  if(AO){
+    pts[AO.V]=[0,0];const a=AO.gv*Math.PI/180,d1=[Math.cos(a),Math.sin(a)];
+    F.angle={V:AO.V,d1,d2:[1,0],val:AO.gv};
+    F.rays.push({from:[0,0],end:mul(d1,5),name:AO.r1},{from:[0,0],end:[5,0],name:AO.r2});
+  }
+  const rem=Ts.filter(T=>!T.angleOnly);
+  while(rem.length){
+    let bi=0,best=-1;rem.forEach((T,j)=>{const n=T.nm.filter(x=>pts[x]).length;if(n>best){best=n;bi=j}});
+    const T=rem.splice(bi,1)[0],sh=T.nm.filter(x=>pts[x]),loc=localOf(T),P={};
+    T.how='';T.note='';T.sepDraw=false;
+    const N=mi('Δ'+T.nm.join(''));
+    if(sh.length===3){
+      const bad=T.sides.find(s=>!near(len(sub(pts[s.a],pts[s.b])),s.v));
+      const u=sub(pts[T.nb[0]],pts[T.V]),w=sub(pts[T.nb[1]],pts[T.V]);
+      const ag=Math.acos(Math.max(-1,Math.min(1,dot(u,w)/(len(u)*len(w)))))*180/Math.PI;
+      if(bad||Math.abs(ag-T.gv)>0.3){placeSep(T,loc,`Tên đỉnh trùng với hình đã vẽ nhưng số liệu khác, nên ${N} được vẽ riêng bên cạnh.`);continue}
+      T.nm.forEach(x=>P[x]=pts[x]);
+    }else if(sh.length===2){
+      const [X,Y]=sh,Z=T.nm.find(z=>!pts[z]),dxy=len(sub(pts[X],pts[Y]));
+      if(!near(dxy,T.L(X,Y))){placeSep(T,loc,`Trên hình ${mi(X+Y)} ≈ ${fmt(dxy)} cm, nhưng theo số liệu ${mi(X+Y)} ≈ ${fmt(T.L(X,Y))} cm, nên ${N} được vẽ riêng bên cạnh.`);continue}
+      const sc=ext();
+      const cands=[1,-1].map(s=>{const r=rigid(loc[X],loc[Y],pts[X],pts[Y],s);return {z:r.f(loc[Z])}});
+      let ok=cands.filter(c=>!Object.values(pts).some(p=>len(sub(p,c.z))<1e-3*sc));if(!ok.length)ok=cands;
+      const coll=c=>lines().some(([p,q])=>{const d=sub(q,p);return len(d)>1e-9&&Math.abs(cross(d,sub(c.z,p)))/len(d)<1e-3*sc});
+      let pick=ok.find(coll);
+      if(!pick){
+        const adj=F.placed.find(R=>!R.sepDraw&&R.nm.includes(X)&&R.nm.includes(Y));
+        if(adj){const W=adj.nm.find(w=>w!==X&&w!==Y),d=sub(pts[Y],pts[X]),sw=sgn(cross(d,sub(pts[W],pts[X])));pick=ok.find(c=>sgn(cross(d,sub(c.z,pts[X])))!==sw)||ok[0]}
+        else{const cen=centroid(pts,Object.keys(pts));pick=ok.slice().sort((a,b)=>len(sub(b.z,cen))-len(sub(a.z,cen)))[0]}
+      }
+      P[X]=pts[X];P[Y]=pts[Y];P[Z]=pick.z;
+    }else if(sh.length===1){
+      const O=sh[0],ref=F.placed.find(R=>!R.sepDraw&&R.nm.includes(O));
+      if(!ref){
+        if(F.angle&&O===F.angle.V){
+          const [n0,n1]=T.V===O?T.nb:nbr(T,O),u0=sub(loc[n0],loc[O]),u1=sub(loc[n1],loc[O]);
+          const s=sgn(cross(F.angle.d1,F.angle.d2))*sgn(cross(u0,u1)),th=ang(F.angle.d1)-ang(refl(u0,s));
+          T.nm.forEach(x=>P[x]=add(rot(refl(sub(loc[x],loc[O]),s),th),pts[O]));
+        }else{const d=sub(pts[O],loc[O]);T.nm.forEach(x=>P[x]=add(loc[x],d))}
+      }else{
+        const pref=dataCorr(ref,T),corr=congCorr(ref,T,pref)||pref;
+        const [n1a,n1b]=nbr(ref,O),[xa,xb]=nbr(T,O);
+        let Xn=xa,Yn=xb;if(corr[xb]===n1a||corr[xa]===n1b){Xn=xb;Yn=xa}
+        const w1=unit(sub(pts[n1a],pts[O])),w2=unit(sub(pts[n1b],pts[O])),o1=sgn(cross(w1,w2));
+        const ux=sub(loc[Xn],loc[O]),uy=sub(loc[Yn],loc[O]),o2=sgn(cross(ux,uy));
+        let target,req;if(T.mode==='chung'){target=w2;req=-o1}else{target=mul(w1,-1);req=o1}
+        const s=req*o2,th=ang(target)-ang(refl(ux,s));
+        T.nm.forEach(x=>P[x]=add(rot(refl(sub(loc[x],loc[O]),s),th),pts[O]));
+        T.how='one';T.shareO=O;
+      }
+    }else{
+      if(!allPts().length)T.nm.forEach(x=>P[x]=loc[x]);else Object.assign(P,right(loc,T));
+    }
+    T.nm.forEach(x=>{if(!pts[x])pts[x]=P[x];P[x]=pts[x]});
+    F.pos[T.i]=P;T.P=P;F.placed.push(T);
+    [[0,1],[1,2],[0,2]].forEach(([i,j])=>{const a=T.nm[i],b=T.nm[j];if(!F.segs.some(q=>segKey(q[0],q[1])===segKey(a,b)))F.segs.push([a,b])});
+    if(T.rays){
+      [[T.rays.r1,T.rays.up1,T.rays.P1],[T.rays.r2,T.rays.up2,T.rays.P2]].forEach(([r,up,Pp])=>{
+        if(up)return;const v=sub(P[Pp],P[T.V]),l=len(v);
+        F.rays.push({from:P[T.V],end:add(P[T.V],mul(unit(v),Math.max(l*1.3,l+1.2))),name:r});
+      });
+    }
+  }
+  F.rays.forEach(r=>{const u=unit(sub(r.end,r.from));let m=len(sub(r.end,r.from));
+    const o=Object.keys(pts).find(k=>len(sub(pts[k],r.from))<1e-9),near=new Set();
+    F.placed.forEach(T=>{if(!T.sepDraw&&T.nm.includes(o))T.nm.forEach(n=>near.add(n))});
+    [...near].map(n=>pts[n]).forEach(p=>{const v=sub(p,r.from);if(len(v)>1e-9&&Math.abs(cross(u,v))<1e-6*Math.max(1,len(v))&&dot(u,v)>0)m=Math.max(m,dot(u,v)*1.18+0.6)});
+    r.end=add(r.from,mul(u,m))});
+  F.fails=[];
+  (fails||[]).forEach(X=>{
+    const f=X.fail,al=f.gv*Math.PI/180,u=[Math.cos(al),Math.sin(al)],Wp=mul(u,f.c),Hp=f.gv<90?[Wp[0],0]:[0,0];
+    const loc={V:[0,0],W:Wp,H:Hp,e1:mul(u,f.c*1.3+0.6),e2:[Math.max(f.c,f.a)*1.6+1,0]};
+    const ext=[...Object.values(loc),[Wp[0]-f.a,Wp[1]-f.a],[Wp[0]+f.a,Wp[1]+f.a]];
+    const prev=[...allPts(),...F.fails.flatMap(q=>q.ext)];let d=[0,0];
+    if(prev.length){const b=bbox(prev),bl=bbox(ext);d=[b.maxX+0.45*Math.max(b.maxX-b.minX,bl.maxX-bl.minX,1)-bl.minX,(b.minY+b.maxY)/2-(bl.minY+bl.maxY)/2]}
+    const L={};for(const k in loc)L[k]=add(loc[k],d);
+    F.fails.push({...L,f,ext:ext.map(p=>add(p,d))});
+  });
+  F.placed.sort((a,b)=>a.i-b.i);
+  return F;
+}
+
+/* ===== ký hiệu bằng nhau cho cặp đang chọn ===== */
+function computeMarks(Ta,Tb){
+  const sides=[];[[Ta,1],[Tb,2]].forEach(([T,k])=>T.sides.forEach(s=>sides.push({t:k,a:s.a,b:s.b,v:s.v})));
+  const groups=[];for(const s of sides){let g=groups.find(g=>eq(g.v,s.v));if(!g){g={v:s.v,m:[]};groups.push(g)}g.m.push(s)}
+  groups.sort((x,y)=>x.v-y.v);
+  let c=0;const sm=[];for(const g of groups){if(g.m.length<2)continue;c++;g.m.forEach(s=>sm.push({...s,count:c,g:c}))}
+  const same=eq(Ta.gv,Tb.gv);
+  const am=[[Ta,1],[Tb,2]].map(([T,k])=>({t:k,ti:T.i,v:T.V,n1:T.nb[0],n2:T.nb[1],val:T.gv,count:same?1:0}));
+  return {sides:sm,angs:am,vals:sides};
+}
+
+/* ===== vẽ SVG ===== */
+function mkMap(bb,W,H,pad){
+  const w=Math.max(bb.maxX-bb.minX,1e-6),h=Math.max(bb.maxY-bb.minY,1e-6);
+  const k=Math.min((W-2*pad)/w,(H-2*pad)/h),ox=(W-k*w)/2,oy=(H-k*h)/2;
+  const f=p=>[ox+(p[0]-bb.minX)*k,oy+(bb.maxY-p[1])*k];f.k=k;return f;
+}
+const ln=(cls,A,B)=>`<line class="${cls}" x1="${f1(A[0])}" y1="${f1(A[1])}" x2="${f1(B[0])}" y2="${f1(B[1])}"/>`;
+const tx=(cls,p,t)=>`<text class="${cls}" x="${f1(p[0])}" y="${f1(p[1])}" text-anchor="middle" dominant-baseline="central">${t}</text>`;
+function ticks(A,B,count,cls){
+  const Mp=mul(add(A,B),.5),d=unit(sub(B,A)),n=[-d[1],d[0]];let h='';
+  for(let i=0;i<count;i++){const c=add(Mp,mul(d,(i-(count-1)/2)*7));h+=ln(cls,add(c,mul(n,9)),sub(c,mul(n,9)))}
+  return h;
+}
+function arcs(O,A,B,count,cls){
+  const a1=ang(sub(A,O)),d=normA(ang(sub(B,O))-a1);
+  const base=Math.max(14,Math.min(30,.3*Math.min(len(sub(A,O)),len(sub(B,O)))));
+  let h='';const n=Math.max(1,count);
+  for(let i=0;i<n;i++){const r=base+i*5;let p='';for(let j=0;j<=24;j++){const t=a1+d*j/24;p+=(j?'L':'M')+f1(O[0]+r*Math.cos(t))+' '+f1(O[1]+r*Math.sin(t))}h+=`<path class="${cls}" d="${p}"/>`}
+  const b=a1+d/2,r=base+n*5+Math.min(60,Math.max(15,11/Math.max(.05,Math.sin(Math.abs(d)/2))));
+  return {h,valPos:[O[0]+r*Math.cos(b),O[1]+r*Math.sin(b)],key:`${Math.round(O[0])},${Math.round(O[1])}|`+[Math.round(a1*20),Math.round((a1+d)*20)].sort().join(',')};
+}
+const emptyMsg=(W,H,t)=>tx('empty',[W/2,H/2],t);
+
+const angVal=(D,R,O,t)=>D.bigAng?tx('valbig',add(R.valPos,mul(unit(sub(R.valPos,O)),16)),t):tx('val',R.valPos,t);
+function renderFigure(){
+  const svg=$('svgTop'),F=st.fig,W=svg.clientWidth||700,H=svg.clientHeight||440,D=st.display||{};
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  if(!F||(!F.placed.length&&!F.angle&&!F.fails.length)){svg.innerHTML=emptyMsg(W,H,'Nhập góc và hai điểm trên hai tia rồi bấm “Vẽ hình”.');$('legend').innerHTML='';return}
+  const allP=[...Object.values(F.pts),...F.rays.map(r=>r.end),...F.placed.filter(T=>T.sepDraw).flatMap(T=>T.nm.map(n=>T.P[n])),...F.fails.flatMap(q=>q.ext)];
+  const S=mkMap(bbox(allP),W,H,48),sp=n=>S(F.pts[n]),tp=(T,n)=>S(T.P[n]);
+  const pa=F.placed.find(T=>T.i===st.pair[0]),pb=F.placed.find(T=>T.i===st.pair[1]);
+  let h='';
+  if(!D.noFill)[[pa,'fa'],[pb,'fb']].forEach(([T,c])=>{if(T)h+=`<polygon class="${c}" points="${T.nm.map(n=>tp(T,n).map(f1).join(',')).join(' ')}"/>`});
+  const HL=F.placed.find(T=>T.i===st.hl);
+  if(HL){HL.sides.forEach(q=>{h+=ln('hl',tp(HL,q.a),tp(HL,q.b))})}
+  F.rays.forEach(r=>{h+=ln('ray',S(r.from),S(r.end))});
+  F.segs.forEach(([a,b])=>{h+=ln('seg-l',sp(a),sp(b))});
+  F.placed.filter(T=>T.sepDraw).forEach(T=>{[[0,1],[1,2],[0,2]].forEach(([i,j])=>{h+=ln('seg-l',tp(T,T.nm[i]),tp(T,T.nm[j]))})});
+  if(HL){h+=arcs(tp(HL,HL.V),tp(HL,HL.nb[0]),tp(HL,HL.nb[1]),1,'hlarc').h}
+  const pk=p=>p.map(v=>Math.round(v)).join(','),sk=(A,B)=>[pk(A),pk(B)].sort().join('|'),sa=new Set();
+  const outward=(T,A,B)=>{const c=S(centroid(T.P,T.nm)),Mp=mul(add(A,B),.5),d=unit(sub(B,A));let n=[-d[1],d[0]];if(dot(n,sub(Mp,c))<0)n=mul(n,-1);return add(Mp,mul(n,22))};
+  if(F.angle){const V=F.angle.V,R=arcs(sp(V),S(add(F.pts[V],F.angle.d1)),S(add(F.pts[V],F.angle.d2)),1,'mk t0');sa.add(R.key);if(!D.noArcs)h+=R.h;h+=tx('val',R.valPos,fmt(F.angle.val)+'°')}
+  if(pa&&pb){
+    const M=computeMarks(pa,pb),PT=t=>t===1?pa:pb,gk={};
+    M.sides.forEach(m=>{(gk[m.g]=gk[m.g]||new Set()).add(sk(tp(PT(m.t),m.a),tp(PT(m.t),m.b)))});
+    const seen=new Set();
+    M.sides.forEach(m=>{const A=tp(PT(m.t),m.a),B=tp(PT(m.t),m.b),k=sk(A,B);if(seen.has(k)||gk[m.g].size===1)return;seen.add(k);h+=ticks(A,B,m.count,'mk t0')});
+    if(!D.hideLen){const sv=new Set();M.vals.forEach(q=>{const T=PT(q.t),A=tp(T,q.a),B=tp(T,q.b),k=sk(A,B);if(sv.has(k))return;sv.add(k);h+=tx('val',outward(T,A,B),fmt(q.v)+' cm')})}
+    M.angs.forEach(m=>{if(isH(D.hideAngMark,m.ti))return;const T=PT(m.t),R=arcs(tp(T,m.v),tp(T,m.n1),tp(T,m.n2),m.count,'mk t0');if(sa.has(R.key))return;sa.add(R.key);
+      if(m.count&&!D.noArcs)h+=R.h;if(!isH(D.hideAngVal,m.ti))h+=angVal(D,R,tp(T,m.v),fmt(m.val)+'°')});
+  }else if(pa){
+    if(!D.hideLen)pa.sides.forEach(q=>{h+=tx('val',outward(pa,tp(pa,q.a),tp(pa,q.b)),fmt(q.v)+' cm')});
+    const R=arcs(tp(pa,pa.V),tp(pa,pa.nb[0]),tp(pa,pa.nb[1]),1,'mk t0');if(!sa.has(R.key)){if(!D.noArcs)h+=R.h;if(!isH(D.hideAngVal,pa.i))h+=tx('val',R.valPos,fmt(pa.gv)+'°')}
+  }
+  (D.extra||[]).forEach(e=>{const T=F.placed.find(T=>T.i===e.t);if(!T)return;const [u,w]=nbr(T,e.v);const R=arcs(tp(T,e.v),tp(T,u),tp(T,w),1,'mk t0');if(!D.noArcs)h+=R.h;h+=angVal(D,R,tp(T,e.v),e.val+'°')});
+  F.rays.forEach(r=>{if(!r.name)return;const A=S(r.from),B=S(r.end);h+=tx('rl',add(B,mul(unit(sub(B,A)),16)),disp(r.name))});
+  const dirs={};
+  F.placed.filter(T=>!T.sepDraw).forEach(T=>{const c=centroid(F.pts,T.nm);T.nm.forEach(n=>{dirs[n]=add(dirs[n]||[0,0],unit(sub(F.pts[n],c)))})});
+  F.rays.forEach(r=>{const n=Object.keys(F.pts).find(k=>len(sub(F.pts[k],r.from))<1e-9);if(n)dirs[n]=sub(dirs[n]||[0,0],unit(sub(r.end,r.from)))});
+  F.rays.forEach(r=>{const u=unit(sub(r.end,r.from));Object.keys(F.pts).forEach(n=>{const v=sub(F.pts[n],r.from);if(len(v)<1e-9||Math.abs(cross(u,v))>1e-6*Math.max(1,len(v))||dot(u,v)<0)return;
+    let d=dirs[n]||[0,0];d=sub(d,mul(u,dot(d,u)));if(len(d)<.2){const c=centroid(F.pts,Object.keys(F.pts));d=[-u[1],u[0]];if(dot(d,sub(F.pts[n],c))<0)d=mul(d,-1)}dirs[n]=d})});
+  const lab=(p,d0,n)=>{const d=len(d0)<.2?[0,1]:unit(d0);h+=tx('vl',add(p,mul([d[0],-d[1]],26)),disp(n))};
+  Object.keys(F.pts).forEach(n=>lab(S(F.pts[n]),dirs[n]||[0,1],n));
+  F.placed.filter(T=>T.sepDraw).forEach(T=>{const c=centroid(T.P,T.nm);T.nm.forEach(n=>lab(tp(T,n),sub(T.P[n],c),n))});
+  F.fails.forEach(q=>{const f=q.f,V=S(q.V),Wp=S(q.W),Hp=S(q.H);
+    h+=ln('ray',V,S(q.e1))+ln('ray',V,S(q.e2))+ln('seg-l',V,Wp);
+    h+=`<circle class="failc" cx="${f1(Wp[0])}" cy="${f1(Wp[1])}" r="${f1(f.a*S.k)}"/>`+ln('faild',Wp,Hp);
+    const R=arcs(V,Wp,S(q.e2),1,'mk t0');h+=R.h+tx('val',R.valPos,fmt(f.gv)+'°');
+    h+=tx('valbad',add(mul(add(Wp,Hp),.5),[30,0]),fmt(f.dist)+' cm');
+    h+=tx('vl',add(V,[-20,14]),disp(f.V))+tx('vl',add(Wp,[0,-28]),disp(f.W));
+    h+=tx('valbad',add(mul(add(V,S(q.e2)),.5),[0,28]),`Không vẽ được Δ${disp(f.nm.join(''))}`);});
+  svg.innerHTML=h;
+  $('legend').innerHTML=D.noFill?'':(pa?`<span class="sw t1"></span><span>Δ${disp(pa.nm.join(''))}</span>`:'')+(pb?`<span class="sw t2" style="margin-left:8px"></span><span>Δ${disp(pb.nm.join(''))}</span>`:'');
+}
+
+function scene(svg,o){
+  const W=svg.clientWidth||720,H=svg.clientHeight||400;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.setAttribute('class','canvas '+(o.state||''));
+  const S=mkMap(o.bb,W,H,o.pad||48),SP={};
+  o.tris.forEach(t=>{SP[t.k]={};t.names.forEach(n=>SP[t.k][n]=S(t.P[n]));SP[t.k].__c=centroid(SP[t.k],t.names)});
+  let h='';
+  o.tris.forEach(t=>{h+=`<polygon class="tri ${t.cls}${t.dash?' dash':''}" points="${t.names.map(n=>SP[t.k][n].map(f1).join(',')).join(' ')}"/>`});
+  o.sideMarks.forEach(m=>{h+=ticks(SP[m.t][m.a],SP[m.t][m.b],m.count,'mk t'+m.t)});
+  if(!o.noArcs)o.angMarks.forEach(m=>{if(m.count)h+=arcs(SP[m.t][m.v],SP[m.t][m.n1],SP[m.t][m.n2],m.count,'mk t'+m.t).h});
+  const labs=[];
+  o.tris.forEach(t=>t.names.forEach(n=>{
+    const p=SP[t.k][n],dir=unit(sub(p,SP[t.k].__c));
+    let g=labs.find(L=>len(sub(L.p,p))<3);
+    if(g){g.dir=add(g.dir,dir);const same=g.items.find(it=>it.n===n);if(same){if(same.cls!==t.cls)same.cls=''}else g.items.push({n,cls:t.cls})}
+    else labs.push({p,dir,items:[{n,cls:t.cls}]});
+  }));
+  labs.forEach(L=>{
+    const d=len(L.dir)<.2?[0,-1]:unit(L.dir),multi=L.items.length>1,p=add(L.p,mul(d,multi?40:26));
+    h+=`<text class="vl" x="${f1(p[0])}" y="${f1(p[1])}" text-anchor="middle" dominant-baseline="central">${L.items.map((it,i)=>(i?'<tspan class="eqv">≡</tspan>':'')+`<tspan class="${it.cls}">${disp(it.n)}</tspan>`).join('')}</text>`;
+  });
+  if(o.banner){const w=o.banner.text.length*8.5+34,x=(W-w)/2;h+=`<g class="banner ${o.banner.cls}"><rect x="${f1(x)}" y="${H-44}" width="${f1(w)}" height="32" rx="8"/>${tx('',[W/2,H-28],o.banner.text)}</g>`}
+  svg.innerHTML=h;
+  return {SP,k:S.k};
+}
+
+/* ===== khu thao tác (học sinh tự xoay, lật, kéo thả) ===== */
+function buildWork(Ta,Tb){
+  const P1=Ta.P,P2=Tb.P,c1=centroid(P1,Ta.nm),c2=centroid(P2,Tb.nm);
+  const R1=Math.max(...Ta.nm.map(n=>len(sub(P1[n],c1)))),R2=Math.max(...Tb.nm.map(n=>len(sub(P2[n],c2))));
+  const b=bbox([...Ta.nm.map(n=>P1[n]),...Tb.nm.map(n=>P2[n])]),mid=[(b.minX+b.maxX)/2,(b.minY+b.maxY)/2];
+  const gap=Math.max(R1,R2)*0.7,total=2*R1+gap+2*R2,L=mid[0]-total/2;
+  const slot1=[L+R1,mid[1]],slot2=[L+2*R1+gap+R2,mid[1]];
+  const box=(c,R)=>[[c[0]-R,c[1]-R],[c[0]+R,c[1]+R]];
+  return {init:{a:{th:0,s:1,c:c1},b:{th:0,s:1,c:c2}},slot1,slot2,c1,c2,bb:bbox([...box(slot1,R1),...box(slot2,R2),...box(c1,R1),...box(c2,R2)])};
+}
+const place=(P,cO,s,names)=>{const r={};names.forEach(n=>{r[n]=add(rot(refl(sub(P[n],cO),s.s),s.th),s.c)});return r};
+const cloneS=s=>({a:{...s.a,c:[...s.a.c]},b:{...s.b,c:[...s.b.c]}});
+function curPair(){const F=st.fig;if(!F)return [null,null];return [F.placed.find(T=>T.i===st.pair[0])||null,F.placed.find(T=>T.i===st.pair[1])||null]}
+function setupWork(){
+  const [Ta,Tb]=curPair();
+  st.W=null;st.stage='init';st.fit=null;
+  if(Ta&&Tb&&Ta!==Tb){
+    const pref=dataCorr(Ta,Tb),cong=congCorr(Ta,Tb,pref);
+    Object.assign(st,{Ta,Tb,pref,cong:!!cong,corr:cong||pref,marks:computeMarks(Ta,Tb)});
+    st.W=buildWork(Ta,Tb);st.cur=cloneS(st.W.init);
+  }
+  renderWork();updateTag();setBusy(false);
+  $('result').innerHTML='<span class="hint">Nhấn “Kết luận” để xem lời giải cho hai tam giác đang chọn trong Khu thao tác.</span>';
+}
+function renderWork(){
+  const svg=$('svgWork');
+  if(!st.W){const W=svg.clientWidth||720,H=svg.clientHeight||400;svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.setAttribute('class','canvas');svg.innerHTML=emptyMsg(W,H,'Vẽ ít nhất 2 tam giác rồi chọn cặp tam giác ở trên để thao tác.');return}
+  const {Ta,Tb,W,cur,marks}=st;
+  const P1=place(Ta.P,W.c1,cur.a,Ta.nm),P2=place(Tb.P,W.c2,cur.b,Tb.nm);
+  const show=st.stage==='stack'&&!st.busy;let banner=null,state='';
+  if(show){state=st.fit?'ok':'bad';banner={cls:state,text:st.fit?'✓ Hai tam giác chồng khít':'✗ Hai tam giác không chồng khít'}}
+  const r=scene(svg,{bb:W.bb,tris:[{k:1,names:Ta.nm,P:P1,cls:'t1'},{k:2,names:Tb.nm,P:P2,cls:'t2',dash:show&&st.fit}],sideMarks:marks.sides,angMarks:marks.angs,noArcs:(st.display||{}).noArcs,banner,state,pad:56});
+  st.scr={1:Ta.nm.map(n=>r.SP[1][n]),2:Tb.nm.map(n=>r.SP[2][n])};st.k=r.k;
+}
+const lerpS=(a,b,t)=>({th:a.th+(b.th-a.th)*t,s:a.s+(b.s-a.s)*t,c:[a.c[0]+(b.c[0]-a.c[0])*t,a.c[1]+(b.c[1]-a.c[1])*t]});
+function animTo(to,dur){
+  return new Promise(res=>{
+    const from=cloneS(st.cur),t0=performance.now();if(reduceMotion)dur=1;
+    const step=now=>{const t=Math.min(1,(now-t0)/dur),e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+      st.cur={a:lerpS(from.a,to.a,e),b:lerpS(from.b,to.b,e)};renderWork();if(t<1)requestAnimationFrame(step);else res()};
+    requestAnimationFrame(step);
+  });
+}
+async function act(fn){if(st.busy||!st.W)return;st.busy=true;setBusy(true);await fn();st.busy=false;setBusy(false);renderWork();updateTag()}
+async function doSep(){await animTo({a:{...st.cur.a,c:st.W.slot1},b:{...st.cur.b,c:st.W.slot2}},800);st.stage='free'}
+const curPts=()=>[place(st.Ta.P,st.W.c1,st.cur.a,st.Ta.nm),place(st.Tb.P,st.W.c2,st.cur.b,st.Tb.nm)];
+function fitCorr(){
+  const {Ta,Tb}=st,[P1,P2]=curPts(),a=Ta.nm;
+  const tol=0.15*Math.max(Ta.L(a[0],a[1]),Ta.L(a[1],a[2]),Ta.L(a[0],a[2]));
+  for(const q of PERMS){
+    const b=q.map(i=>Tb.nm[i]);
+    if(!b.every((x,i)=>len(sub(P2[x],P1[a[i]]))<tol))continue;
+    if(eq(Ta.L(a[0],a[1]),Tb.L(b[0],b[1]))&&eq(Ta.L(a[1],a[2]),Tb.L(b[1],b[2]))&&eq(Ta.L(a[0],a[2]),Tb.L(b[0],b[2])))return {[b[0]]:a[0],[b[1]]:a[1],[b[2]]:a[2]};
+  }
+  return null;
+}
+async function trySnap(showFail){
+  const corr=fitCorr();
+  if(corr){
+    const [P1]=curPts(),r=mapTri(st.Tb.P,P1,corr,st.Tb),th=st.cur.b.th+normA(r.th-st.cur.b.th);
+    await animTo({a:{...st.cur.a},b:{th,s:r.s,c:r.f(st.W.c2)}},300);
+    st.stage='stack';st.fit=true;st.fitMap=corr;
+  }else if(showFail){st.stage='stack';st.fit=false}
+  else st.stage='free';
+}
+async function doStack(){
+  if(st.stage==='init')await doSep();
+  const [P1]=curPts(),r=mapTri(st.Tb.P,P1,st.corr,st.Tb),th=st.cur.b.th+normA(r.th-st.cur.b.th);
+  if(Math.abs(th-st.cur.b.th)>1e-3||Math.abs(r.s-st.cur.b.s)>1e-6) await animTo({a:{...st.cur.a},b:{th,s:r.s,c:[...st.cur.b.c]}},1000);
+  await animTo({a:{...st.cur.a},b:{th,s:r.s,c:r.f(st.W.c2)}},850);
+  st.stage='stack';st.fit=st.cong;st.fitMap=st.corr;
+}
+function setBusy(b){const no=!st.W;['bSep','bStack','bReset','bCheck'].forEach(id=>$(id).disabled=b||no);$('selA').disabled=b;$('selB').disabled=b}
+function corrText(m){const inv=invert(m||st.corr);return st.Ta.nm.map(x=>`${mi(x)}↔${mi(inv[x])}`).join(', ')}
+function updateTag(){
+  if(!st.W){$('tag').textContent='Chưa có cặp tam giác';$('note').innerHTML='';return}
+  const N2='Δ'+disp(st.Tb.nm.join('')),N1='Δ'+disp(st.Ta.nm.join(''));
+  let t='',n='';
+  if(st.stage==='init'){t='Hình ban đầu';n=`Bấm “Tách hình” để tách hai tam giác, rồi bấm “Xếp chồng” để đặt ${mi(N2)} (màu hồng) lên ${mi(N1)} (màu xanh). Có thể kéo thả từng tam giác.`}
+  if(st.stage==='free'){t='Đã tách hình';n=`Quan sát hướng của hai tam giác. Bấm “Xếp chồng” để xoay, lật (nếu cần) và đặt ${mi(N2)} lên ${mi(N1)}.`}
+  if(st.stage==='stack'){t=st.fit?'Đã chồng khít':'Không chồng khít';
+    n=st.fit?`Các đỉnh trùng nhau: ${corrText(st.fitMap)}. Hai tam giác chồng khít.`:'Đặt đỉnh góc và một cạnh trùng nhau nhưng phần còn lại lệch ra, nên hai tam giác không chồng khít.'}
+  $('tag').textContent=t;$('note').innerHTML=n;
+}
+/* kéo thả */
+const svgPt=e=>{const r=$('svgWork').getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]};
+const inPoly=(p,poly)=>{let c=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const a=poly[i],b=poly[j];if(((a[1]>p[1])!==(b[1]>p[1]))&&(p[0]<(b[0]-a[0])*(p[1]-a[1])/(b[1]-a[1])+a[0]))c=!c}return c};
+let drag=null;
+$('svgWork').addEventListener('pointerdown',e=>{
+  if(st.busy||!st.W||!st.scr)return;const p=svgPt(e),k=[2,1].find(k=>inPoly(p,st.scr[k]));if(!k)return;
+  drag={k,last:p};$('svgWork').setPointerCapture(e.pointerId);e.preventDefault();
+});
+$('svgWork').addEventListener('pointermove',e=>{
+  if(!drag)return;const p=svgPt(e),d=sub(p,drag.last);drag.last=p;
+  const key=drag.k===1?'a':'b',c=st.cur[key].c,bb=st.W.bb;
+  st.cur[key]={...st.cur[key],c:[Math.min(bb.maxX,Math.max(bb.minX,c[0]+d[0]/st.k)),Math.min(bb.maxY,Math.max(bb.minY,c[1]-d[1]/st.k))]};
+  st.stage='free';renderWork();
+});
+const endDrag=()=>{if(!drag)return;drag=null;act(()=>trySnap(false))};
+$('svgWork').addEventListener('pointerup',endDrag);$('svgWork').addEventListener('pointercancel',endDrag);
+
+/* ===== kết luận & kiểm tra góc xen giữa ===== */
+function relAngle(Ta,Tb){
+  if(Ta.V!==Tb.V||len(sub(Ta.P[Ta.V],Tb.P[Tb.V]))>1e-6)return null;
+  const u=Ta.nb.map(n=>unit(sub(Ta.P[n],Ta.P[Ta.V]))),w=Tb.nb.map(n=>unit(sub(Tb.P[n],Tb.P[Tb.V])));
+  const c=(a,b)=>len(sub(a,b))<1e-4;
+  if((c(u[0],w[0])&&c(u[1],w[1]))||(c(u[0],w[1])&&c(u[1],w[0])))return 'chung';
+  const m=w.map(x=>mul(x,-1));
+  if((c(u[0],m[0])&&c(u[1],m[1]))||(c(u[0],m[1])&&c(u[1],m[0])))return 'doi';
+  return null;
+}
+function check(){
+  if(!st.W)return;
+  const {Ta,Tb,pref,cong}=st,D=st.display||{},nums=!D.hideLen,angNums=nums&&!isH(D.hideAngVal,Ta.i);
+  const same=(x,y)=>len(sub(Ta.P[x],Tb.P[y]))<1e-6;
+  const segSame=(a,b)=>(same(a.a,b.a)&&same(a.b,b.b))||(same(a.a,b.b)&&same(a.b,b.a));
+  const N1=Ta.nm.join(''),N2=Tb.nm.join('');
+  const s1=Ta.sides.map(q=>q.v).sort((a,b)=>a-b),s2=Tb.sides.map(q=>q.v).sort((a,b)=>a-b);
+  const okA=eq(Ta.gv,Tb.gv),okS=eq(s1[0],s2[0])&&eq(s1[1],s2[1]),rel=relAngle(Ta,Tb);
+  const sideEq=(a,b)=>segSame(a,b)?`${mi(a.a+a.b)} là cạnh chung`:`${mi(a.a+a.b)} = ${mi(b.a+b.b)}${nums?` (cùng bằng ${fmt(a.v)} cm)`:''}`;
+  const angEq=(a1,a2)=>rel==='chung'?`${hat(Ta.V)} là góc chung`:rel==='doi'?`${hat(a1)} = ${hat(a2)} (hai góc đối đỉnh)`:`${hat(a1)} = ${hat(a2)}${angNums?` (cùng bằng ${fmt(Ta.gv)}°)`:''}`;
+  let head,lines,concl;
+  if(Ta.inc&&Tb.inc&&okA&&okS){
+    const inv=invert(pref),map=q=>({a:inv[q.a],b:inv[q.b],v:q.v}),N2c=Ta.nm.map(x=>inv[x]).join('');
+    head=`Xét ${mi('Δ'+N1)} và ${mi('Δ'+N2c)} có:`;
+    lines=[sideEq(Ta.sides[0],map(Ta.sides[0])),angEq(Ta.angName(),[inv[Ta.nb[0]],inv[Ta.V],inv[Ta.nb[1]]].join('')),sideEq(Ta.sides[1],map(Ta.sides[1]))];
+    concl=`Do đó <b class="m">Δ${disp(N1)} = Δ${disp(N2c)}</b> (c.g.c).`;
+  }else{
+    const sb=Tb.sides.slice(),pairs=Ta.sides.map(q=>{let j=sb.findIndex(t=>eq(t.v,q.v));if(j<0)j=0;return [q,sb.splice(j,1)[0]]});
+    const sl=([a,b])=>eq(a.v,b.v)?sideEq(a,b):`${mi(a.a+a.b)} ≠ ${mi(b.a+b.b)}${nums?` (${fmt(a.v)} cm ≠ ${fmt(b.v)} cm)`:''}`;
+    const al=okA?angEq(Ta.angName(),Tb.angName()):`${hat(Ta.angName())} ≠ ${hat(Tb.angName())}${angNums?` (${fmt(Ta.gv)}° ≠ ${fmt(Tb.gv)}°)`:''}`;
+    head=`Xét ${mi('Δ'+N1)} và ${mi('Δ'+N2)} có:`;
+    lines=[sl(pairs[0]),al,sl(pairs[1])];
+    if(okA&&okS){const bad=[Ta,Tb].filter(T=>!T.inc);
+      concl=`Nhưng ${bad.map(T=>`${hat(T.angName())} không xen giữa hai cạnh ${T.sides.map(q=>mi(q.a+q.b)).join(' và ')}`).join('; ')}, nên chưa đủ điều kiện kết luận hai tam giác bằng nhau theo trường hợp c.g.c.`}
+    else concl=cong?'Các cặp yếu tố đã cho không tương ứng bằng nhau, nên chưa kết luận được theo trường hợp c.g.c.':`Do đó ${mi('Δ'+N1)} và ${mi('Δ'+N2)} không bằng nhau.`;
+  }
+  $('result').innerHTML=`<div>${head}</div><div class="proof">${lines.map((l,i)=>`<div>${l}${i<2?';':'.'}</div>`).join('')}</div><div>${concl}</div>`;
+}
+function renderSelG(){
+  const F=st.fig,opts=F?F.placed.map(T=>`<option value="${T.i}">Δ${disp(T.nm.join(''))}</option>`).join(''):'';
+  $('selG').innerHTML=opts||'<option value="-1">—</option>';$('bG').disabled=!opts;
+  $('gres').innerHTML='<span class="hint">Chọn một tam giác rồi bấm “Kiểm tra góc xen giữa”.</span>';
+}
+function checkIncl(){
+  const i=+$('selG').value,T=st.fig&&st.fig.placed.find(T=>T.i===i);if(!T)return;
+  st.hl=i;renderFigure();
+  const N=mi('Δ'+T.nm.join('')),sd=T.sides.map(q=>mi(q.a+q.b)).join(' và ');
+  if(T.inc){$('gres').innerHTML=`<div class="badge ok">Là góc xen giữa ✓</div><p>Ở ${N}, hai cạnh ${sd} có chung đỉnh ${mi(T.V)}, nên ${hat(T.angName())} là góc xen giữa hai cạnh ${sd}.</p>`;return}
+  const Wv=[T.sides[0].a,T.sides[0].b].find(x=>x===T.sides[1].a||x===T.sides[1].b),o1=other(T.sides[0],Wv),o2=other(T.sides[1],Wv);
+  $('gres').innerHTML=`<div class="badge warn">Không phải góc xen giữa ✗</div><p>Ở ${N}, hai cạnh ${sd} có chung đỉnh ${mi(Wv)}, nên góc xen giữa hai cạnh này là ${hat(o1+Wv+o2)}. Góc đã cho ${hat(T.angName())} không xen giữa hai cạnh ${sd}.</p>`;
+}
+
+/* ===== thẻ nhập liệu ===== */
+function ph(d,f){const t=tokU(d.name)||['D','E','F'];return disp(f==='g'?t[0]:f==='s1'?t[0]+t[1]:t[1]+t[2])}
+function chipHTML(d,k){const t=tokC(d.ang);if(!t||t.length!==3)return `Tia ${k}`;const r=k===1?t[0]:t[2];return `${disp(t[1])}<i>${disp(r)}</i>`}
+function cardHTML(d,i){
+  const v=f=>esc(d[f]);
+  const draw=`<button class="draw primary" type="button" data-act="draw">Vẽ hình</button>`;
+  if(d.type==='ang') return `<div class="tri-card" data-i="${i}">
+    <div class="lab">Vẽ góc</div>
+    <div class="row"><span class="sym">∠</span><input data-f="ang" class="lbl" value="${v('ang')}" placeholder="xAy" autocomplete="off" spellcheck="false" aria-label="Tên góc"><span class="eqs">=</span><input data-f="angV" class="num" inputmode="decimal" value="${v('angV')}" aria-label="Số đo góc"><span class="unit">°</span></div>
+    <div class="row"><span class="lab2">Cạnh</span><span class="chip" data-chip="1">${chipHTML(d,1)}</span><span class="eqs">:</span><input data-f="p1" class="lbl" value="${v('p1')}" placeholder="AB" autocomplete="off" spellcheck="false" aria-label="Điểm trên tia thứ nhất"><span class="eqs">=</span><input data-f="v1" class="num" inputmode="decimal" value="${v('v1')}" aria-label="Độ dài"><span class="unit">cm</span></div>
+    <div class="row"><span class="lab2"></span><span class="chip" data-chip="2">${chipHTML(d,2)}</span><span class="eqs">:</span><input data-f="p2" class="lbl" value="${v('p2')}" placeholder="AC" autocomplete="off" spellcheck="false" aria-label="Điểm trên tia thứ hai"><span class="eqs">=</span><input data-f="v2" class="num" inputmode="decimal" value="${v('v2')}" aria-label="Độ dài"><span class="unit">cm</span></div>
+    ${draw}
+    <div class="row"><span class="nlab">Tam giác 1:</span><span class="sym">Δ</span><input data-f="name" class="name" value="${v('name')}" autocomplete="off" spellcheck="false" aria-label="Tên tam giác 1 (tự hiện)"></div>
+    <div class="cerr"></div><div class="info"></div></div>`;
+  return `<div class="tri-card" data-i="${i}">
+    <div class="tri-title"><span>Tam giác ${i+1}</span><button class="del" type="button" data-act="del" aria-label="Xóa tam giác ${i+1}">Xóa</button></div>
+    <div class="row"><span class="lab2"></span><span class="sym">Δ</span><input data-f="name" class="name" value="${v('name')}" placeholder="DEF" autocomplete="off" spellcheck="false" aria-label="Tên tam giác ${i+1}"></div>
+    <div class="row"><span class="lab2">Góc</span><input data-f="g" class="lbl" value="${v('g')}" placeholder="${ph(d,'g')}" autocomplete="off" spellcheck="false" aria-label="Góc"><span class="eqs">=</span><input data-f="gv" class="num" inputmode="decimal" value="${v('gv')}" aria-label="Số đo góc"><span class="unit">°</span></div>
+    <div class="row"><span class="lab2">Cạnh</span><input data-f="s1" class="lbl" value="${v('s1')}" placeholder="${ph(d,'s1')}" autocomplete="off" spellcheck="false" aria-label="Cạnh thứ nhất"><span class="eqs">=</span><input data-f="v1" class="num" inputmode="decimal" value="${v('v1')}" aria-label="Độ dài"><span class="unit">cm</span></div>
+    <div class="row"><span class="lab2"></span><input data-f="s2" class="lbl" value="${v('s2')}" placeholder="${ph(d,'s2')}" autocomplete="off" spellcheck="false" aria-label="Cạnh thứ hai"><span class="eqs">=</span><input data-f="v2" class="num" inputmode="decimal" value="${v('v2')}" aria-label="Độ dài"><span class="unit">cm</span></div>
+    <div class="opt" hidden><div class="lab">Chung một đỉnh <span class="mi oname"></span>, vẽ theo kiểu:</div><div class="seg"><button type="button" data-mode="doi">Hai góc đối đỉnh</button><button type="button" data-mode="chung">Góc chung</button></div></div>
+    <div class="amb" hidden></div>
+    ${draw}
+    <div class="cerr"></div><div class="info"></div></div>`;
+}
+function renderCards(){$('cards').innerHTML=st.tris.map(cardHTML).join('');updateCards()}
+function infoLine(T){
+  const given=new Set(T.sides.map(s=>[s.a,s.b].sort().join('')));
+  const parts=[[0,1],[1,2],[0,2]].map(([i,j])=>[T.nm[i],T.nm[j]]).filter(([a,b])=>!given.has([a,b].sort().join(''))).map(([a,b])=>`${mi(a+b)} ≈ ${fmt(T.L(a,b))} cm`);
+  T.nm.filter(x=>x!==T.V).forEach(x=>parts.push(`${hat(x)} ≈ ${fmt(T.angAt(x))}°`));
+  return 'Tính được: '+parts.join('; ');
+}
+function updateCards(){
+  document.querySelectorAll('.tri-card').forEach(card=>{
+    const i=+card.dataset.i,d=st.tris[i],T=(st.parsed||[])[i];
+    card.classList.toggle('pa',st.W&&st.pair[0]===i);card.classList.toggle('pb',st.W&&st.pair[1]===i);
+    const ce=card.querySelector('.cerr'),inf=card.querySelector('.info'),opt=card.querySelector('.opt');
+    ce.innerHTML='';inf.innerHTML='';
+    if(!d.drawn){inf.textContent='Chưa vẽ. Nhập xong bấm “Vẽ hình”.'}
+    else if(T&&T.err)ce.innerHTML=T.err;
+    else if(T&&T.angleOnly)inf.innerHTML=`Đã vẽ góc. Có thể nhập hai điểm trên hai tia để tạo tam giác 1.`;
+    else if(T&&T.cerr)ce.innerHTML=T.cerr;
+    else if(T)inf.innerHTML=(T.note?`<span style="color:var(--warn)">${T.note}</span><br>`:'')+infoLine(T);
+    const amb=card.querySelector('.amb');
+    if(amb){const show=!!(T&&!T.err&&T.cands&&T.cands.length>1);amb.hidden=!show;
+      amb.innerHTML=show?'Số liệu này cho 2 tam giác. Chọn hình để vẽ:'+T.cands.map((c,k)=>`<label><input type="radio" name="amb${i}" value="${k}" ${k===T.solIdx?'checked':''}> Tam giác ${T.types[k]} (${mi(T.unknownName)} ≈ ${fmt(c)} cm)</label>`).join(''):''}
+    if(opt){const show=!!(T&&!T.err&&T.how==='one');opt.hidden=!show;if(show){opt.querySelector('.oname').textContent=disp(T.shareO);opt.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===(d.mode||'doi'))))}}
+  });
+}
+function onInput(e){
+  const el=e.target;if(!el.dataset.f)return;const card=el.closest('.tri-card'),i=+card.dataset.i,d=st.tris[i],f=el.dataset.f;
+  d[f]=el.value;
+  const set=(ff,v)=>{d[ff]=v;const x=card.querySelector(`[data-f="${ff}"]`);if(x)x.value=v};
+  if(d.type==='ang'){
+    if(f==='name')d.nameAuto=!el.value.trim();
+    const t=tokC(d.ang);
+    if(t&&t.length===3&&/^[A-Z]/.test(t[1])){
+      const [r1,V,r2]=t;
+      if(f==='ang'){if(/^[A-Z]/.test(r1))set('p1',V+r1);if(/^[A-Z]/.test(r2))set('p2',V+r2)}
+      if(d.nameAuto&&f!=='name'){const P1=ptName(d.p1,V),P2=ptName(d.p2,V);if(P1&&P2&&P1!==P2)set('name',V+P1+P2)}
+    }
+    if(t&&t.length===3){const V=t[1];card.querySelector('[data-f="p1"]').placeholder=V+(V==='B'?'M':'B');card.querySelector('[data-f="p2"]').placeholder=V+(V==='C'?'N':'C')}
+    card.querySelector('[data-chip="1"]').innerHTML=chipHTML(d,1);card.querySelector('[data-chip="2"]').innerHTML=chipHTML(d,2);
+  }else if(f==='name'){
+    ['g','s1','s2'].forEach(ff=>{card.querySelector(`[data-f="${ff}"]`).placeholder=ph(d,ff)});
+  }
+}
+function drawCard(i){
+  if(st.busy)return;
+  st.tris[i].drawn=true;
+  rebuild(i);
+}
+function rebuild(focus){
+  st.parsed=st.tris.map((d,i)=>{if(!d.drawn)return null;const T=d.type==='ang'?parseAng(d):parseTri(d);T.i=i;return T});
+  st.fig=buildFigure(st.parsed.filter(T=>T&&!T.err),st.parsed.filter(T=>T&&T.fail));
+  const ids=st.fig.placed.map(T=>T.i);
+  if(focus!==undefined&&ids.includes(focus)){const prev=ids.filter(x=>x<focus).pop();const next=ids.find(x=>x>focus);
+    if(prev!==undefined)st.pair=[prev,focus];else if(next!==undefined)st.pair=[focus,next];}
+  if(!ids.includes(st.pair[0])||!ids.includes(st.pair[1])||st.pair[0]===st.pair[1])st.pair=ids.length>=2?[ids[0],ids[1]]:[ids[0]??-1,-1];
+  st.hl=-1;renderPairSel();renderSelG();setupWork();renderFigure();updateCards();
+}
+function renderPairSel(){
+  const opts=st.fig.placed.map(T=>`<option value="${T.i}">Δ${disp(T.nm.join(''))}</option>`).join('');
+  ['selA','selB'].forEach((id,k)=>{$(id).innerHTML=(st.pair[k]<0?'<option value="-1">—</option>':'')+opts;$(id).value=String(st.pair[k])});
+}
+function onPair(){
+  const a=+$('selA').value,b=+$('selB').value;st.pair=[a,b];
+  setupWork();renderFigure();updateCards();
+}
+
+/* ===== ví dụ ===== */
+const T1=(o)=>({type:'ang',ang:'',angV:'',p1:'',v1:'',p2:'',v2:'',name:'',nameAuto:true,drawn:true,rot:0,flip:false,...o});
+const TN=(o)=>({...newTri(),rot:0,flip:false,drawn:true,...o});
+const PRESETS=[
+  {tris:[T1({ang:'xAy',angV:'60',p1:'AB',v1:'3',p2:'AC',v2:'4',name:'ABC'})]},
+  {tris:[T1({ang:'BAC',angV:'60',p1:'AB',v1:'4,9',p2:'AC',v2:'4',name:'ABC'}),TN({name:'MNP',g:'M',gv:'60',s1:'MN',v1:'4,9',s2:'MP',v2:'4',rot:165})],
+   pair:[0,1],display:{hideLen:true,noArcs:true,bigAng:true,hideAngMark:[1],extra:[{t:1,v:'N',val:50},{t:1,v:'P',val:70}],
+   problem:`<h3>Luyện tập 1 (Hình 4.31)</h3><p>Hai tam giác ${mi('ABC')} và ${mi('MNP')} trong Hình 4.31 có bằng nhau không? Vì sao?</p><p>Trên hình: ${mi('AB')} = ${mi('MN')}, ${mi('AC')} = ${mi('MP')}, ${hat('A')} = 60°, ${hat('N')} = 50°, ${hat('P')} = 70°.</p>`}},
+  {tris:[T1({ang:'BAC',angV:'40',p1:'AB',v1:'4',p2:'AC',v2:'6',name:'ABC'}),TN({name:'ADC',g:'DAC',gv:'40',s1:'AD',v1:'4',s2:'AC',v2:'6'})],pair:[0,1],
+   display:{problem:`<h3>Bài toán</h3><p>Cho hình vẽ, biết ${mi('AB')} = ${mi('AD')} = 4 cm, ${hat('BAC')} = ${hat('DAC')} = 40°.</p><p>Tìm hai tam giác bằng nhau và chứng minh.</p>`}},
+  {tris:[T1({ang:'AOB',angV:'65',p1:'OA',v1:'3',p2:'OB',v2:'4',name:'OAB'}),TN({name:'OCD',g:'COD',gv:'65',s1:'OC',v1:'3',s2:'OD',v2:'4',mode:'doi'})],pair:[0,1],
+   display:{noArcs:true,hideAngVal:true,problem:`<h3>Bài toán</h3><p>Cho hình vẽ, biết ${mi('OA')} = ${mi('OC')} = 3 cm, ${mi('OB')} = ${mi('OD')} = 4 cm.</p><p>Tìm hai tam giác bằng nhau và chứng minh.</p>`}},
+  {tris:[T1({ang:'BAE',angV:'50',p1:'AB',v1:'5',p2:'AE',v2:'3',name:'ABE'}),TN({name:'ACD',g:'A',gv:'50',s1:'AC',v1:'5',s2:'AD',v2:'3',mode:'chung'})],
+   pair:[0,1],display:{hideLen:true,hideAngVal:true,noArcs:true,
+   problem:`<h3>Bài toán</h3><p>Cho hình vẽ, biết ${mi('AD')} = ${mi('AE')} = 3 cm, ${mi('AB')} = ${mi('AC')} = 5 cm.</p><p>Tìm hai tam giác bằng nhau và chứng minh.</p>`}},
+  {tris:[T1({ang:'OAB',angV:'60',p1:'AO',v1:'5',p2:'AB',v2:'1,5',name:'OAB'}),TN({name:'ODC',g:'ODC',gv:'60',s1:'DO',v1:'5',s2:'DC',v2:'1,5'}),
+         TN({name:'OAC',g:'OAC',gv:'60',s1:'AO',v1:'5',s2:'AC',v2:'3,5'}),TN({name:'ODB',g:'ODB',gv:'60',s1:'DO',v1:'5',s2:'DB',v2:'3,5'})],
+   pair:[0,1],display:{hideLen:true,hideAngVal:true,noFill:true,
+   problem:`<h3>Vận dụng (Hình 4.32)</h3><p>Cho Hình 4.32, biết ${hat('OAB')} = ${hat('ODC')}, ${mi('OA')} = ${mi('OD')} và ${mi('AB')} = ${mi('CD')}. Chứng minh rằng:</p><p>a) ${mi('AC')} = ${mi('DB')};<br>b) ${mi('ΔOAC')} = ${mi('ΔODB')}.</p>`}},
+  {tris:[T1({ang:'xAy',angV:'35',name:''}),TN({name:'ABC',g:'A',gv:'35',s1:'AB',v1:'6',s2:'BC',v2:'4',sol:0}),TN({name:'DEF',g:'D',gv:'35',s1:'DE',v1:'6',s2:'EF',v2:'4',sol:1})],pair:[1,2]},
+  {tris:[T1({ang:'BAC',angV:'50',p1:'AB',v1:'4',p2:'AC',v2:'5',name:'ABC'}),TN({name:'DEF',g:'E',gv:'50',s1:'DE',v1:'4',s2:'DF',v2:'5',rot:125,flip:true})],pair:[0,1]},
+  {tris:[T1({ang:'xAy',angV:'40',name:''}),TN({name:'ABC',g:'A',gv:'40',s1:'AB',v1:'4',s2:'BC',v2:'6'}),TN({name:'DEF',g:'D',gv:'40',s1:'DE',v1:'4',s2:'EF',v2:'6',rot:200,flip:true})],pair:[1,2]}
+];
+function setProb(show){$('problem').hidden=!show;$('fig').classList.toggle('has-prob',show);$('bHide').textContent=show?'Ẩn đề':'Hiện đề';$('bHide').setAttribute('aria-pressed',String(!show))}
+function loadPreset(k){
+  const P=PRESETS[k];
+  st.tris=P.tris.map(t=>({...t}));
+  st.display=P.display||{};st.pair=P.pair?[...P.pair]:[-1,-1];
+  const has=!!st.display.problem;
+  $('problem').innerHTML=st.display.problem||'';$('bHide').hidden=!has;setProb(has);
+  renderCards();rebuild();
+}
+
+/* ===== sự kiện ===== */
+$('cards').addEventListener('input',onInput);
+$('cards').addEventListener('change',e=>{const r=e.target;if(r.type!=='radio'||!r.name.startsWith('amb'))return;st.tris[+r.closest('.tri-card').dataset.i].sol=+r.value;rebuild()});
+$('cards').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const card=b.closest('.tri-card'),i=+card.dataset.i;
+  if(b.dataset.act==='draw')drawCard(i);
+  else if(b.dataset.act==='swap'){if(st.busy)return;const d=st.tris[i];[d.v1,d.v2]=[d.v2,d.v1];renderCards();rebuild(i)}
+  else if(b.dataset.act==='del'){if(st.busy)return;st.tris.splice(i,1);st.pair=st.pair.map(p=>p===i?-1:p>i?p-1:p);renderCards();rebuild()}
+  else if(b.dataset.mode){st.tris[i].mode=b.dataset.mode;if(st.tris[i].drawn)rebuild()}
+});
+$('cards').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.dataset.f){drawCard(+e.target.closest('.tri-card').dataset.i)}});
+$('bNew').addEventListener('click',()=>{st.tris.push(newTri());renderCards();const c=document.querySelectorAll('.tri-card');c[c.length-1].querySelector('[data-f="name"]').focus()});
+$('bSep').addEventListener('click',()=>act(doSep));
+$('bStack').addEventListener('click',()=>act(doStack));
+$('bG').addEventListener('click',checkIncl);
+$('bHide').addEventListener('click',()=>{setProb($('problem').hidden)});
+/* phóng to / toàn màn hình */
+const ZL=[1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2,2.2,2.4,2.6,2.8,3];
+document.querySelectorAll('.tools').forEach(tl=>{
+  const svg=$(tl.dataset.z),card=tl.closest('.card'),wrap=svg.parentElement;let zi=0;
+  const apply=()=>{svg.style.setProperty('--z',ZL[zi]);tl.querySelector('.zl').textContent=Math.round(ZL[zi]*100)+'%';
+    tl.querySelector('[data-d="-1"]').disabled=zi===0;tl.querySelector('[data-d="1"]').disabled=zi===ZL.length-1;
+    requestAnimationFrame(()=>{wrap.scrollLeft=(wrap.scrollWidth-wrap.clientWidth)/2;wrap.scrollTop=(wrap.scrollHeight-wrap.clientHeight)/2})};
+  tl.querySelectorAll('[data-d]').forEach(b=>b.addEventListener('click',()=>{zi=Math.max(0,Math.min(ZL.length-1,zi+ +b.dataset.d));apply()}));
+  const mx=tl.querySelector('[data-max]');
+  mx.addEventListener('click',()=>{const on=card.classList.toggle('max');mx.textContent=on?'✕ Thu lại':'⛶';document.body.classList.toggle('noscroll',on)});
+  apply();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.card.max').forEach(c=>c.querySelector('[data-max]').click())});
+$('bReset').addEventListener('click',()=>act(async()=>{await animTo(cloneS(st.W.init),750);st.stage='init';st.fit=null}));
+$('bCheck').addEventListener('click',check);
+$('selA').addEventListener('change',onPair);$('selB').addEventListener('change',onPair);
+$('preset').addEventListener('change',e=>loadPreset(+e.target.value));
+{const ro=new ResizeObserver(()=>{if(!st.busy){renderFigure();renderWork()}});ro.observe($('svgTop'));ro.observe($('svgWork'))}
+loadPreset(0);
+</script>
+</body>
+</html>

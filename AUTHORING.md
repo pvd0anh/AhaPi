@@ -152,11 +152,11 @@ device with no English voice available, the speaker button hides itself.
 | Rename a lesson | Edit the matching line in `index.json` |
 | Remove a lesson | Delete that lesson's line from `index.json` (you may leave the `.md` file in place) |
 | Reorder lessons | Move the line up or down in `index.json` |
-| Change the site's accent colour | Edit the `--accent:` line at the top of `index.html` |
+| Change the site's accent colour | Edit the `--accent:` line at the top of `lessons.html` and of `index.html` |
 
 ## E. Things worth knowing
 
-- Double-clicking `index.html` on your computer **will not work** — the browser refuses to read the
+- Double-clicking `lessons.html` on your computer **will not work** — the browser refuses to read the
   files. View it through the GitHub Pages address instead. `editor.html` does work locally.
 - A network connection is needed to display formulas and video.
 - When a student clicks **Đánh dấu đã học**, the ✓ is saved on that student's own device and is sent

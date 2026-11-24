@@ -1,0 +1,28 @@
+[
+  {
+    "file": "cgc-model.html",
+    "title": "Mô hình c.g.c",
+    "text": "Vẽ góc, vẽ tam giác, rồi tách – xoay – xếp chồng để thấy vì sao hai tam giác bằng nhau theo trường hợp cạnh – góc – cạnh.",
+    "tag": "Toán 7",
+    "new": true,
+    "image": "art/cgc-model.svg"
+  },
+  {
+    "file": "cgc-check.html",
+    "title": "Tìm hai tam giác bằng nhau",
+    "text": "Chọn hai tam giác trong hình, phóng to, xoay về cùng hướng và xếp chồng để kiểm tra xem chúng có bằng nhau không.",
+    "tag": "Luyện tập",
+    "new": true,
+    "image": "art/cgc-check.svg",
+    "kind": "Trò chơi kiểm tra",
+    "go": "Thử ngay →"
+  },
+  {
+    "file": "thuoc-chu-x.html",
+    "title": "Thước chữ X",
+    "text": "Mở thước, đo đường kính trong của bình qua cổ hẹp, so sánh phương án và vì sao hai tam giác bằng nhau giúp đo đúng.",
+    "tag": "Toán 7",
+    "new": true,
+    "image": "art/thuoc-chu-x.svg"
+  }
+]

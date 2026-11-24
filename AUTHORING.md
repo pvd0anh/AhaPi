@@ -162,3 +162,89 @@ device with no English voice available, the speaker button hides itself.
 - When a student clicks **Đánh dấu đã học**, the ✓ is saved on that student's own device and is sent
   nowhere. Clearing their browser history erases it.
 - A lesson's `id` is its `.md` filename. The two must match — the editor takes care of that for you.
+
+## F. Adding an interactive page (a "model")
+
+You already have a finished `.html` file — a model, a game, an exercise page. Putting it on the site
+takes two uploads on GitHub, and nothing else.
+
+**Before you start**, rename your file in **lowercase letters with no accents and no spaces**; use
+hyphens instead of spaces. Example: `Định lý Pytago.html` → `dinh-ly-pytago.html`.
+
+### F1. Upload the page
+
+| Step | What to do |
+|---|---|
+| 1 | On GitHub, open the **models** folder |
+| 2 | Click **Add file → Upload files** → drop your `.html` file in → **Commit changes** |
+
+After one or two minutes the page is live at `https://<site-address>/models/dinh-ly-pytago.html`.
+You can already send that link to students — but it does not yet have a card on the home page.
+
+### F2. Put a card on the home page
+
+| Step | What to do |
+|---|---|
+| 1 | In the **models** folder, click **models.json** → click ✏️ (*Edit this file*) |
+| 2 | Find the last `}` near the bottom, just before the final `]` |
+| 3 | Type a comma `,` right after that `}`, then press Enter and paste the block below |
+| 4 | Change the text between the quotes to suit your page |
+| 5 | Click **Commit changes…** → **Commit changes** |
+
+```json
+  {
+    "file": "dinh-ly-pytago.html",
+    "title": "Định lý Pytago",
+    "text": "Kéo các đỉnh tam giác vuông để thấy a² + b² = c².",
+    "tag": "Toán 8",
+    "new": true
+  }
+```
+
+The finished end of the file then looks like this — note the comma between the two `}` blocks, and
+**no** comma after the last one:
+
+```json
+    "image": "art/thuoc-chu-x.svg"
+  },
+  {
+    "file": "dinh-ly-pytago.html",
+    ...
+    "new": true
+  }
+]
+```
+
+| Line | Meaning |
+|---|---|
+| `"file"` | Exactly the filename you uploaded in F1. **Required** |
+| `"title"` | The card's heading. **Required** |
+| `"text"` | One sentence telling students what they will do |
+| `"tag"` | Small label above the heading, e.g. `Toán 8`, `Luyện tập` |
+| `"new": true` | Colours the label purple. Delete this line (and the comma before it) when the page is no longer new |
+
+Cards appear in the same order as in `models.json`. To move one, cut its whole `{ … }` block and paste
+it elsewhere — keeping the commas between blocks.
+
+### F3. Optional: a picture for the card
+
+Without a picture the card shows a generic drawing. To use your own — a screenshot of the page works
+well:
+
+| Step | What to do |
+|---|---|
+| 1 | Open **models → art** → **Add file → Upload files** → drop the picture in → **Commit changes** |
+| 2 | In your block in `models.json`, add the line `"image": "art/dinh-ly-pytago.png",` |
+
+### If something goes wrong
+
+The home page tells you. A red box appears where the cards should be:
+
+| Red box says | Fix |
+|---|---|
+| *File models/models.json đang bị lỗi* | A comma is missing between two `}` `{` blocks, there is an extra comma after the last block, or a quote is a curly `“ ”` instead of a straight `"`. Open the file again and compare with the example above |
+| *Mục số N … "file" phải là tên file .html…* | Block number N has a filename with accents, spaces, or a typo |
+| *Mục số N … thiếu "title"* | Block number N has no `"title"` line |
+| The card shows but clicking it gives *404* | `"file"` does not match the uploaded filename exactly (upper/lower case counts) |
+
+Other cards keep working while one block is wrong. Only a broken comma or quote hides them all.

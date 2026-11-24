@@ -1,294 +1,166 @@
 # AGENTS.md — AhaPi
 
-Instructions for coding agents working in this repository. Read it through before editing any file.
+## Context
 
-## 1. What this project is
+Static maths-lesson site on GitHub Pages, custom domain `thaole.io.vn` (`CNAME`). No build step,
+package manager, tests, CI or backend; deploying is a push to `main`.
 
-AhaPi is a **static site** that publishes maths lessons. Each lesson carries a YouTube video, theory
-written in Markdown + LaTeX, a vocabulary list with pronunciation buttons, and exercises whose
-answers stay hidden until the student asks for them.
+The maintainers are a teacher and helpers who **do not program**. They author lessons in
+`editor.html` (opened from `file://`) and upload files through github.com. Every change must keep
+that workflow command-free.
 
-- There is **no** build step, package manager, bundler, test runner, CI, backend, database or login.
-- The whole site is 2 HTML files + 1 JSON file + a folder of `.md`. Deploying is `git push` to GitHub Pages.
-- Live: https://pvd0anh.github.io/AhaPi/
+## File map
 
-**The real user of this repository is a teacher who does not program.** They author lessons in
-`editor.html` and upload files through GitHub's web interface — no terminal, no git CLI. Every change
-must preserve that workflow. A feature that is "technically elegant" but requires them to run a
-command is a broken feature.
-
-## 2. File map
-
-| File | Role |
+| Path | Role |
 |---|---|
-| `index.html` | Home page: one card per section, legacy `#<lesson-id>` redirect to `lessons.html` |
-| `lessons.html` | The student-facing lesson app. CSS, HTML and JS in one file |
-| `models/*.html` | Standalone interactive pages (`cgc-model`, `cgc-check`, `thuoc-chu-x`); each has a `.home-link` back to `../index.html` |
-| `editor.html` | Lesson editor for the teacher, runs offline from `file://` |
-| `index.json` | Table of contents. **Array order = teaching order** |
-| `lessons/*.md` | 23 lessons, one file each, in the `[[TAG]]` format of §5 |
+| `index.html` | Home page. Lesson card with progress, model cards from `models/models.json`, editor link. Redirects legacy `#<lesson-id>` to `lessons.html` |
+| `lessons.html` | Student lesson app (CSS + HTML + JS in one file). Needs http(s): it `fetch`es `index.json` |
+| `editor.html` | Teacher's lesson editor with live preview. Must keep working from `file://` |
+| `index.json` | Lesson table of contents. **Array order = teaching order** |
+| `lessons/<id>.md` | One lesson per file, `[[TAG]]` format below |
 | `images/` | Pictures used inside lessons |
-| `README.md` | Technical documentation, for developers |
-| `AUTHORING.md` | Step-by-step lesson-authoring guide, written for a non-technical teacher |
-| `404.html`, `favicon.svg` | Error page + icon |
-| `.nojekyll` | **Must not be deleted** (§4.1) |
+| `models/*.html` | Standalone interactive pages, authored by others. Leave their code and styling as is |
+| `models/models.json` | Home-page cards for `models/*.html`. **Array order = card order**. Hand-edited on github.com |
+| `models/art/` | Card pictures referenced from `models.json` |
+| `404.html`, `favicon.svg` | Error page, icon |
+| `.nojekyll`, `CNAME` | Required by GitHub Pages — keep both |
+| `README.md` / `AUTHORING.md` | Docs for developers / for the non-programming teacher |
 
-External dependencies, all via CDN, all version-pinned:
-`katex@0.16.9` (css + js), `marked@11.1.1`, Google Fonts (Be Vietnam Pro, Source Serif 4, IBM Plex Mono).
+CDN dependencies, version-pinned: `katex@0.16.9`, `marked@11.1.1`, Google Fonts. Keep that set and
+those pins as they are.
 
-## 3. Running it locally
+Run locally: `python3 -m http.server 8000`.
 
-```bash
-python3 -m http.server 8000     # then open http://localhost:8000/
-```
+## Invariants
 
-- `lessons.html` **must** be served over http(s) — it calls `fetch('index.json')`, which the browser
-  blocks under `file://`, and the page then reports "Chưa đọc được danh sách bài".
-- `editor.html` is the opposite: double-clicking it to open over `file://` works, and that is how the
-  teacher uses it. Do not add anything to it that requires a server.
+- **`.nojekyll`** stops Jekyll from hiding `lessons/*.md`; without it every lesson 404s while the
+  build still "succeeds". **`CNAME`** holds the custom domain.
+- **`index.json` rows**: `id` is `YYYY-MM-DD-<slug>`, `date` is the same day as `DD/MM/YYYY`, and
+  `lessons/<id>.md` exists. A lesson missing from `index.json` is silently invisible.
+- **Order**: `renderTree()` groups by `chapter` in order of first appearance; Previous/Next walk the
+  array. Preserve array order in both JSON files.
+- **Chapter names**: `Chương N · Name`, separator U+00B7 MIDDLE DOT, identical byte for byte within
+  a chapter — one stray character splits the sidebar.
+- **Maths before Markdown**: `render()` (in both HTML files) swaps `$$…$$` then `$…$` for
+  `@@M{n}@@` placeholders, runs `marked.parse()`, then substitutes `katex.renderToString()`. Keep
+  this order; it protects `\\`, `_`, `*`. Inline maths cannot span lines (`/\$([^$\n]+?)\$/g`). A
+  KaTeX error renders as red `code.math-error`, not a console error.
+- **Trust boundary**: lesson Markdown is unsanitised (teacher-written, trusted). Data from
+  `index.json`, vocabulary and `models.json` goes through `esc()`. `editor.html` escapes nothing —
+  fine locally; keep that pattern out of the served pages.
+- **`models.json`**: `renderModels()` validates each entry (`file` must match `SAFE_FILE`, `image`
+  `SAFE_IMG` — relative paths only) and shows a Vietnamese notice instead of a blank grid. Keep
+  every failure visible and readable by a non-programmer.
+- **`localStorage`** — two keys, each with a legacy key still read as fallback. Writes go to the new
+  key. Renaming a key or dropping a fallback wipes students' progress.
 
-There is no test suite and no linter. Verification means opening a browser, plus the checks in §12.
+  | Key | Contents | Legacy key | Read by |
+  |---|---|---|---|
+  | `ahapi:progress` | JSON array of studied `id`s | `ahapi-da-hoc` | `lessons.html`, `index.html` |
+  | `ahapi:lang` | `en` \| `both` \| `vi` | `ahapi-ngon-ngu` (`en`/`song`/`vi`) | `lessons.html` |
 
-## 4. Invariants — break these and the site fails silently
+## Lesson format
 
-### 4.1 `.nojekyll`
-GitHub Pages runs Jekyll by default, and Jekyll will not serve `lessons/*.md` as static files.
-Delete `.nojekyll` and every lesson 404s while the site still builds "successfully".
-
-### 4.2 `id` ↔ filename ↔ date
-For each row in `index.json`:
-- `lessons/<id>.md` must exist. A missing file shows an error in the page; it does not crash.
-- `id` has the form `YYYY-MM-DD-<slug>`, and the `date` field is **`DD/MM/YYYY`** of that same day.
-  All 23 lessons currently agree on this — keep it that way.
-- A lesson absent from `index.json` simply does not appear. Nothing reports it anywhere.
-
-### 4.3 Array order in `index.json` is the teaching order
-`renderTree()` groups lessons by their `chapter` field **in order of first appearance**, and the
-Previous / Next buttons walk the array index. Re-sorting the array rewrites the syllabus. Never
-reorder it on your own initiative.
-
-Chapter names follow the pattern `Chương N · Name` — the separator is **U+00B7 MIDDLE DOT**, not a
-full stop or a hyphen. The `chapter` string must match **byte for byte** across lessons in the same
-chapter; one stray character splits the sidebar into two chapters.
-
-### 4.4 Maths is extracted *before* Markdown runs
-`render()` (present in both HTML files) does exactly this, in this order:
-
-1. replace `$$…$$`, then `$…$`, with the placeholder `@@M{n}@@`, pushing the contents onto `store`
-2. `marked.parse()`
-3. replace each placeholder with `katex.renderToString()`
-
-That is what stops Markdown from eating `\\`, `_` and `*` inside a formula. **Do not reorder these
-steps**, and do not swap in KaTeX auto-render.
-
-Consequences worth remembering when authoring:
-- the inline regex is `/\$([^$\n]+?)\$/g` → an inline formula **cannot span lines**, and two stray
-  `$` on one line will be read as a formula.
-- KaTeX runs with `throwOnError:true`; a syntax error **does not** break the page, it renders as red
-  text in `<code class="math-error">`. So a malformed formula slips through if you only watch the console.
-
-### 4.5 Lesson Markdown is not sanitised
-`marked` runs with its defaults, so raw HTML in a `.md` really is rendered. No lesson currently uses
-raw HTML. Lesson content is trusted content (the teacher writes it), which makes this acceptable —
-but **do not open any path for untrusted content to reach `render()`**.
-
-Data from `index.json` and the vocabulary list does go through `esc()` in `lessons.html`. The preview
-pane in `editor.html` escapes **nothing** — acceptable because it runs locally, but do not copy that
-pattern into `lessons.html`.
-
-### 4.6 `localStorage`
-Exactly two keys. Renaming them wipes the progress of every student already using the site, so both
-reads fall back to the legacy key one last time:
-
-| Key | Contents | Legacy key still read |
-|---|---|---|
-| `ahapi:progress` | JSON array of `id`s marked as studied | `ahapi-da-hoc` |
-| `ahapi:lang` | `'en'` \| `'both'` \| `'vi'` | `ahapi-ngon-ngu` (values `en`/`song`/`vi`) |
-
-Writes always go to the new key. Do not remove the fallback reads until every student's browser has
-been through the site at least once.
-
-## 5. Lesson file grammar
-
-The parser is `parseLesson()` in `lessons.html`. It is **not** extended Markdown, it is a handful of
-string slices. Every tag is optional, but its position is not.
+Parsed by `parseLesson()` in `lessons.html` with string slicing, not a Markdown extension.
 
 ```markdown
 [[VIDEO]] https://youtu.be/xxxxxxxxxxx
-[[TITLE VI]] Vietnamese lesson title
+[[TITLE VI]] Vietnamese title
 
-## Theory
-... Markdown + $LaTeX$ ...
+## Theory with $LaTeX$
 
 [[VOCABULARY]]
 ratio /ˈreɪʃiəʊ/ : tỉ số
 
 [[EXERCISES]]
-
-[[Q]] Question text
-[[VI]] Question text in Vietnamese
-[[A]] Answer
-[[VI]] Answer in Vietnamese
+[[Q]] Question [[VI]] Câu hỏi
+[[A]] Answer [[VI]] Đáp án
 ```
 
-The exact rules:
+- Every tag is optional; positions are not. `[[VIDEO]]` and `[[TITLE VI]]` sit alone on their
+  line; the video URL is one `\S+` token.
+- `[[VOCABULARY]]` and `[[EXERCISES]]` are found with `indexOf` (first occurrence only), and
+  `[[VOCABULARY]]` must come first, otherwise it is swallowed into the last answer. Theory is
+  everything before the first of the two.
+- Vocabulary line: split at the first `:`; IPA is the first `/…/` on the left. Lines with no `:` or
+  an empty side are dropped silently.
+- Bilingual theory: `[[EN]]` / `[[VI]]` / `[[SHARED]]` must start a line. `[[EN]]` + `[[VI]]` makes
+  a two-column pair; `[[EN]]` alone or an orphan `[[VI]]` becomes full-width shared. In exercises
+  `[[VI]]` splits inline, once per side.
+- The language picker shows when there is at least one pair or any exercise `[[VI]]`.
+  `[[TITLE VI]]` alone does not count (see divergence below).
 
-- `[[VIDEO]]` and `[[TITLE VI]]` must each **sit alone on their own line**. The video link must be a
-  single whitespace-free token (`\S+`) — pasting a link with a trailing note breaks it.
-- `[[VOCABULARY]]` and `[[EXERCISES]]` are located with `indexOf` → only the **first** occurrence
-  counts, and **`[[VOCABULARY]]` must come before `[[EXERCISES]]`**. Reversed, the vocabulary block
-  gets swallowed into the final answer.
-- Theory is everything before whichever of those two tags appears first.
-- Everything after `[[EXERCISES]]` is exercises, split on `[[Q]]`, each question split again on `[[A]]`.
-- A vocabulary line splits at its **first** `:`. The IPA is the first `/…/` group on the left-hand
-  side and is stripped out of the word. A line with no `:`, or with either side empty, is
-  **dropped silently**.
+Content conventions: `##`/`###` only (the title comes from `index.json`); 3 exercises, the last
+usually "spot the mistake"; at least one `> **Ghi nhớ:** …` callout; vocabulary ~5–7 words with
+Oxford IPA; monolingual by default, `lessons/2026-09-01-ratio-definition-1.md` is the bilingual
+reference. Image filenames are lowercase ASCII with hyphens. UTF-8, LF, no BOM. Treat `lessons/*.md`
+as authored work: edit by hand, never with a bulk script.
 
-### Bilingual markup
+## Code shared between `lessons.html` and `editor.html`
 
-Inside the theory, `[[EN]]` / `[[VI]]` / `[[SHARED]]` must **start a line** (`splitPairs` uses a
-regex anchored with `^` and the `m` flag). Inside exercises it is the opposite — `[[VI]]` splits
-inline anywhere (`splitInline`), and there is **one `[[VI]]` per side** only.
+Both files carry their own copy of `marked.use({renderer:{image}})`, `render()`, `youtubeId()`,
+`splitPairs()`, `hasPair`, `renderPair()`, `renderMaybePair()`, `renderBody()`. Change one, change
+the other, or the editor preview drifts from the student page. Likewise `buildMarkdown()` (editor)
+and `parseLesson()` (lessons) change together.
 
-How `splitPairs()` behaves:
-
-| Case | Result |
-|---|---|
-| text before the first tag | becomes a `shared` block, full width |
-| `[[EN]]` … `[[VI]]` … | one pair, two columns starting level |
-| `[[EN]]` with no `[[VI]]` | demoted to `shared` — a half-translated lesson still reads correctly |
-| orphan `[[VI]]` (no `[[EN]]` immediately before) | becomes `shared`, **no** error |
-| `[[SHARED]]` | full width |
-
-A lesson counts as bilingual when it has **at least one pair**, or any exercise carries a `[[VI]]`.
-`[[TITLE VI]]` on its own is **not** enough to show the language picker.
-
-## 6. Code duplicated across the two HTML files — risk source number one
-
-`lessons.html` and `editor.html` each keep their **own copy** of:
-
-`marked.use({renderer:{image}})` · `render()` · `youtubeId()` · `splitPairs()` · `hasPair` ·
-`renderPair()` · `renderMaybePair()` · `renderBody()`
-
-No build step keeps them in sync. **Change one and you must change the other**, or the teacher's
-preview starts lying about what the student sees.
-
-Some things differ **on purpose** — do not "fix" them without asking:
+Intentional differences — ask before unifying:
 
 | | `lessons.html` | `editor.html` |
 |---|---|---|
-| YouTube embed | `hqdefault` image facade → `youtube-nocookie.com` on click | `<iframe>` on `youtube.com/embed` immediately |
-| HTML escaping | has `esc()` | none |
-| accent variable | `--accent` | `--accent` (separate blackboard palette) |
-| remembers language choice | yes, in `localStorage` | no, in-memory `lang` |
-| bilingual condition | `hasPair(blocks) \|\| exercises.some(...)` | adds `\|\| !!d.titleVi` |
+| YouTube | `hqdefault` facade → `youtube-nocookie.com` on click | immediate `youtube.com/embed` iframe |
+| Escaping | `esc()` | none |
+| Language choice | persisted in `localStorage` | in-memory |
+| Bilingual condition | pairs or exercise `[[VI]]` | also `!!d.titleVi` (known divergence; fix in both if fixing) |
 
-That last row is a **genuine divergence**: a lesson with only a Vietnamese title shows the language
-picker in the preview but not on the student page. If you fix it, fix it in both files.
+## Conventions
 
-If `buildMarkdown()` in `editor.html` changes how it emits files, `parseLesson()` in `lessons.html`
-must change at the same time — and vice versa. The 23 existing lessons will not migrate themselves.
+- Identifiers, comments, CSS names and docs in English; student-facing UI strings in Vietnamese.
+- Vanilla JS, no modules; `const $=id=>document.getElementById(id)`. Dense style matching the
+  surrounding code; short comments that explain why.
+- One file per page: CSS in the page's `<style>` with `/* ===== SECTION ===== */` banners, colours
+  from `:root` variables, JS inline.
+- UI state lives on `document.body` (`data-lang`, `.sidebar-collapsed`, `.sidebar-open`); CSS reacts.
+- Keep existing a11y: `aria-expanded`, `aria-pressed`, `aria-label`, `:focus-visible`,
+  `prefers-reduced-motion`.
+- Breakpoints: 1024px (sidebar becomes overlay), 900px (bilingual columns stack).
+- File and folder names are referenced step by step in `AUTHORING.md`; keep them stable.
+- Any change to the authoring workflow updates both `README.md` and `AUTHORING.md`. `AUTHORING.md`
+  uses "Step / What to do" tables and quotes Vietnamese button names exactly.
+- Commit messages: English, imperative, one line, no Conventional Commits prefix.
 
-## 7. Code conventions
+Site-wide edits touch several files:
+- **Accent colour**: `--accent` in `index.html`, `lessons.html`, `editor.html`; `.home-link b` in
+  each `models/*.html`; two `#5B3FA8` in `404.html`; `fill` in `favicon.svg`; `DEFAULT_ART` in
+  `index.html`.
+- **Product name**: `<title>`, header, `document.title`, `editor.html`, `404.html`. The `π` logo:
+  `index.html`, `lessons.html`, `404.html`, `favicon.svg`.
 
-- **Identifiers, comments and CSS names are English.** Keep it that way. The student-facing UI
-  strings stay Vietnamese — that is deliberate, not an oversight, and the two must not be conflated.
-- Comments are English, short, and explain **why**, placed at end of line or above a block.
-- Vanilla JS. No framework, no modules, no `import`. `const $=id=>document.getElementById(id)`.
-- Style: dense, sparing with whitespace, plenty of one-line expressions. Write to match the
-  surrounding code.
-- CSS: all of it in the `<style>` block of the same file, sectioned with `/* ===== SECTION ===== */`
-  banners, colours and sizes drawn from `:root` variables. Do not add separate CSS/JS files.
-- UI state is pushed onto `document.body` (`data-lang`, `.sidebar-collapsed`, `.sidebar-open`) and
-  CSS handles the rest.
-- Preserve the accessibility already in place: `aria-expanded`, `aria-pressed`, `aria-label`,
-  `:focus-visible`, `@media(prefers-reduced-motion:reduce)`.
-- Breakpoints: **1024px** (sidebar becomes an overlay, `--sidebar-w:0`) and **900px** (bilingual
-  columns stack).
+## Verification
 
-## 8. Lesson content conventions
-
-A new lesson should look like the 23 that already exist:
-
-- Use `##` and `###` only. **Never `#`** — the lesson title already comes from `index.json`.
-- Exactly **3 questions** under `[[EXERCISES]]`; the last is usually a "spot the mistake" question.
-- Every lesson carries at least one `> **Ghi nhớ:** …` callout (23/23 currently do).
-- Tables are used heavily (14/23 lessons) to contrast notations or cases.
-- Vocabulary: present in 17/23 lessons, around 5–7 words, IPA taken from Oxford.
-- **Only 1/23 lessons is bilingual** (`2026-09-01-ratio-definition-1.md`) — it is the reference
-  example for `[[EN]]`/`[[VI]]` structure. Monolingual is still the default.
-- Common LaTeX: `\frac` `\dfrac` `\times` `\div` `\cdot` `\circ` `\widehat` `\parallel` `\perp`
-  `\text` `\qquad` `\Longrightarrow`, plus `\begin{array}{r}…\hline…\end{array}` for column arithmetic.
-- Images: `![Caption](images/file-name.png)`, path from the site root. The caption renders below the
-  picture. Image filenames are lowercase ASCII, no accents, no spaces. (No lesson uses an image yet.)
-- UTF-8, no BOM, LF line endings.
-
-## 9. Documentation — two different readers
-
-- `README.md`: for developers. Tight prose, tables, no emoji, no marketing.
-- `AUTHORING.md`: the lesson-authoring workflow, for a teacher who does not program. "Step / What to
-  do" tables, imperative sentences, button names quoted exactly as they appear on screen. Note that
-  the interface itself is in Vietnamese, so button names appear in Vietnamese inside an otherwise
-  English document — that is correct, do not translate them.
-
-Any feature touching the authoring workflow **must update both files**.
-
-## 10. Deploying
-
-Push to `main`; GitHub Pages serves from the root. No build step, no action. Live in 1–2 minutes.
-Netlify/Vercel work too — drag the folder in, no configuration.
-
-Commit messages: English, imperative mood, one line, no Conventional Commits prefix.
-
-## 11. Do not do the following (unless explicitly asked)
-
-- Add `package.json`, npm, a bundler, TypeScript, a framework, or any build step.
-- Split `lessons.html` into separate `.js` / `.css` files. One file per page is a deliberate design choice.
-- Rename `index.html`, `lessons.html`, `editor.html`, `index.json`, `lessons/`, `images/` — `AUTHORING.md` walks the
-  teacher through those exact names.
-- Delete `.nojekyll`.
-- Re-sort `index.json`.
-- Bulk-edit files in `lessons/` with a script — that content is authored work, not data.
-- Unpin a CDN version, or add a new CDN (this project's effective CSP is "whatever is already here").
-- Change the `localStorage` keys, or drop the legacy-key fallback reads.
-- Translate the student-facing UI strings. They are Vietnamese by design (§7).
-
-Changing the accent colour means editing **every place**: `--accent` in `index.html` and `lessons.html`, `--accent`
-in `editor.html`, the `.home-link b` badge in `models/*.html`, the two hardcoded `#5B3FA8` in `404.html`, and `fill` in `favicon.svg`.
-Changing the product name means editing `<title>`, the header, `document.title`, `editor.html` and
-`404.html`; the `π` logo lives in `index.html`, `lessons.html`, `404.html` and `favicon.svg`.
-
-## 12. Quick verification commands
+No test suite: open the pages in a browser, then run:
 
 ```bash
-# index.json id ↔ .md file ↔ date
+# index.json id ↔ file ↔ date
 python3 - <<'PY'
 import json, os
-rows  = json.load(open('index.json'))
-ids   = [r['id'] for r in rows]
-files = {f[:-3] for f in os.listdir('lessons') if f.endswith('.md')}
+rows=json.load(open('index.json')); ids=[r['id'] for r in rows]
+files={f[:-3] for f in os.listdir('lessons') if f.endswith('.md')}
 print('missing file :', [i for i in ids if i not in files])
-print('orphan file  :', sorted(files - set(ids)))
-print('duplicate id :', [i for i in ids if ids.count(i) > 1])
-print('date mismatch:', [r['id'] for r in rows
-                         if '/'.join(reversed(r['id'][:10].split('-'))) != r['date']])
+print('orphan file  :', sorted(files-set(ids)))
+print('duplicate id :', [i for i in ids if ids.count(i)>1])
+print('date mismatch:', [r['id'] for r in rows if '/'.join(reversed(r['id'][:10].split('-')))!=r['date']])
 PY
 
-# [[VOCABULARY]] must come before [[EXERCISES]]
-for f in lessons/*.md; do
-  v=$(grep -n 'VOCABULARY' "$f" | cut -d: -f1); e=$(grep -n 'EXERCISES' "$f" | cut -d: -f1)
-  [ -n "$v" ] && [ -n "$e" ] && [ "$v" -gt "$e" ] && echo "WRONG ORDER: $f"
-done
+# models.json parses and every file/image exists
+python3 -c "import json,os;[print('MISSING:',p) for m in json.load(open('models/models.json')) for p in ['models/'+m['file']]+(['models/'+m['image']] if m.get('image') else []) if not os.path.exists(p)]"
 
-# tag census
-grep -ho '\[\[[^]]*\]\]' lessons/*.md | sort | uniq -c | sort -rn
+# [[VOCABULARY]] before [[EXERCISES]]
+for f in lessons/*.md; do v=$(grep -n 'VOCABULARY' "$f"|cut -d: -f1); e=$(grep -n 'EXERCISES' "$f"|cut -d: -f1)
+  [ -n "$v" ] && [ -n "$e" ] && [ "$v" -gt "$e" ] && echo "WRONG ORDER: $f"; done
 
-# images referenced by a lesson but absent from images/
+# lesson images that do not exist
 grep -oh 'images/[^)]*' lessons/*.md | sort -u | while read p; do [ -f "$p" ] || echo "MISSING: $p"; done
 
-# unclosed inline formula (the number of $ on a line must be even)
-awk '{n=gsub(/\$/,"$")} n%2 {print FILENAME":"FNR": odd number of $"}' lessons/*.md
-
-# no Vietnamese identifiers crept back into the code
-grep -nE '\-\-(nhan|chu|vien|nen|giay|do|xanh)|function (ve|tach|phan|lay|tao)[A-Z]' lessons.html editor.html
+# odd number of $ on a line (unclosed inline maths)
+awk '{n=gsub(/\$/,"$")} n%2 {print FILENAME":"FNR}' lessons/*.md
 ```

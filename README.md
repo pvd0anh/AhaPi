@@ -1,131 +1,125 @@
 # AhaPi
 
-A static site for publishing maths lessons — YouTube video, LaTeX theory, and exercises with hidden answers. No server, no database, no login, no build step.
+Static site publishing maths lessons from the [Thảo Lê](https://www.youtube.com/@ThaoLe-pm8mh)
+YouTube channel: video, Markdown + LaTeX theory, vocabulary with pronunciation, and exercises with
+hidden answers. Also hosts standalone interactive geometry models. No server, database, login or
+build step.
 
-**Live:** https://pvd0anh.github.io/AhaPi/
+**Live:** https://thaole.io.vn
 
-## How it works
-
-`lessons.html` reads `index.json` (the table of contents) and fetches each lesson from `lessons/<id>.md` on demand. Formulas render with KaTeX, Markdown with marked. That is the whole architecture — two HTML files and a folder of text.
-
-`index.html` is the home page: a card per section linking to `lessons.html`, the interactive pages and the editor. Each sub-page links back to it. Old links of the form `index.html#<lesson-id>` are redirected to `lessons.html#<lesson-id>`.
+## Structure
 
 | Path | Role |
 |---|---|
-| `index.html` | Home page — links to every section below |
-| `lessons.html` | The student-facing lesson app |
-| `models/cgc-model.html` | Interactive model: two triangles equal by side-angle-side (Toán 7) |
-| `models/cgc-check.html` | Exercise: find pairs of equal triangles by overlaying them |
-| `models/thuoc-chu-x.html` | Interactive model: the X-shaped calliper, measuring a vessel through a narrow neck (Toán 7) |
-| `editor.html` | Lesson editor for the teacher — fill a form, download a `.md`, get the JSON line |
-| `index.json` | Table of contents. **Row order = teaching order** |
-| `lessons/*.md` | One file per lesson. Filename must match its `id` |
-| `images/` | Pictures used inside lessons |
-| `.nojekyll` | **Keep this.** Without it GitHub Pages runs Jekyll and the `.md` lessons stop loading |
-| `AUTHORING.md` | Step-by-step authoring guide, written for a non-technical teacher |
-| `AGENTS.md` | Conventions and invariants, for coding agents and contributors |
+| `index.html` | Home page: lesson card, interactive-model cards, editor link |
+| `lessons.html` | Lesson app. Reads `index.json`, fetches `lessons/<id>.md` on demand |
+| `editor.html` | Lesson editor with live preview; runs from `file://` |
+| `index.json` | Table of contents. Row order = teaching order |
+| `lessons/*.md` | One lesson per file; filename = `id` |
+| `images/` | Pictures used in lessons |
+| `models/*.html` | Interactive pages (side-angle-side model, equal-triangle exercise, X-calliper) |
+| `models/models.json` | Home-page cards for the interactive pages. Array order = card order |
+| `models/art/` | Card pictures |
+| `.nojekyll`, `CNAME` | GitHub Pages config — keep both |
+| `AUTHORING.md` | Click-by-click guide for the teacher |
+| `AGENTS.md` | Invariants and conventions for contributors and coding agents |
 
-The interface is in Vietnamese, because its audience is; the code, comments and documentation are in English. Keep those two separate — see `AGENTS.md` §7.
+Rendering uses KaTeX 0.16.9 and marked 11.1.1 from jsDelivr. UI text is Vietnamese; code and docs
+are English.
 
-## Content
+## Run locally
 
-23 lessons across 5 chapters, built from the [Thảo Lê](https://www.youtube.com/@ThaoLe-pm8mh) YouTube channel:
+```bash
+python3 -m http.server 8000   # http://localhost:8000/
+```
 
-| Chapter | Lessons |
-|---|---|
-| Ratio | 8 |
-| Decimal | 6 |
-| Proportional Relationship | 2 |
-| Toán lớp 7 (Vietnamese) | 6 |
-| Better Everyday | 1 |
+`lessons.html` needs http(s) because it uses `fetch`. `editor.html` opens directly from disk.
 
 ## Lesson format
 
 ```markdown
 [[VIDEO]] https://youtu.be/xxxxxxxxxxx
-[[TITLE VI]] Vietnamese lesson title
+[[TITLE VI]] Vietnamese title
 
-## A heading
+## Heading
 
-Plain text, **bold**, inline maths $a^2+b^2=c^2$.
+Text with inline maths $a^2+b^2=c^2$ and display maths:
 
-$$\int_{0}^{1} x\,dx = \frac{1}{2}$$
+$$\frac{a}{b}$$
 
-> A callout box
+> **Ghi nhớ:** a callout
 
-![Caption shown under the picture](images/diagram.png)
+![Caption](images/diagram.png)
 
 [[VOCABULARY]]
 ratio /ˈreɪʃiəʊ/ : tỉ số
-highest common factor : ước chung lớn nhất
 
 [[EXERCISES]]
 
-[[Q]] Question text
-[[A]] Answer, hidden until the student clicks
+[[Q]] Question
+[[A]] Answer, hidden until clicked
 ```
 
-Every tag is optional. `[[VIDEO]]` and `[[TITLE VI]]` must sit alone on their own line; everything after `[[EXERCISES]]` is parsed as exercises, and `[[VOCABULARY]]` must precede it.
+- All tags are optional. `[[VIDEO]]` and `[[TITLE VI]]` sit alone on their line; `[[VOCABULARY]]`
+  must precede `[[EXERCISES]]`.
+- Vocabulary lines are `word /ipa/ : meaning` (IPA optional). Each gets a speaker button (browser
+  speech synthesis) and an Oxford Learner's Dictionaries link.
+- Image alt text becomes the caption; paths resolve from the site root.
 
-Images use ordinary Markdown, `![caption](images/file.png)`. Paths resolve from the site root, so `images/…` is what you want; a full external URL works too. The alt text becomes a caption under the picture — leave the brackets empty for no caption.
-
-Each `[[VOCABULARY]]` line is `english /ipa/ : vietnamese`, with the IPA optional. Every entry gets a speaker button — pronunciation comes from the browser's own speech engine, so it needs no files, no API key and no network — plus a link out to Oxford Learner's Dictionaries for the full entry.
-
-## Bilingual lessons
-
-The audience reads Vietnamese and studies maths in English, so a lesson can carry both languages side by side. Mark up the theory in pairs — `[[EN]]` opens the English side of a block, `[[VI]]` its translation:
+### Bilingual lessons
 
 ```markdown
 [[EN]]
-## Order Matters
-
-A ratio is not just a pair of numbers — the **order** carries meaning.
+A ratio compares two quantities.
 [[VI]]
-## Thứ tự có ý nghĩa
-
-Tỉ số không chỉ là một cặp số — **thứ tự** mang ý nghĩa riêng.
+Tỉ số so sánh hai đại lượng.
 
 [[SHARED]]
-
 $$a : b = \frac{a}{b}$$
 
-[[Q]] A box contains 5 red pens and 8 blue pens. Write the ratio.
-[[VI]] Một hộp có 5 cái bút đỏ và 8 cái bút xanh. Hãy viết tỉ số.
-[[A]] $5:8$
-[[VI]] $5:8$
+[[Q]] Write the ratio. [[VI]] Hãy viết tỉ số.
+[[A]] $5:8$ [[VI]] $5:8$
 ```
 
-Each pair renders as one grid row, so the two languages stay level with each other no matter how the translation runs long. `[[SHARED]]` marks a block that needs no translation — a formula, a picture, a table of numbers — and it spans the full width. A block left untranslated (an `[[EN]]` with no `[[VI]]`) does the same, so a half-translated lesson still reads correctly.
+`[[EN]]`/`[[VI]]` pairs render side by side, kept level per row; `[[SHARED]]` and untranslated blocks
+span full width. Lessons with a pair or an exercise translation get a switch
+(**English · Cả hai · Tiếng Việt**), remembered in `localStorage`. Columns stack below 900px.
 
-A lesson containing at least one pair gets a display switch: **English · Cả hai · Tiếng Việt**. In the two single-language modes each block keeps a *Click to Translate* button that reveals its counterpart in place; the choice is remembered in `localStorage` and applies to every lesson. Below 900px the columns stack, each translation labelled and rule-marked rather than side by side.
+## Adding content
 
-Vocabulary meanings are hidden behind the same click — the English word, its IPA and its speaker button show, the Vietnamese waits until asked. Switching to **Tiếng Việt** reveals them all at once.
+- **Lesson**: fill in `editor.html`, download the `.md` into `lessons/`, paste the current
+  `index.json` into the editor to get an updated copy, commit both. Editing a lesson touches only
+  its `.md`; reordering or removing touches only `index.json`.
+- **Interactive page**: add a self-contained `.html` to `models/` (prefix relative paths with
+  `../`, optionally copy the `.home-link` block from `models/cgc-model.html`) and an entry to
+  `models/models.json`:
 
-Exercises take `[[VI]]` inline the same way, on the question and on the answer.
+  | Field | Required | Meaning |
+  |---|---|---|
+  | `file` | yes | filename in `models/`; ASCII letters, digits, `-` `_` `.`, ends in `.html` |
+  | `title` | yes | card heading |
+  | `text` | no | one-line description |
+  | `tag` | no | label above the heading, e.g. `Toán 8` |
+  | `new` | no | `true` fills the tag with the accent colour |
+  | `image` | no | path relative to `models/`, e.g. `art/x.svg`; omitted → generic drawing |
+  | `kind`, `go` | no | footer texts; defaults `Mô hình tương tác` / `Khám phá →` |
 
-## Adding a lesson
+  Invalid JSON or a bad entry shows a readable notice on the home page instead of breaking it.
 
-Open `editor.html` by double-clicking it — it runs locally with a live preview. Fill in the form, download the `.md` into `lessons/`, then paste your current `index.json` into step 6 to get an updated copy. Commit both files; GitHub Pages redeploys itself in about a minute.
-
-Editing an existing lesson only touches its `.md`. Renaming, reordering or removing a lesson only touches `index.json`. Adding a new one needs both — a lesson missing from `index.json` will not appear in the menu.
-
-`AUTHORING.md` covers the same ground click by click, for someone who does not use a terminal.
+`AUTHORING.md` covers both flows for non-developers.
 
 ## Deploy
 
-Push to a public GitHub repo, then **Settings → Pages → Branch: `main` / `(root)`**. Netlify and Vercel also work: drag the folder in, no build configuration needed.
+Push to `main`; GitHub Pages serves the repo root. Netlify or Vercel also work with no configuration.
 
 ## Customising
 
-The accent colour is the `--accent:` variable at the top of `lessons.html`. Changing it site-wide means: `--accent` in `index.html` and `lessons.html`, the `.home-link b` badge in every `models/*.html`, `--accent` in `editor.html`, the two hardcoded `#5B3FA8` in `404.html`, and `fill` in `favicon.svg`.
+- Accent colour: `--accent` in `index.html`, `lessons.html`, `editor.html`, plus the hardcoded
+  `#5B3FA8` in `models/*.html`, `404.html`, `favicon.svg` and `index.html`'s default card art.
+- Lesson paper background: `--paper`, `--grid-line`, `--grid-size` in `lessons.html`.
 
-The ruled-paper backdrop behind the theory of each lesson is `--paper`, `--grid-line` and `--grid-size` next to it. The name appears in `<title>`, the header, `document.title`, `editor.html` and `404.html`; the `π` logo lives in `index.html`, `lessons.html`, `404.html` and `favicon.svg`.
+## Limits
 
-A new standalone page goes in `models/` as one self-contained `.html`, gets a card in `index.html` (`href="models/<file>.html"`), and a `<a class="home-link" href="../index.html">` back link (copy the CSS block from `models/cgc-model.html`). Any other relative path inside the page (favicon, images) needs the `../` prefix too.
-
-## Known limits
-
-- Progress is stored per browser in `localStorage`. It does not sync across devices, and the teacher cannot see who has studied what.
-- `lessons.html` will not run from `file://` — browsers block `fetch` there. Use GitHub Pages or any static server. (`editor.html` does run locally.)
-- KaTeX, marked and Google Fonts load from CDNs, so formulas and video need a connection. Vendoring them locally is the fix if you need full offline use.
-- Videos set to Private on YouTube cannot be embedded.
+- Progress is per browser (`localStorage`); no sync, no teacher view.
+- KaTeX, marked and fonts come from CDNs, so the site needs a connection.
+- Private YouTube videos cannot be embedded.

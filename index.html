@@ -60,10 +60,9 @@ h1{font-size:clamp(30px,5vw,42px);font-weight:800;letter-spacing:-.03em;line-hei
 .card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(20,20,26,.09);border-color:#D4D4DA}
 .card .art{aspect-ratio:16/9;display:grid;place-items:center;border-bottom:1px solid var(--border)}
 .card .art svg{width:72%;height:auto;max-height:82%}
+.card .art img{width:100%;height:100%;object-fit:cover;display:block}   /* photos/screenshots fill the frame */
+.card .art img[src$=".svg"]{width:72%;height:auto;max-height:82%;object-fit:contain}   /* drawings sit like the inline SVG */
 .card.lessons .art{background:var(--accent-soft)}
-.card.model .art{background:var(--blue-soft)}
-.card.check .art{background:#FBEFF5}
-.card.ruler .art{background:#FBF3E6}
 .card .body{padding:18px 20px 20px;display:flex;flex-direction:column;flex:1}
 .tag{
   align-self:flex-start;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
@@ -76,6 +75,8 @@ h1{font-size:clamp(30px,5vw,42px);font-weight:800;letter-spacing:-.03em;line-hei
 .card .go{font-weight:600;color:var(--accent);white-space:nowrap}
 .card:hover .go{text-decoration:underline}
 .meter[hidden]{display:none}
+.notice{grid-column:1/-1;padding:12px 16px;border:1px dashed #E0A3A3;border-radius:12px;background:#FDF2F2;color:#8E1B1B;font-size:14px;line-height:1.5}
+.notice code{font-family:'IBM Plex Mono',monospace;font-size:12.5px}
 .meter{display:flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:12px}
 .meter i{display:block;width:70px;height:6px;border-radius:99px;background:var(--border);overflow:hidden}
 .meter i b{display:block;height:100%;width:0;background:var(--green);transition:width .4s ease}
@@ -132,66 +133,8 @@ footer a{color:inherit}
       </div>
     </a>
 
-    <a class="card model" href="models/cgc-model.html">
-      <div class="art" aria-hidden="true">
-        <svg viewBox="0 0 160 90">
-          <path d="M14 76 L58 76 L30 24 Z" fill="rgba(47,95,208,.16)" stroke="#2f5fd0" stroke-width="2.5" stroke-linejoin="round"/>
-          <path d="M146 76 L102 76 L130 24 Z" fill="rgba(176,58,122,.16)" stroke="#b03a7a" stroke-width="2.5" stroke-linejoin="round"/>
-          <path d="M34 72 V80 M38 72 V80" stroke="#2f5fd0" stroke-width="2"/><path d="M122 72 V80 M126 72 V80" stroke="#b03a7a" stroke-width="2"/>
-          <path d="M23 50 L19 52 M120 50 L124 52" stroke="#555" stroke-width="2"/>
-          <path d="M70 46 C 80 36, 90 36, 96 44" fill="none" stroke="#1B1B1F" stroke-width="1.8" stroke-dasharray="4 3"/>
-          <path d="M96 44 l-6 -1 l3 -5" fill="none" stroke="#1B1B1F" stroke-width="1.8"/>
-        </svg>
-      </div>
-      <div class="body">
-        <span class="tag new">Toán 7</span>
-        <h2>Mô hình c.g.c</h2>
-        <p>Vẽ góc, vẽ tam giác, rồi tách – xoay – xếp chồng để thấy vì sao hai tam giác bằng nhau theo trường hợp cạnh – góc – cạnh.</p>
-        <div class="foot"><span>Mô hình tương tác</span><span class="go">Khám phá →</span></div>
-      </div>
-    </a>
-
-    <a class="card check" href="models/cgc-check.html">
-      <div class="art" aria-hidden="true">
-        <svg viewBox="0 0 160 90">
-          <g stroke-width="2.2" stroke-linejoin="round">
-            <path d="M14 40 L46 40 L24 12 Z" fill="#fff" stroke="#1f4fbf"/>
-            <path d="M58 14 L90 14 L70 42 Z" fill="#fff" stroke="#556072"/>
-            <path d="M104 40 L142 40 L118 10 Z" fill="#fff" stroke="#556072"/>
-            <path d="M18 80 L50 80 L40 52 Z" fill="#fff" stroke="#556072"/>
-            <path d="M62 78 L94 78 L84 50 Z" fill="#fff" stroke="#1f4fbf"/>
-          </g>
-          <circle cx="128" cy="66" r="16" fill="#16A34A"/>
-          <path d="M120 66 l6 6 l10 -12" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <div class="body">
-        <span class="tag new">Luyện tập</span>
-        <h2>Tìm hai tam giác bằng nhau</h2>
-        <p>Chọn hai tam giác trong hình, phóng to, xoay về cùng hướng và xếp chồng để kiểm tra xem chúng có bằng nhau không.</p>
-        <div class="foot"><span>Trò chơi kiểm tra</span><span class="go">Thử ngay →</span></div>
-      </div>
-    </a>
-    <a class="card ruler" href="models/thuoc-chu-x.html">
-      <div class="art" aria-hidden="true">
-        <svg viewBox="0 0 160 90">
-          <g stroke-linecap="round">
-            <path d="M38 14 L122 76" stroke="#B07A3B" stroke-width="9"/><path d="M38 14 L122 76" stroke="#E8C99B" stroke-width="6"/>
-            <path d="M38 76 L122 14" stroke="#B07A3B" stroke-width="9"/><path d="M38 76 L122 14" stroke="#E8C99B" stroke-width="6"/>
-          </g>
-          <circle cx="80" cy="45" r="4.5" fill="#23395B"/>
-          <path d="M38 14 L38 76" stroke="#2E6DB4" stroke-width="2" stroke-dasharray="4 3"/>
-          <path d="M122 14 L122 76" stroke="#C2185B" stroke-width="2" stroke-dasharray="4 3"/>
-          <text x="74" y="36" font-family="Georgia,serif" font-style="italic" font-size="12" fill="#23395B">O</text>
-        </svg>
-      </div>
-      <div class="body">
-        <span class="tag new">Toán 7</span>
-        <h2>Thước chữ X</h2>
-        <p>Mở thước, đo đường kính trong của bình qua cổ hẹp, so sánh phương án và vì sao hai tam giác bằng nhau giúp đo đúng.</p>
-        <div class="foot"><span>Mô hình tương tác</span><span class="go">Khám phá →</span></div>
-      </div>
-    </a>
+    <!-- model cards are built from models/models.json (see renderModels) -->
+    <div id="models-slot" hidden></div>
   </div>
 
   <div class="teacher">
@@ -204,6 +147,55 @@ footer a{color:inherit}
 
 <script>
 const $=id=>document.getElementById(id);
+
+// ===== MODEL CARDS =====
+// models/models.json is edited by hand on github.com by non-developers, so every
+// failure must surface as a readable notice on the page, never as a blank grid.
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ART_BG=['var(--blue-soft)','#FBEFF5','#FBF3E6','#E8F5E9','var(--accent-soft)'];
+const SAFE_FILE=/^[\w.-]+\.html?$/i, SAFE_IMG=/^(?!.*\.\.)[\w.\/-]+\.(svg|png|jpe?g|webp|gif)$/i;   // relative paths only: no "javascript:", no "../"
+const DEFAULT_ART=`<svg viewBox="0 0 160 90"><path d="M30 72 L72 72 L46 26 Z" fill="rgba(91,63,168,.14)" stroke="#5B3FA8" stroke-width="2.5" stroke-linejoin="round"/>
+  <circle cx="108" cy="46" r="22" fill="rgba(31,79,191,.12)" stroke="#1f4fbf" stroke-width="2.5"/>
+  <path d="M112 52 l0 22 l6 -6 l5 10 l5 -2.5 l-5 -10 l8 0 Z" fill="#fff" stroke="#1B1B1F" stroke-width="2" stroke-linejoin="round"/></svg>`;
+
+function modelCard(m,i){
+  const art=m.image?`<img src="models/${esc(m.image)}" alt="" loading="lazy">`:DEFAULT_ART;
+  return `<a class="card" href="models/${esc(m.file)}">
+      <div class="art" aria-hidden="true" style="background:${ART_BG[i%ART_BG.length]}">${art}</div>
+      <div class="body">
+        ${m.tag?`<span class="tag${m.new?' new':''}">${esc(m.tag)}</span>`:''}
+        <h2>${esc(m.title)}</h2>
+        <p>${esc(m.text)}</p>
+        <div class="foot"><span>${esc(m.kind||'Mô hình tương tác')}</span><span class="go">${esc(m.go||'Khám phá →')}</span></div>
+      </div>
+    </a>`;
+}
+
+async function renderModels(){
+  const slot=$('models-slot');
+  const notice=html=>`<div class="notice">${html}</div>`;
+  let list;
+  try{
+    const res=await fetch('models/models.json',{cache:'no-cache'});
+    if(!res.ok) throw new Error('missing');
+    const text=await res.text();
+    try{list=JSON.parse(text);}catch(e){
+      slot.outerHTML=notice(`<b>File <code>models/models.json</code> đang bị lỗi</b>, nên các mô hình chưa hiện ra. Hay gặp nhất: thiếu dấu phẩy <code>,</code> giữa hai mục, thừa dấu phẩy sau mục cuối, hoặc dùng dấu ngoặc kép cong “ ” thay cho <code>"</code>.<br><small>${esc(e.message)}</small>`);
+      return;
+    }
+  }catch(e){ if(location.protocol!=='file:') slot.outerHTML=notice('Chưa đọc được danh sách mô hình (<code>models/models.json</code>).'); else slot.remove(); return; }
+  if(!Array.isArray(list)){ slot.outerHTML=notice('<code>models/models.json</code> phải bắt đầu bằng <code>[</code> và kết thúc bằng <code>]</code>.'); return; }
+  const bad=[], cards=[];
+  list.forEach((m,i)=>{
+    const why=!m||typeof m!=='object'?'không đúng dạng { … }'
+      :!SAFE_FILE.test(m.file||'')?'"file" phải là tên file .html, không dấu, không khoảng trắng'
+      :!m.title?'thiếu "title"'
+      :m.image&&!SAFE_IMG.test(m.image)?'"image" phải là đường dẫn ảnh trong thư mục models, ví dụ "art/ten-anh.png"':'';
+    why?bad.push(`Mục số ${i+1}${m&&m.title?` (${esc(m.title)})`:''}: ${esc(why)}`):cards.push(modelCard(m,cards.length));
+  });
+  slot.outerHTML=cards.join('\n')+(bad.length?notice('<b>Một số mô hình chưa hiện vì sai trong <code>models/models.json</code>:</b><br>'+bad.join('<br>')):'');
+}
+renderModels();
 
 // progress shares the lesson app's key (plus its legacy fallback) — see AGENTS.md §4.6
 function readDone(){

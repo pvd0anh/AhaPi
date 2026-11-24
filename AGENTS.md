@@ -23,7 +23,7 @@ command is a broken feature.
 |---|---|
 | `index.html` | Home page: one card per section, legacy `#<lesson-id>` redirect to `lessons.html` |
 | `lessons.html` | The student-facing lesson app. CSS, HTML and JS in one file |
-| `cgc-model.html`, `cgc-check.html` | Standalone interactive pages (side-angle-side triangles); each has a `.home-link` back to `index.html` |
+| `models/*.html` | Standalone interactive pages (`cgc-model`, `cgc-check`, `thuoc-chu-x`); each has a `.home-link` back to `../index.html` |
 | `editor.html` | Lesson editor for the teacher, runs offline from `file://` |
 | `index.json` | Table of contents. **Array order = teaching order** |
 | `lessons/*.md` | 23 lessons, one file each, in the `[[TAG]]` format of §5 |
@@ -254,7 +254,7 @@ Commit messages: English, imperative mood, one line, no Conventional Commits pre
 - Translate the student-facing UI strings. They are Vietnamese by design (§7).
 
 Changing the accent colour means editing **every place**: `--accent` in `index.html` and `lessons.html`, `--accent`
-in `editor.html`, the `.home-link b` badge in `cgc-*.html`, the two hardcoded `#5B3FA8` in `404.html`, and `fill` in `favicon.svg`.
+in `editor.html`, the `.home-link b` badge in `models/*.html`, the two hardcoded `#5B3FA8` in `404.html`, and `fill` in `favicon.svg`.
 Changing the product name means editing `<title>`, the header, `document.title`, `editor.html` and
 `404.html`; the `π` logo lives in `index.html`, `lessons.html`, `404.html` and `favicon.svg`.
 

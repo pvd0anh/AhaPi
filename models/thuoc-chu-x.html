@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mô hình số 3 – Thước chữ X</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<style>
+/* ===== Bảng màu và cỡ chữ ===== */
+:root{
+  --blue:#2E6DB4; --pink:#C2185B; --wood:#E8C99B; --woodline:#B07A3B;
+  --ok:#2E7D32; --err:#C62828; --warn:#EF6C00;
+  --ink:#1F2A37; --muted:#5B6776; --line:#D5DCE6; --bg:#F4F6FA; --head:#23395B;
+}
+html{font-size:16px}
+html.present{font-size:20.8px}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.45;
+  padding-bottom:env(safe-area-inset-bottom,0px)}
+.pt{font-family:"Times New Roman",Times,serif;font-style:italic}
+i.pt{font-size:1.08em}
+
+/* ===== Thanh tiêu đề ===== */
+header.top{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1rem;padding:.6rem 1rem;padding-top:calc(.6rem + env(safe-area-inset-top,0px));background:var(--head);color:#fff}
+header.top h1{font-size:1.35rem;margin:0;font-weight:700;flex:1 1 16rem}
+.top-btns{display:flex;flex-wrap:wrap;gap:.4rem}
+button{font:inherit;min-height:44px;min-width:44px;padding:.45rem .9rem;border-radius:8px;border:1px solid #B9C3D1;background:#fff;color:var(--ink);cursor:pointer}
+button:hover{background:#EEF3FA}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #F9A825;outline-offset:2px}
+button.primary{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+button.primary:hover{background:#255a95}
+button.danger{background:var(--err);border-color:var(--err);color:#fff;font-weight:600}
+.top-btns button{background:transparent;color:#fff;border-color:rgba(255,255,255,.5)}
+.top-btns button:hover{background:rgba(255,255,255,.12)}
+.top-btns button[aria-pressed="true"]{background:#fff;color:var(--head)}
+
+/* ===== Thẻ chức năng ===== */
+nav.tabs{display:flex;gap:.3rem;padding:.5rem 1rem 0;background:#E3E9F2;overflow-x:auto;border-bottom:1px solid var(--line)}
+nav.tabs button{flex-shrink:0;border-radius:8px 8px 0 0;border-bottom:none;background:#F5F7FB;white-space:nowrap;font-weight:600;color:var(--muted)}
+nav.tabs button[aria-selected="true"]{background:#fff;color:var(--head);box-shadow:inset 0 3px 0 var(--blue)}
+main{padding:1rem;padding-left:max(1rem,env(safe-area-inset-left,0px));padding-right:max(1rem,env(safe-area-inset-right,0px))}
+section.tab{display:none}
+section.tab.active{display:block}
+
+/* ===== Dải thông báo ===== */
+.msg{display:none;margin:0 0 .8rem;padding:.6rem .9rem;border-radius:8px;border-left:6px solid;font-weight:600}
+.msg.show{display:block}
+.msg.ok{background:#E8F5E9;border-color:var(--ok);color:#1B5E20}
+.msg.err{background:#FFEBEE;border-color:var(--err);color:#8E1B1B}
+.msg.warn{background:#FFF3E0;border-color:var(--warn);color:#8A3D00}
+.msg.info{background:#E8F0FA;border-color:var(--blue);color:#1D3F6E}
+
+/* ===== Bố cục hình – bảng điều khiển ===== */
+.layout{display:grid;grid-template-columns:minmax(0,65fr) minmax(0,35fr);gap:1rem;align-items:start}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+.stage{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.stage svg{display:block;width:100%;height:clamp(320px,64vh,820px);touch-action:none;user-select:none;-webkit-user-select:none}
+.cap{margin:0;padding:.45rem .8rem;font-size:.9rem;color:var(--muted);border-top:1px solid var(--line);background:#FBFCFE}
+.panel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem}
+.panel h2{font-size:1.08rem;margin:.1rem 0 .6rem;color:var(--head)}
+.ctrl{margin:.5rem 0}
+.ctrl label.t{display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;font-weight:600;font-size:.95rem}
+.ctrl .hint{font-weight:400;color:var(--muted)}
+.ctrl .row{display:flex;align-items:center;gap:.6rem}
+.ctrl.off{opacity:.5}
+input[type=range]{flex:1;min-width:0;min-height:44px;accent-color:var(--blue)}
+input.num{width:5.6rem;min-height:44px;font:inherit;padding:.3rem .5rem;border:1px solid #B9C3D1;border-radius:6px;text-align:right}
+.unit{min-width:1.8rem;color:var(--muted)}
+.sw{display:flex;align-items:center;gap:.6rem;min-height:44px;font-weight:600;cursor:pointer}
+.sw input{width:1.35rem;height:1.35rem;accent-color:var(--blue)}
+.note{font-size:.86rem;color:var(--muted);margin:.1rem 0 .4rem}
+.btns{display:flex;flex-wrap:wrap;gap:.5rem;margin:.7rem 0}
+select{font:inherit;min-height:44px;width:100%;padding:.3rem .5rem;border-radius:6px;border:1px solid #B9C3D1;background:#fff}
+.seg{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin:.5rem 0}
+.seg span{font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ===== Bảng số đo ===== */
+table.meas{width:100%;border-collapse:separate;border-spacing:0 4px;margin-top:.4rem;font-size:.98rem}
+table.meas th,table.meas td{padding:.35rem .55rem;text-align:left}
+table.meas th{font-weight:600}
+table.meas tr>:first-child{border-radius:6px 0 0 6px}
+table.meas tr>:last-child{border-radius:0 6px 6px 0}
+table.meas tr.eq>*{background:#E8F5E9}
+table.meas tr.ne>*{background:#FFF3E0}
+table.meas tr.plain>*{background:#F4F6FA}
+table.meas td.sym{text-align:center;font-weight:700;width:2rem}
+.result{margin-top:.7rem;padding:.7rem .9rem;border-radius:8px;border:2px solid}
+.result.ok{border-color:var(--ok);background:#E8F5E9}
+.result.err{border-color:var(--err);background:#FFEBEE}
+.result b{font-size:1.1rem}
+.editbox{border:1px dashed #9AA8BA;border-radius:8px;padding:.7rem;margin:.4rem 0;background:#FAFBFD}
+.editbox .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(8.5rem,1fr));gap:.5rem}
+.editbox label{display:flex;flex-direction:column;font-size:.88rem;font-weight:600;gap:.2rem}
+.editbox input{min-height:44px;font:inherit;padding:.3rem .5rem;border:1px solid #B9C3D1;border-radius:6px}
+
+/* ===== So sánh 2 phương án ===== */
+.cmp-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.6rem;margin-bottom:.8rem}
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media (max-width:900px){.cmp-grid{grid-template-columns:1fr}}
+.cmp-col .stage svg{height:clamp(280px,46vh,640px)}
+.cmp-col .stage{margin-top:.4rem}
+.cmp-col .msg{margin:.6rem 0 0}
+
+/* ===== Thử thách ===== */
+h2.block{font-size:1.12rem;color:var(--head);margin:1.6rem 0 .7rem;padding-top:1rem;border-top:2px dashed var(--line)}
+.score{font-weight:700;font-size:1.05rem}
+.q{font-weight:600;margin:.8rem 0 .2rem}
+
+/* ===== Bảng kết quả lớp ===== */
+.panel+.panel{margin-top:1rem}
+.ph{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+.scroll{overflow-x:auto}
+table.grid4{border-collapse:collapse;width:100%;font-size:.95rem;min-width:820px}
+table.grid4 th,table.grid4 td{border:1px solid var(--line);padding:.3rem .4rem;text-align:center;vertical-align:middle}
+table.grid4 thead th{background:#EEF3FA;color:var(--head);font-weight:600}
+table.grid4 th.rowh{text-align:left;background:#F7F9FC;white-space:nowrap}
+table.grid4 input{width:100%;min-width:4.2rem;min-height:44px;font:inherit;text-align:center;border:1px solid #C9D2DE;border-radius:6px;padding:.2rem}
+table.grid4 input.name{text-align:left;min-width:12rem}
+table.grid4 input[readonly]{background:#F1F3F6;color:#4A5563;border-style:dashed}
+td.v-ok{background:#E8F5E9;color:#1B5E20;font-weight:700}
+td.v-err{background:#FFEBEE;color:#B71C1C;font-weight:700}
+.warn{display:block;color:#8A3D00;font-weight:600;font-size:.86rem;margin-top:.15rem}
+.sub{display:block;font-size:.8rem;color:var(--muted);font-weight:400}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+.charts .panel+.panel,.cmp-grid .panel+.panel{margin-top:0}
+@media (max-width:900px){.charts{grid-template-columns:1fr}}
+.charts svg{width:100%;height:auto;display:block}
+.summary{font-weight:700;font-size:1.05rem;margin:.8rem 0 0;padding:.6rem .8rem;background:#F1F5FB;border-radius:8px}
+.confirm{margin-top:.6rem;padding:.7rem .9rem;border:2px solid var(--err);background:#FFEBEE;border-radius:8px;display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;font-weight:600}
+.lead{margin:0 0 1rem;color:var(--muted)}
+
+/* ===== Giải thích toán học ===== */
+.proof{padding-left:0;list-style:none;margin:.6rem 0}
+.proof li{padding:.45rem .7rem;border-radius:6px;margin:.25rem 0;font-size:1.05rem}
+.proof li.cur{background:#FFF8E1;outline:2px solid #F9A825}
+.hidden-proof{color:var(--muted);font-style:italic}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.blink{animation:blink .8s ease-in-out 4}
+@media (prefers-reduced-motion:reduce){.blink{animation:none}}
+
+/* ===== Biên bản in ===== */
+#print-area{display:none}
+@media print{
+  body>*:not(#print-area){display:none!important}
+  #print-area{display:block;font-family:"Times New Roman",Times,serif;color:#000;font-size:12pt}
+  @page{size:A4 portrait;margin:12mm}
+  #print-area h1{text-align:center;font-size:15pt;margin:4mm 0 2mm}
+  #print-area .c{text-align:center;margin:0}
+  #print-area table{border-collapse:collapse;width:100%;font-size:10pt;margin:2mm 0}
+  #print-area th,#print-area td{border:1px solid #000;padding:1mm 1.5mm;text-align:center}
+  #print-area .charts{display:flex;gap:4mm}
+  #print-area .charts svg{width:50%;height:auto}
+  #print-area .sign{display:flex;justify-content:space-around;margin-top:8mm;text-align:center}
+  #print-area .sign div{height:28mm}
+}
+/* back-to-home link, shared look across AhaPi sub-pages (light-on-dark variant for the navy header) */
+.home-link{display:inline-flex;align-items:center;gap:6px;padding:6px 12px 6px 8px;border-radius:99px;min-height:36px;
+  border:1.5px solid rgba(255,255,255,.45);color:#fff;font-size:.85rem;font-weight:600;text-decoration:none;flex-shrink:0}
+.home-link:hover{background:rgba(255,255,255,.12)}
+.home-link:focus-visible{outline:3px solid #F9A825;outline-offset:2px}
+.home-link b{display:grid;place-items:center;width:20px;height:20px;border-radius:6px;background:#5B3FA8;color:#fff;
+  font-family:Georgia,serif;font-style:italic;font-size:13px}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="home-link" href="../index.html"><b>π</b>← Trang chủ AhaPi</a>
+  <h1>Mô hình số 3 – Thước chữ X</h1>
+  <div class="top-btns">
+    <button id="btnPresent" aria-pressed="false">Trình chiếu</button>
+    <button id="btnFull">Toàn màn hình</button>
+    <button id="btnSound" aria-pressed="true">Âm thanh: Bật</button>
+    <button id="btnReset">Làm mới</button>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Chức năng">
+  <button role="tab" data-tab="1" aria-selected="true">① Khám phá</button>
+  <button role="tab" data-tab="2" aria-selected="false">② Đo qua cổ hẹp</button>
+  <button role="tab" data-tab="3" aria-selected="false">③ Thử thách</button>
+  <button role="tab" data-tab="4" aria-selected="false">④ Kiểm tra lô bình</button>
+  <button role="tab" data-tab="5" aria-selected="false">⑤ Giải thích toán học</button>
+</nav>
+
+<main>
+<!-- ===== TAB ① KHÁM PHÁ ===== -->
+<section class="tab active" id="tab1" role="tabpanel">
+  <div class="msg" id="msg1" role="status" aria-live="polite"></div>
+  <div class="layout">
+    <div class="stage">
+      <svg id="svg1" role="img" aria-label="Hình thước chữ X với hai tam giác OAB và OCD"></svg>
+      <p class="cap">Kéo đầu <i class="pt">C</i> hoặc <i class="pt">D</i> để mở thước. Tắt “Khóa chốt ở trung điểm” để kéo chốt <i class="pt">O</i> dọc thanh 1.</p>
+    </div>
+    <div class="panel">
+      <div id="c1"></div>
+      <p class="note">Độ lệch chốt dương: chốt lệch về phía <i class="pt">C</i> (thanh 1) hoặc <i class="pt">D</i> (thanh 2). Độ lệch âm: lệch về phía <i class="pt">A</i> hoặc <i class="pt">B</i>.</p>
+      <label class="sw"><input type="checkbox" id="lock1" checked> Khóa chốt ở trung điểm</label>
+      <label class="sw"><input type="checkbox" id="show1" checked> Hiện số đo</label>
+      <div class="btns">
+        <button class="primary" id="btnOverlay1">Chồng khít</button>
+        <button id="btnUndo1" disabled>Trả về vị trí cũ</button>
+        <button id="btnSplit1">Tách hình</button>
+      </div>
+      <table class="meas" id="meas1"></table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TAB ② ĐO QUA CỔ HẸP ===== -->
+<section class="tab" id="tab2" role="tabpanel">
+  <div class="msg" id="msg2" role="status" aria-live="polite"></div>
+  <div id="main2" class="layout">
+    <div class="stage">
+      <svg id="svg2" role="img" aria-label="Mặt cắt bình và thước chữ X"></svg>
+      <p class="cap" id="cap2"></p>
+    </div>
+    <div class="panel">
+      <div class="ctrl"><label class="t" for="sel2">Chọn vật cần đo</label><select id="sel2"></select></div>
+      <div class="seg" id="flat2" hidden><span>Đo theo:</span><button data-m="W" aria-pressed="true">Bề rộng</button><button data-m="T" aria-pressed="false">Bề dày</button></div>
+      <div class="btns"><button id="btnEdit2">Sửa kích thước</button></div>
+      <div class="editbox" id="edit2" hidden></div>
+      <div id="c2"></div>
+      <label class="sw"><input type="checkbox" id="off2"> Chốt lệch</label>
+      <div id="c2d"></div>
+      <div class="btns">
+        <button class="primary" id="btnRead2" disabled>Đọc số đo</button>
+        <button id="btnOut2">Khép thước – rút ra</button>
+        <button id="btnCmp2">So sánh 2 phương án</button>
+      </div>
+      <table class="meas" id="meas2"></table>
+      <div class="result" id="res2" hidden></div>
+    </div>
+  </div>
+  <div id="cmp2" hidden>
+    <div class="cmp-head">
+      <div><b>So sánh 2 phương án của cùng một nhóm</b> – cùng vật đo: <span id="cmpName"></span>. Thước được mở hết cỡ. Chọn 1 phương án để chế tạo.</div>
+      <button id="btnCmpExit">Thoát so sánh</button>
+    </div>
+    <div class="cmp-grid">
+      <div class="panel cmp-col"><h2>Phương án A</h2><div id="cmpc0"></div><div class="stage"><svg id="cmpsvg0" role="img" aria-label="Phương án A"></svg></div><div class="msg show" id="cmpmsg0"></div><table class="meas" id="cmpmeas0"></table></div>
+      <div class="panel cmp-col"><h2>Phương án B</h2><div id="cmpc1"></div><div class="stage"><svg id="cmpsvg1" role="img" aria-label="Phương án B"></svg></div><div class="msg show" id="cmpmsg1"></div><table class="meas" id="cmpmeas1"></table></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TAB ③ THỬ THÁCH ===== -->
+<section class="tab" id="tab3" role="tabpanel">
+  <div class="msg" id="msg3" role="status" aria-live="polite"></div>
+  <div class="layout">
+    <div class="stage"><svg id="svg3" role="img" aria-label="Thước chữ X có chốt lệch"></svg></div>
+    <div class="panel">
+      <h2>Dự đoán số đo</h2>
+      <p class="note">Hai thanh dài bằng nhau, chốt đặt cùng vị trí trên hai thanh nhưng lệch khỏi trung điểm.</p>
+      <button class="primary" id="btnNew3">Thử thách mới</button>
+      <p class="q">Số đọc được <i class="pt">CD</i> sẽ lớn hơn, nhỏ hơn hay bằng độ rộng <i class="pt">AB</i>?</p>
+      <div class="btns" id="ans3">
+        <button data-a="gt">Lớn hơn <i class="pt">AB</i></button>
+        <button data-a="lt">Nhỏ hơn <i class="pt">AB</i></button>
+        <button data-a="eq">Bằng <i class="pt">AB</i></button>
+      </div>
+      <p class="score" id="score3">Điểm: 0/0</p>
+      <table class="meas" id="meas3"></table>
+    </div>
+  </div>
+  <h2 class="block">Thử thách nâng cao: tìm cách đặt chốt khác vẫn đo đúng</h2>
+  <div class="msg" id="msg3b" role="status" aria-live="polite"></div>
+  <div class="layout">
+    <div class="stage"><svg id="svg3b" role="img" aria-label="Thử thách đặt chốt"></svg></div>
+    <div class="panel">
+      <p>Hai thanh dài 15 cm. Chốt trên thanh 1 cố định: <i class="pt">OA</i> = 5 cm, <i class="pt">OC</i> = 10 cm. Góc mở 50°. Kéo vị trí chốt trên thanh 2 để <i class="pt">AB</i> = <i class="pt">CD</i>.</p>
+      <div id="c3b"></div>
+      <table class="meas" id="meas3b"></table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TAB ④ KIỂM TRA LÔ BÌNH ===== -->
+<section class="tab" id="tab4" role="tabpanel">
+  <div class="msg" id="msg4" role="status" aria-live="polite"></div>
+  <p class="lead">Lô 4 bình mẫu. Mỗi nhóm có 1 thước chữ X và kiểm tra 1 bình. Bảng nhập trên máy giáo viên; các nhóm lần lượt nhập dòng của mình.</p>
+  <div class="panel">
+    <div class="ph"><h2>Thông số thiết kế (giáo viên nhập trước)</h2><button id="btnLock4">Khóa thông số</button></div>
+    <div class="scroll"><table class="grid4" id="par4"></table></div>
+  </div>
+  <div class="panel">
+    <h2>Bảng nhập số liệu</h2>
+    <div class="scroll"><table class="grid4" id="in4"></table></div>
+  </div>
+  <div class="panel">
+    <h2>Bảng kết quả</h2>
+    <div class="scroll"><table class="grid4" id="out4"></table></div>
+    <p class="summary" id="sum4"></p>
+  </div>
+  <div class="charts">
+    <div class="panel"><h2>Độ dày thành 4 bình</h2><svg id="ch1" viewBox="0 0 560 330" role="img" aria-label="Biểu đồ độ dày thành 4 bình"></svg></div>
+    <div class="panel"><h2>Sai số đo cốc kiểm định</h2><svg id="ch2" viewBox="0 0 560 330" role="img" aria-label="Biểu đồ sai số đo cốc kiểm định"></svg></div>
+  </div>
+  <div class="btns">
+    <button id="btnSample4">Nạp số liệu mẫu</button>
+    <button id="btnClear4">Xóa bảng</button>
+    <button id="btnCsv4">Xuất CSV</button>
+    <button class="primary" id="btnPrint4">In biên bản kiểm tra</button>
+  </div>
+  <div class="confirm" id="confirm4" hidden>
+    <span>Xóa toàn bộ bảng (thông số thiết kế và số liệu của 4 nhóm)?</span>
+    <button class="danger" id="btnYes4">Xóa</button><button id="btnNo4">Hủy</button>
+  </div>
+</section>
+
+<!-- ===== TAB ⑤ GIẢI THÍCH TOÁN HỌC ===== -->
+<section class="tab" id="tab5" role="tabpanel">
+  <div class="layout">
+    <div class="stage"><svg id="svg5" role="img" aria-label="Hình Ví dụ 4: thước chữ X"></svg></div>
+    <div class="panel">
+      <h2>Vì sao thước chữ X đo đúng?</h2>
+      <p class="note">Ví dụ 4: <i class="pt">OA</i> = <i class="pt">OC</i> = 3 cm, <i class="pt">OB</i> = <i class="pt">OD</i> = 4 cm; <i class="pt">A</i>, <i class="pt">O</i>, <i class="pt">C</i> thẳng hàng; <i class="pt">B</i>, <i class="pt">O</i>, <i class="pt">D</i> thẳng hàng.</p>
+      <div class="btns">
+        <button id="btnPrev5">Quay lại</button>
+        <button class="primary" id="btnNext5">Bước tiếp theo</button>
+        <button id="btnHide5">Ẩn/hiện lời giải</button>
+      </div>
+      <p id="step5" class="note"></p>
+      <ol class="proof" id="proof5"></ol>
+    </div>
+  </div>
+</section>
+</main>
+
+<div id="print-area"></div>
+<script>
+'use strict';
+/* =========================================================
+   1. TIỆN ÍCH CHUNG
+   ========================================================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const DEG = Math.PI / 180;
+const app = { sound: true, present: false, tab: 1 };
+
+// Định dạng số: dấu phẩy thập phân, dấu trừ “−”
+function fmt(x, d = 2) {
+  if (x == null || !isFinite(x)) return '–';
+  const f = Math.pow(10, d);
+  let v = Math.round(x * f + (x >= 0 ? 1e-9 : -1e-9)) / f;
+  if (Math.abs(v) < 0.5 / f) v = 0;
+  return v.toFixed(d).replace('.', ',').replace('-', '−');
+}
+// Đọc số: chấp nhận cả dấu phẩy và dấu chấm
+function parseNum(s) {
+  if (s == null) return NaN;
+  const t = String(s).trim().replace(/\s/g, '').replace(/−/g, '-').replace(',', '.');
+  if (t === '' || !/^[-+]?(\d+\.?\d*|\.\d+)$/.test(t)) return NaN;
+  return parseFloat(t);
+}
+// Làm tròn mm đến 0,1 trước khi so sánh với ngưỡng
+const mm1 = x => Math.round(x * 10 + 1e-9) / 10;
+const avg = a => a.reduce((s, x) => s + x, 0) / a.length;
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const dist = (P, Q) => Math.hypot(P.x - Q.x, P.y - Q.y);
+const P = s => `<i class="pt">${s}</i>`;          // tên điểm trong HTML
+const Ps = s => `<tspan class="pt">${s}</tspan>`;  // tên điểm trong SVG
+
+// Dải thông báo
+function say(id, type, html) { const el = $('#' + id); el.className = 'msg show ' + type; el.innerHTML = html; }
+function hush(id) { const el = $('#' + id); el.className = 'msg'; el.innerHTML = ''; }
+
+// Lưu trữ an toàn (chỉ dùng cho kích thước bình và bảng kết quả lớp)
+const store = {
+  get(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } },
+  del(k) { try { localStorage.removeItem(k); } catch (e) { /* bỏ qua */ } }
+};
+
+// Tiếng “tách” khi bấm nút (Web Audio API)
+let actx = null;
+function tick() {
+  if (!app.sound) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = actx.currentTime, o = actx.createOscillator(), g = actx.createGain();
+    o.type = 'square';
+    o.frequency.setValueAtTime(1800, t);
+    o.frequency.exponentialRampToValueAtTime(500, t + 0.03);
+    g.gain.setValueAtTime(0.1, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+    o.connect(g); g.connect(actx.destination);
+    o.start(t); o.stop(t + 0.06);
+  } catch (e) { /* không có âm thanh vẫn chạy */ }
+}
+document.addEventListener('click', e => { if (e.target.closest('button')) tick(); });
+
+// Hoạt ảnh mượt bằng requestAnimationFrame
+function animate(ms, step, done) {
+  const t0 = performance.now(); let id = 0, live = true;
+  function f(now) {
+    if (!live) return;
+    const k = Math.min(1, (now - t0) / ms);
+    const e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    step(e);
+    if (k < 1) id = requestAnimationFrame(f); else if (done) done();
+  }
+  id = requestAnimationFrame(f);
+  return () => { live = false; cancelAnimationFrame(id); };
+}
+
+// Thanh trượt + ô nhập số luôn đồng bộ
+let ctrlSeq = 0;
+function makeCtrl(box, o) {
+  const id = 'k' + (++ctrlSeq);
+  const wrap = document.createElement('div');
+  wrap.className = 'ctrl';
+  wrap.innerHTML = `<label class="t" for="${id}n"><span>${o.label}</span><span class="hint"></span></label>
+    <div class="row"><input type="range" min="${o.min}" max="${o.max}" step="${o.step}" aria-label="${o.label.replace(/<[^>]+>/g, '')}">
+    <input class="num" id="${id}n" type="text" inputmode="decimal" autocomplete="off"><span class="unit">${o.unit || ''}</span></div>`;
+  box.appendChild(wrap);
+  const r = wrap.querySelector('input[type=range]'), n = wrap.querySelector('.num'), h = wrap.querySelector('.hint');
+  let val = o.value, min = o.min, max = o.max;
+  const show = () => { r.value = val; n.value = fmt(val, o.dec); };
+  r.addEventListener('input', () => { val = +r.value; n.value = fmt(val, o.dec); o.onChange(val); });
+  const commit = () => {
+    const v = parseNum(n.value);
+    if (!isFinite(v)) { show(); return; }
+    val = clamp(v, min, max); show(); o.onChange(val);
+  };
+  n.addEventListener('change', commit);
+  n.addEventListener('keydown', e => { if (e.key === 'Enter') { commit(); n.blur(); } });
+  show();
+  return {
+    get: () => val,
+    set(v) { val = clamp(v, min, max); show(); },
+    setRange(a, b) { min = a; max = b; r.min = a; r.max = b; val = clamp(val, a, b); show(); },
+    disable(b) { r.disabled = b; n.disabled = b; wrap.classList.toggle('off', b); },
+    hint(t) { h.innerHTML = t; }
+  };
+}
+
+/* =========================================================
+   2. VẼ SVG – HÀM DÙNG CHUNG (đơn vị cm, trục y hướng lên)
+   ========================================================= */
+class View {
+  constructor(svg) { this.svg = svg; this.box = null; this.scale = 30; }
+  fit(minX, minY, maxX, maxY) {
+    const cw = this.svg.clientWidth || 800, ch = this.svg.clientHeight || 500;
+    let w = maxX - minX, h = maxY - minY;
+    const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+    if (cw / ch > w / h) w = h * cw / ch; else h = w * ch / cw;
+    this.box = { minX: cx - w / 2, maxX: cx + w / 2, minY: cy - h / 2, maxY: cy + h / 2, w, h };
+    this.scale = cw / w;
+    this.svg.setAttribute('viewBox', `${(cx - w / 2).toFixed(4)} ${(-(cy + h / 2)).toFixed(4)} ${w.toFixed(4)} ${h.toFixed(4)}`);
+  }
+  px(p) { return p / this.scale; }
+  world(e) {
+    const pt = this.svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const m = this.svg.getScreenCTM(); if (!m) return { x: 0, y: 0 };
+    const q = pt.matrixTransform(m.inverse());
+    return { x: q.x, y: -q.y };
+  }
+}
+let CUR = null;                                         // khung nhìn đang vẽ
+const F = px => CUR.px(px * (app.present ? 1.3 : 1));  // đổi px màn hình → cm
+const N = v => +(+v).toFixed(4);
+const yv = p => N(-p.y);
+const VE = 'vector-effect="non-scaling-stroke"';
+
+function sLine(a, b, stroke, w, extra = '') {
+  return `<line x1="${N(a.x)}" y1="${yv(a)}" x2="${N(b.x)}" y2="${yv(b)}" stroke="${stroke}" stroke-width="${w}" ${VE} stroke-linecap="round" ${extra}/>`;
+}
+function sPoly(pts, fill, fop, stroke, w, extra = '') {
+  return `<polygon points="${pts.map(p => N(p.x) + ',' + yv(p)).join(' ')}" fill="${fill}" fill-opacity="${fop}" stroke="${stroke}" stroke-width="${w}" ${VE} stroke-linejoin="round" ${extra}/>`;
+}
+function sPolyline(pts, stroke, w, extra = '') {
+  return `<polyline points="${pts.map(p => N(p.x) + ',' + yv(p)).join(' ')}" fill="none" stroke="${stroke}" stroke-width="${w}" ${VE} stroke-linejoin="round" stroke-linecap="round" ${extra}/>`;
+}
+// Đường nét đứt (độ dài nét tính theo px màn hình)
+function sDash(pts, stroke, wpx, closed = false) {
+  const tag = closed ? 'polygon' : 'polyline';
+  return `<${tag} points="${pts.map(p => N(p.x) + ',' + yv(p)).join(' ')}" fill="none" stroke="${stroke}" stroke-width="${N(F(wpx))}" stroke-dasharray="${N(F(8))} ${N(F(6))}" stroke-linecap="round"/>`;
+}
+function sCircle(c, r, fill, stroke, w, extra = '') {
+  return `<circle cx="${N(c.x)}" cy="${yv(c)}" r="${N(r)}" fill="${fill}" stroke="${stroke}" stroke-width="${w}" ${VE} ${extra}/>`;
+}
+function sText(p, str, px, o = {}) {
+  const rot = o.rot ? ` transform="rotate(${N(o.rot)} ${N(p.x)} ${yv(p)})"` : '';
+  return `<text x="${N(p.x)}" y="${yv(p)}" font-size="${N(F(px))}" text-anchor="${o.anchor || 'middle'}" dominant-baseline="central" fill="${o.fill || '#1F2A37'}"${o.cls ? ` class="${o.cls}"` : ''}${o.bold ? ' font-weight="700"' : ''} stroke="#fff" stroke-width="${N(F(3.5))}" paint-order="stroke" stroke-linejoin="round"${rot}>${str}</text>`;
+}
+// Nền giấy kẻ ô 1 cm
+function sGrid(b) {
+  let s = `<rect x="${N(b.minX)}" y="${N(-b.maxY)}" width="${N(b.w)}" height="${N(b.h)}" fill="#fff"/>`;
+  for (let x = Math.ceil(b.minX); x <= b.maxX; x++) s += `<line x1="${x}" y1="${N(-b.maxY)}" x2="${x}" y2="${N(-b.minY)}" stroke="#E3E8EF" stroke-width="1" ${VE}/>`;
+  for (let y = Math.ceil(b.minY); y <= b.maxY; y++) s += `<line x1="${N(b.minX)}" y1="${-y}" x2="${N(b.maxX)}" y2="${-y}" stroke="#E3E8EF" stroke-width="1" ${VE}/>`;
+  return s;
+}
+// Thanh thước: hình chữ nhật xoay, bề rộng đúng bằng w (cm)
+function sBar(Pt, Qt, width, fill, stroke, op = 1, extra = '') {
+  const dx = Qt.x - Pt.x, dy = Qt.y - Pt.y, len = Math.hypot(dx, dy);
+  const deg = -Math.atan2(dy, dx) / DEG;
+  return `<rect x="0" y="${N(-width / 2)}" width="${N(len)}" height="${N(width)}" rx="${N(Math.min(width * 0.3, 0.18))}" fill="${fill}" stroke="${stroke}" stroke-width="1.5" ${VE} opacity="${op}" transform="translate(${N(Pt.x)} ${N(-Pt.y)}) rotate(${N(deg)})" ${extra}/>`;
+}
+// Gạch đánh dấu cạnh bằng nhau tại trung điểm đoạn PQ
+function sTicks(Pt, Qt, count, color = '#1F2A37') {
+  const m = { x: (Pt.x + Qt.x) / 2, y: (Pt.y + Qt.y) / 2 }, len = dist(Pt, Qt);
+  if (len < 1e-6) return '';
+  const u = { x: (Qt.x - Pt.x) / len, y: (Qt.y - Pt.y) / len }, n = { x: -u.y, y: u.x };
+  const h = F(9), gap = F(6); let s = '';
+  for (let k = 0; k < count; k++) {
+    const off = (k - (count - 1) / 2) * gap, c = { x: m.x + u.x * off, y: m.y + u.y * off };
+    s += sLine({ x: c.x - n.x * h, y: c.y - n.y * h }, { x: c.x + n.x * h, y: c.y + n.y * h }, color, 2.5);
+  }
+  return s;
+}
+// Cung đánh dấu góc (đi theo cung ngắn từ a1 đến a2)
+function sArc(c, r, a1, a2, color, w, extra = '') {
+  let d = a2 - a1;
+  while (d > Math.PI) d -= 2 * Math.PI;
+  while (d < -Math.PI) d += 2 * Math.PI;
+  const pts = [];
+  for (let i = 0; i <= 28; i++) { const a = a1 + d * i / 28; pts.push({ x: c.x + r * Math.cos(a), y: c.y + r * Math.sin(a) }); }
+  return sPolyline(pts, color, w, extra);
+}
+function sArrowHead(tip, u, color) {
+  const L = F(10), W = F(5), n = { x: -u.y, y: u.x };
+  const b = { x: tip.x - u.x * L, y: tip.y - u.y * L };
+  return sPoly([tip, { x: b.x + n.x * W, y: b.y + n.y * W }, { x: b.x - n.x * W, y: b.y - n.y * W }], color, 1, color, 1);
+}
+// Nhãn điểm: đặt ra phía ngoài so với O
+function sLabel(Pt, name, O, color = '#1F2A37', nudge = 0) {
+  let d = dist(Pt, O), u = d > 1e-6 ? { x: (Pt.x - O.x) / d, y: (Pt.y - O.y) / d } : { x: 0, y: 1 };
+  const p = { x: Pt.x + u.x * F(17) + nudge * F(9), y: Pt.y + u.y * F(17) };
+  return sText(p, name, 21, { cls: 'pt', fill: color, bold: true });
+}
+// Thước thẳng ảo (vàng nhạt, vạch mm – cm), vạch 0 trùng Z, đặt phía ngoài so với O
+function sRuler(Z, E, O, frac, label) {
+  const len = dist(Z, E); if (len < 1e-6) return '';
+  const u = { x: (E.x - Z.x) / len, y: (E.y - Z.y) / len };
+  let n = { x: -u.y, y: u.x };
+  const mid = { x: (Z.x + E.x) / 2, y: (Z.y + E.y) / 2 };
+  if ((mid.x - O.x) * n.x + (mid.y - O.y) * n.y < 0) n = { x: -n.x, y: -n.y };
+  const g0 = F(14), hR = F(34), rl = Math.ceil(len) + 0.6;
+  const Q = (t, o) => ({ x: Z.x + u.x * t + n.x * o, y: Z.y + u.y * t + n.y * o });
+  let deg = -Math.atan2(u.y, u.x) / DEG; if (deg > 90) deg -= 180; if (deg < -90) deg += 180;
+  let s = `<g opacity="${N(Math.min(1, frac * 3))}">`;
+  s += sPoly([Q(-0.3, g0), Q(rl - 0.3, g0), Q(rl - 0.3, g0 + hR), Q(-0.3, g0 + hR)], '#FFF59D', 0.95, '#C9A227', 1.2);
+  const sc = CUR.scale, showMm = sc >= 10, every = sc >= 24 ? 1 : (sc >= 9 ? 5 : 10);
+  const kmax = Math.floor((rl - 0.4) * 10);
+  for (let k = 0; k <= kmax; k++) {
+    let h;
+    if (k % 10 === 0) h = F(13); else if (k % 5 === 0) h = F(9); else { if (!showMm) continue; h = F(5); }
+    s += sLine(Q(k / 10, g0), Q(k / 10, g0 + h), '#5D4A00', 1);
+    if (k % 10 === 0 && (k / 10) % every === 0) s += `<text x="${N(Q(k / 10, g0 + F(23)).x)}" y="${yv(Q(k / 10, g0 + F(23)))}" font-size="${N(F(11))}" text-anchor="middle" dominant-baseline="central" fill="#5D4A00" transform="rotate(${N(deg)} ${N(Q(k / 10, g0 + F(23)).x)} ${yv(Q(k / 10, g0 + F(23)))})">${k / 10}</text>`;
+  }
+  // Mũi tên hai đầu
+  const a0 = Q(0, F(6)), a1 = Q(len * frac, F(6));
+  if (frac > 0.02) {
+    s += sLine(a0, a1, '#1F2A37', 1.8);
+    s += sArrowHead(a0, { x: -u.x, y: -u.y }, '#1F2A37');
+    if (frac >= 1) s += sArrowHead(a1, u, '#1F2A37');
+  }
+  if (label && frac >= 1) s += sText(Q(len / 2, g0 + hR + F(15)), label, 17, { bold: true, rot: deg });
+  return s + '</g>';
+}
+// Tọa độ thước chữ X: O tại (0, Oy), phân giác góc AOB hướng xuống
+function xGeom(OA, OB, OC, OD, alpha, Oy = 0) {
+  const th = alpha / 2 * DEG, s = Math.sin(th), c = Math.cos(th);
+  return { s, c, O: { x: 0, y: Oy },
+    A: { x: -OA * s, y: Oy - OA * c }, B: { x: OB * s, y: Oy - OB * c },
+    C: { x: OC * s, y: Oy + OC * c }, D: { x: -OD * s, y: Oy + OD * c } };
+}
+const ang = (P0, O) => Math.atan2(P0.y - O.y, P0.x - O.x);
+
+/* =========================================================
+   3. TAB ① KHÁM PHÁ
+   ========================================================= */
+const T1D = { L1: 15, d1: 0, L2: 15, d2: 0, alpha: 40, lock: true, show: true };
+const t1 = Object.assign({}, T1D, { overlay: null, split: 0, splitOn: false, drag: null, box: null, shift: { x: 0, y: 0 }, stop: null });
+const v1 = new View($('#svg1'));
+const k1 = {};
+function lens1() { const OA = t1.L1 / 2 + t1.d1, OB = t1.L2 / 2 + t1.d2; return { OA, OC: t1.L1 - OA, OB, OD: t1.L2 - OB }; }
+
+function buildCtrl1() {
+  const box = $('#c1');
+  k1.L1 = makeCtrl(box, { label: `Độ dài thanh 1 (${P('AC')})`, min: 6, max: 20, step: 0.1, dec: 1, unit: 'cm', value: T1D.L1,
+    onChange: v => { t1.L1 = v; limDev1(); changed1(); } });
+  k1.d1 = makeCtrl(box, { label: 'Độ lệch chốt trên thanh 1', min: -60, max: 60, step: 1, dec: 1, unit: 'mm', value: 0,
+    onChange: v => { t1.d1 = v / 10; changed1(); } });
+  k1.L2 = makeCtrl(box, { label: `Độ dài thanh 2 (${P('BD')})`, min: 6, max: 20, step: 0.1, dec: 1, unit: 'cm', value: T1D.L2,
+    onChange: v => { t1.L2 = v; limDev1(); changed1(); } });
+  k1.d2 = makeCtrl(box, { label: 'Độ lệch chốt trên thanh 2', min: -60, max: 60, step: 1, dec: 1, unit: 'mm', value: 0,
+    onChange: v => { t1.d2 = v / 10; changed1(); } });
+  k1.a = makeCtrl(box, { label: `Góc mở α = ∠${P('AOB')}`, min: 5, max: 150, step: 0.1, dec: 1, unit: '°', value: T1D.alpha,
+    onChange: v => { t1.alpha = v; changed1(); } });
+  $('#lock1').addEventListener('change', e => { t1.lock = e.target.checked; applyLock1(); changed1(); });
+  $('#show1').addEventListener('change', e => { t1.show = e.target.checked; changed1(); });
+  $('#btnOverlay1').addEventListener('click', overlay1);
+  $('#btnUndo1').addEventListener('click', undo1);
+  $('#btnSplit1').addEventListener('click', split1);
+  applyLock1();
+}
+// Độ lệch tối đa ±40% độ dài thanh (OA từ 10% đến 90%)
+function limDev1() {
+  k1.d1.setRange(-4 * t1.L1, 4 * t1.L1); t1.d1 = t1.lock ? 0 : k1.d1.get() / 10;
+  k1.d2.setRange(-4 * t1.L2, 4 * t1.L2); t1.d2 = t1.lock ? 0 : k1.d2.get() / 10;
+}
+function applyLock1() {
+  if (t1.lock) { t1.d1 = 0; t1.d2 = 0; k1.d1.set(0); k1.d2.set(0); }
+  k1.d1.disable(t1.lock); k1.d2.disable(t1.lock);
+}
+function stopAnim1() { if (t1.stop) { t1.stop(); t1.stop = null; } }
+function changed1() {
+  stopAnim1();
+  if (t1.overlay) { t1.overlay = null; $('#btnUndo1').disabled = true; hush('msg1'); }
+  req(render1);
+}
+
+function render1() {
+  CUR = v1;
+  const { OA, OB, OC, OD } = lens1();
+  const g = xGeom(OA, OB, OC, OD, t1.alpha);
+  const R = Math.max(OA, OB, OC, OD);
+  if (!t1.drag) t1.box = [-R - 1.6, -R - 1.8, R + 1.6, R + 2.9];
+  v1.fit(...t1.box);
+  const sh = t1.shift, show = t1.show, sp = t1.split;
+  let s = sGrid(v1.box) + `<g transform="translate(${N(sh.x)} ${N(-sh.y)})">`;
+  const fade = sp > 0.01 ? 0.35 : 1;
+  s += sBar(g.A, g.C, 0.55, '#E8C99B', '#B07A3B', fade) + sBar(g.B, g.D, 0.55, '#E8C99B', '#B07A3B', fade);
+  const eqAC = Math.abs(OA - OC) < 0.005, eqBD = Math.abs(OB - OD) < 0.005;
+  const ra = Math.min(1.2, 0.38 * Math.min(OA, OB, OC, OD));
+  // △OAB (xanh) – dịch xuống khi tách hình
+  let a = `<g transform="translate(0 ${N(sp)})">` + sPoly([g.O, g.A, g.B], '#2E6DB4', 0.30, '#2E6DB4', 2)
+    + sLine(g.A, g.B, '#2E6DB4', 3.5) + sArc(g.O, ra, ang(g.A, g.O), ang(g.B, g.O), '#2E6DB4', 2.5);
+  if (eqAC) a += sTicks(g.O, g.A, 1);
+  if (eqBD) a += sTicks(g.O, g.B, 2);
+  a += sLabel(g.A, 'A', g.O) + sLabel(g.B, 'B', g.O);
+  if (sp > 0.01) a += sText({ x: F(20), y: 0 }, 'O', 21, { cls: 'pt', bold: true });
+  a += '</g>';
+  // △OCD (hồng) – dịch lên khi tách hình
+  let c = `<g transform="translate(0 ${N(-sp)})">` + sPoly([g.O, g.C, g.D], '#C2185B', 0.28, '#C2185B', 2)
+    + sLine(g.C, g.D, '#C2185B', 3.5) + sArc(g.O, ra, ang(g.C, g.O), ang(g.D, g.O), '#C2185B', 2.5);
+  if (eqAC) c += sTicks(g.O, g.C, 1);
+  if (eqBD) c += sTicks(g.O, g.D, 2);
+  if (show && !t1.overlay) c += sRuler(g.D, g.C, g.O, 1, `${Ps('CD')} = ${fmt(dist(g.C, g.D))} cm`);
+  c += sLabel(g.C, 'C', g.O) + sLabel(g.D, 'D', g.O);
+  if (sp > 0.01) c += sText({ x: F(20), y: 0 }, 'O', 21, { cls: 'pt', bold: true });
+  c += '</g>';
+  s += a + c;
+  // Lớp “chồng khít”: △OCD xoay quanh O
+  if (t1.overlay) {
+    const ph = t1.overlay.phi, co = Math.cos(ph), si = Math.sin(ph);
+    const r = Q => ({ x: Q.x * co - Q.y * si, y: Q.x * si + Q.y * co });
+    const C2 = r(g.C), D2 = r(g.D), done = t1.overlay.done, good = t1.overlay.good;
+    const col = !done ? '#C2185B' : (good ? '#2E7D32' : '#C62828');
+    s += sPoly([g.O, C2, D2], col, done && !good ? 0.28 : 0.15, 'none', 0) + sDash([g.O, C2, D2], col, 3, true);
+    if (done) s += sLabel(C2, 'C′', g.O, col, -1) + sLabel(D2, 'D′', g.O, col, 1);
+  }
+  // Chốt O và vòng tay cầm
+  if (sp <= 0.01) s += sText({ x: F(20), y: F(2) }, 'O', 21, { cls: 'pt', bold: true });
+  if (!t1.overlay && sp <= 0.01) {
+    s += sCircle(g.C, F(22), 'none', '#90A4AE', 1.5, 'stroke-dasharray="4 4"') + sCircle(g.D, F(22), 'none', '#90A4AE', 1.5, 'stroke-dasharray="4 4"');
+    if (!t1.lock) s += sCircle(g.O, F(20), 'none', '#F9A825', 2, 'stroke-dasharray="4 4"');
+  }
+  s += sCircle(g.O, F(7), '#424242', '#fff', 2) + '</g>';
+  v1.svg.innerHTML = s;
+  meas1(OA, OB, OC, OD, g);
+}
+
+function meas1(OA, OB, OC, OD, g) {
+  const sh = t1.show, AB = dist(g.A, g.B), CD = dist(g.C, g.D);
+  const swap = Math.abs(OA - OD) < 0.005 && Math.abs(OB - OC) < 0.005;
+  const row = (l1, a, l2, b, eq) => `<tr class="${sh ? (eq ? 'eq' : 'ne') : 'plain'}"><th>${l1}</th><td>${sh ? a : '?'}</td><td class="sym">${sh ? (eq ? '=' : '≠') : ''}</td><th>${l2}</th><td>${sh ? b : '?'}</td></tr>`;
+  const eqABCD = Math.abs(AB - CD) < 0.005;
+  $('#meas1').innerHTML =
+    row(P('OA'), fmt(OA) + ' cm', P('OC'), fmt(OC) + ' cm', Math.abs(OA - OC) < 0.005) +
+    row(P('OB'), fmt(OB) + ' cm', P('OD'), fmt(OD) + ' cm', Math.abs(OB - OD) < 0.005) +
+    row('∠' + P('AOB'), fmt(t1.alpha, 1) + '°', '∠' + P('COD'), fmt(t1.alpha, 1) + '°', true) +
+    row(P('AB'), fmt(AB) + ' cm', P('CD'), fmt(CD) + ' cm', eqABCD) +
+    `<tr class="${sh ? (eqABCD ? 'eq' : 'ne') : 'plain'}"><th colspan="3">|${P('AB')} − ${P('CD')}|</th><td colspan="2">${sh ? fmt(Math.abs(AB - CD) * 10, 1) + ' mm' : '?'}</td></tr>` +
+    (sh && swap && !(Math.abs(OA - OC) < 0.005) ? `<tr class="eq"><td colspan="5">${P('OA')} = ${P('OD')}, ${P('OB')} = ${P('OC')} ⇒ △${P('OAB')} = △${P('ODC')} (c.g.c)</td></tr>` : '');
+  k1.d1.hint(sh ? `${P('OA')} = ${fmt(OA)}; ${P('OC')} = ${fmt(OC)} cm` : '');
+  k1.d2.hint(sh ? `${P('OB')} = ${fmt(OB)}; ${P('OD')} = ${fmt(OD)} cm` : '');
+}
+
+// Nút “Chồng khít”: xoay △OCD quanh O đúng 180° trong 1,5 giây
+function overlay1() {
+  if (t1.stop) return;
+  t1.split = 0; t1.splitOn = false; $('#btnSplit1').textContent = 'Tách hình';
+  hush('msg1');
+  const { OA, OB, OC, OD } = lens1();
+  const eq1 = Math.abs(OA - OC) < 0.005 && Math.abs(OB - OD) < 0.005;
+  const swap = Math.abs(OA - OD) < 0.005 && Math.abs(OB - OC) < 0.005;
+  t1.overlay = { phi: 0, done: false, good: eq1 };
+  $('#btnUndo1').disabled = false;
+  t1.stop = animate(1500, e => { t1.overlay.phi = Math.PI * e; render1(); }, () => {
+    t1.stop = null; t1.overlay.done = true; render1();
+    if (eq1) say('msg1', 'ok', `Trùng khít! △${P('OCD')} = △${P('OAB')} (c.g.c) ⇒ ${P('CD')} = ${P('AB')}`);
+    else if (swap) say('msg1', 'ok', `Phép xoay nửa vòng chưa làm trùng khít theo đúng tên đỉnh. Nhưng ${P('OA')} = ${P('OD')}, ${P('OB')} = ${P('OC')} và ∠${P('AOB')} = ∠${P('DOC')} (đối đỉnh) nên △${P('OAB')} = △${P('ODC')} (c.g.c) ⇒ ${P('AB')} = ${P('CD')}.`);
+    else {
+      const a = Math.abs(OA - OC) >= 0.005, b = Math.abs(OB - OD) >= 0.005;
+      const why = a && b ? `${P('OA')} ≠ ${P('OC')} và ${P('OB')} ≠ ${P('OD')}` : (a ? `${P('OA')} ≠ ${P('OC')}` : `${P('OB')} ≠ ${P('OD')}`);
+      const g = xGeom(OA, OB, OC, OD, t1.alpha);
+      const coincide = Math.abs(dist(g.A, g.B) - dist(g.C, g.D)) < 0.005;
+      say('msg1', 'err', `Không trùng khít vì ${why}: thiếu điều kiện hai cạnh bằng nhau ⇒ ` +
+        (coincide ? `không suy ra được ${P('AB')} = ${P('CD')} (ở đây hai số đo tình cờ bằng nhau).` : `${P('AB')} ≠ ${P('CD')}`));
+    }
+  });
+}
+function undo1() {
+  if (!t1.overlay || t1.stop) return;
+  hush('msg1'); t1.overlay.done = false;
+  const p0 = t1.overlay.phi;
+  t1.stop = animate(600, e => { t1.overlay.phi = p0 * (1 - e); render1(); }, () => {
+    t1.stop = null; t1.overlay = null; $('#btnUndo1').disabled = true; render1();
+  });
+}
+// Nút “Tách hình”: △OAB dịch xuống, △OCD dịch lên
+function split1() {
+  if (t1.stop) return;
+  if (t1.overlay) { t1.overlay = null; $('#btnUndo1').disabled = true; hush('msg1'); }
+  t1.splitOn = !t1.splitOn;
+  $('#btnSplit1').textContent = t1.splitOn ? 'Ghép hình' : 'Tách hình';
+  const from = t1.split, to = t1.splitOn ? 1.6 : 0;
+  t1.stop = animate(450, e => { t1.split = from + (to - from) * e; render1(); }, () => { t1.stop = null; t1.split = to; render1(); });
+}
+
+// Kéo đầu C, D (đổi góc mở) và kéo chốt O (đổi OA, OC)
+function pick1(w) {
+  const { OA, OB, OC, OD } = lens1(), g = xGeom(OA, OB, OC, OD, t1.alpha);
+  const cand = [['C', g.C, 30], ['D', g.D, 30], ['O', g.O, 26]];
+  let best = null, bd = Infinity;
+  for (const [h, p, lim] of cand) { const d = dist(w, p) * v1.scale; if (d < lim && d < bd) { bd = d; best = h; } }
+  return best;
+}
+function bindDrag1() {
+  const svg = v1.svg;
+  svg.addEventListener('pointerdown', e => {
+    const w = v1.world(e), h = pick1(w);
+    if (!h) return;
+    if (t1.overlay || t1.split > 0.01) { say('msg1', 'info', t1.overlay ? 'Bấm “Trả về vị trí cũ” trước khi kéo thước.' : 'Bấm “Ghép hình” trước khi kéo thước.'); return; }
+    if (h === 'O' && t1.lock) { say('msg1', 'info', `Tắt “Khóa chốt ở trung điểm” để kéo chốt ${P('O')}.`); return; }
+    hush('msg1');
+    t1.drag = { h, w0: w, OA0: lens1().OA };
+    try { svg.setPointerCapture(e.pointerId); } catch (err) { /* bỏ qua */ }
+    e.preventDefault();
+  });
+  svg.addEventListener('pointermove', e => {
+    const w = v1.world(e);
+    if (!t1.drag) { svg.style.cursor = pick1(w) ? 'grab' : ''; return; }
+    const d = t1.drag;
+    if (d.h === 'C' || d.h === 'D') {
+      const a = 2 * Math.atan2(d.h === 'C' ? w.x : -w.x, w.y) / DEG;
+      t1.alpha = clamp(a, 5, 150); k1.a.set(t1.alpha);
+    } else {
+      const th = t1.alpha / 2 * DEG, vx = Math.sin(th), vy = Math.cos(th);
+      const lim = 0.4 * t1.L1;
+      const OA = d.OA0 + (w.x - d.w0.x) * vx + (w.y - d.w0.y) * vy;
+      t1.d1 = clamp(OA - t1.L1 / 2, -lim, lim); k1.d1.set(t1.d1 * 10);
+      const dOA = t1.L1 / 2 + t1.d1 - d.OA0;
+      t1.shift = { x: dOA * vx, y: dOA * vy };   // giữ đầu A đứng yên khi kéo chốt
+    }
+    req(render1);
+  });
+  const end = () => { if (!t1.drag) return; t1.drag = null; t1.shift = { x: 0, y: 0 }; req(render1); };
+  svg.addEventListener('pointerup', end);
+  svg.addEventListener('pointercancel', end);
+}
+function reset1() {
+  stopAnim1(); Object.assign(t1, T1D, { overlay: null, split: 0, splitOn: false, drag: null, shift: { x: 0, y: 0 } });
+  $('#lock1').checked = true; $('#show1').checked = true; $('#btnUndo1').disabled = true; $('#btnSplit1').textContent = 'Tách hình';
+  k1.L1.set(15); k1.L2.set(15); limDev1(); applyLock1(); k1.a.set(40); hush('msg1'); render1();
+}
+
+// Hàng đợi vẽ lại theo khung hình
+const pending = new Set(); let rafId = 0;
+function req(fn) { pending.add(fn); if (!rafId) rafId = requestAnimationFrame(() => { rafId = 0; const l = [...pending]; pending.clear(); l.forEach(f => f()); }); }
+
+/* =========================================================
+   4. TAB ② ĐO QUA CỔ HẸP
+   ========================================================= */
+const VDEF = [
+  { name: 'Bình 1 – Hũ gạo (cổ rộng)', n: 6, h: 1.5, s: 1.5, W: 9, H: 10 },
+  { name: 'Bình 2 – Bình hoa cổ hẹp', n: 3.5, h: 2, s: 2, W: 9, H: 8 },
+  { name: 'Bình 3 – Bình nước cổ rất hẹp (chai 1,5 lít)', n: 2.2, h: 2.5, s: 4, W: 8.5, H: 18 },
+  { name: 'Bình 4 – Bình dẹt (bình tỳ bà)', flat: true, n: 2.5, h: 2, s: 3, W: 10, T: 5, H: 15 },
+  { name: 'Cốc kiểm định (không có cổ)', cup: true, W: 7, H: 9 }
+];
+const KEYV = 'thuocChuX_kichThuocBinh_v1';
+const vessels = VDEF.map(o => Object.assign({}, o));
+(function loadVessels() {
+  const sv = store.get(KEYV);
+  if (Array.isArray(sv)) sv.forEach((o, i) => {
+    if (o && vessels[i]) ['n', 'h', 's', 'W', 'T', 'H'].forEach(k => { if (typeof o[k] === 'number' && isFinite(o[k]) && k in vessels[i]) vessels[i][k] = o[k]; });
+  });
+})();
+function saveVessels() { return store.set(KEYV, vessels.map(v => { const o = {}; ['n', 'h', 's', 'W', 'T', 'H'].forEach(k => { if (k in v) o[k] = v[k]; }); return o; })); }
+
+const T2D = { vi: 0, mode: 'W', L: 20, w: 0.8, alpha: 0, off: false, d: 0 };
+const t2 = Object.assign({}, T2D, { lift: 0, out: false, read: null, readDone: false, stop: null, compare: false, cmp: [{ L: 20, w: 0.8 }, { L: 16, w: 0.6 }] });
+const v2 = new View($('#svg2'));
+const vc = [new View($('#cmpsvg0')), new View($('#cmpsvg1'))];
+const k2 = {}, kc = [];
+
+// Kích thước lòng bình đang đo (cm)
+function vesselOf(i, mode) {
+  const d = vessels[i];
+  if (d.cup) return { cup: true, n: d.W, h: 0, s: 0, W: d.W, H: d.H };
+  return { cup: false, n: d.n, h: d.h, s: d.s, W: (d.flat && mode === 'T') ? d.T : d.W, H: d.H };
+}
+function lens2() { const dd = t2.off ? t2.d : 0; return { OA: t2.L / 2 - dd, OC: t2.L / 2 + dd }; }
+
+// Nửa bề rộng lòng bình tại độ cao y (O ở tâm cổ bình, y = 0)
+function halfWidth(v, y) {
+  const hh = v.h / 2, yTop = -hh - v.s, yBot = yTop - v.H;
+  if (y > hh) return Infinity;            // ra ngoài miệng
+  if (y >= -hh) return v.n / 2;           // cổ bình
+  if (y >= yTop) { const t = (-hh - y) / v.s; return v.n / 2 + t * (v.W / 2 - v.n / 2); }  // vai bình
+  if (y >= yBot) return v.W / 2;          // thân bình
+  return -Infinity;                        // dưới đáy
+}
+// Kiểm tra va chạm: cánh quá dài, vướng cổ bình, chạm thành
+function analyze(v, OA, w) {
+  const depth = v.h / 2 + v.s + v.H, TMAX = 75 * DEG;
+  if (OA > depth + 1e-9) return { tooLong: true, depth };
+  let thNeck = Infinity, blocked0 = false;
+  if (!v.cup && v.h > 0) {
+    const f = th => (v.h / 2) * Math.tan(th) + (w / 2) / Math.cos(th) - v.n / 2;
+    if (f(0) > 0) { thNeck = 0; blocked0 = true; }
+    else if (f(TMAX) > 0) { let lo = 0, hi = TMAX; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (f(m) > 0) hi = m; else lo = m; } thNeck = lo; }
+  }
+  const g = th => OA * Math.sin(th) - halfWidth(v, -OA * Math.cos(th));
+  let thTouch = Infinity;
+  if (g(TMAX) >= 0) { let lo = 0, hi = TMAX; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (g(m) >= 0) hi = m; else lo = m; } thTouch = hi; }
+  const thMax = Math.min(thNeck, thTouch, TMAX);
+  const limit = thNeck < thTouch ? 'neck' : (thTouch < Infinity ? 'touch' : 'open');
+  let region = null;
+  if (limit === 'touch') {
+    const y = -OA * Math.cos(thTouch), yTop = -v.h / 2 - v.s;
+    region = y <= yTop + 1e-9 ? 'body' : 'shoulder';
+  }
+  return { tooLong: false, depth, thMax, alphaMax: 2 * thMax / DEG, limit, region, blocked0 };
+}
+
+// Vẽ mặt cắt bình (thành dày 0,4 cm)
+function sVessel(v) {
+  const t = 0.4, hh = v.h / 2, yTop = -hh - v.s, yBot = yTop - v.H;
+  const inR = [{ x: v.n / 2, y: hh }, { x: v.n / 2, y: -hh }, { x: v.W / 2, y: yTop }, { x: v.W / 2, y: yBot }];
+  const outR = [{ x: v.n / 2 + t, y: hh }, { x: v.n / 2 + t, y: -hh }, { x: v.W / 2 + t, y: yTop }, { x: v.W / 2 + t, y: yBot - t }];
+  const mir = a => a.map(p => ({ x: -p.x, y: p.y })).reverse();
+  const fw = v.cup ? '#BFE3F2' : '#D9A877', lw = v.cup ? '#4A90B8' : '#8B5A2B', fi = v.cup ? '#F2FAFD' : '#FFF8E7';
+  let s = sPoly([...outR, ...mir(outR)], fw, v.cup ? 0.8 : 1, 'none', 0);
+  s += sPoly([...inR, ...mir(inR)], fi, 1, 'none', 0);
+  s += sPolyline(outR, lw, 1.6) + sPolyline(mir(outR), lw, 1.6) + sPolyline([...inR, ...mir(inR)], lw, 1.6);
+  s += sLine(inR[0], outR[0], lw, 1.6) + sLine({ x: -inR[0].x, y: hh }, { x: -outR[0].x, y: hh }, lw, 1.6);
+  return s;
+}
+// Hai mũi tên “chỗ cần đo” ở thân bình
+function sNeed(v) {
+  const y = -v.h / 2 - v.s - v.H / 2, x0 = v.W / 2 + 0.4;
+  let s = '';
+  for (const sg of [1, -1]) {
+    const tip = { x: sg * (x0 + 0.12), y }, tail = { x: sg * (x0 + 1.3), y };
+    s += sLine(tail, tip, '#90A4AE', 1.6) + sArrowHead(tip, { x: -sg, y: 0 }, '#90A4AE');
+  }
+  return s + sText({ x: x0 + 0.15, y: y + F(15) }, 'chỗ cần đo', 13, { anchor: 'start', fill: '#607D8B' });
+}
+// Khung nhìn cho cảnh đo
+function fitScene(view, v, OC, thM, Oy) {
+  const hh = v.h / 2, yBot = -hh - v.s - v.H;
+  let half = Math.max(v.W / 2 + 2, OC * Math.sin(thM) + 1.4, 4);
+  const top = Oy + OC + 2.8, bot = yBot - 1.4;
+  view.fit(-half, bot, half, top);
+  CUR = view;
+  const need = v.W / 2 + 0.6 + F(85);
+  if (need > half) { half = need; view.fit(-half, bot, half, top); }
+}
+// Vẽ toàn cảnh: bình + thước chữ X
+function sScene(v, OA, OC, w, alpha, Oy, o = {}) {
+  let s = sGrid(CUR.box) + sVessel(v) + sNeed(v);
+  const g = xGeom(OA, OA, OC, OC, alpha, Oy);
+  s += sBar(g.A, g.C, w, '#E8C99B', '#B07A3B', 0.97) + sBar(g.B, g.D, w, '#E8C99B', '#B07A3B', 0.97);
+  if (alpha > 0.5) s += sDash([g.A, g.B], '#2E6DB4', 2) + sDash([g.D, g.C], '#C2185B', 2);
+  if (o.stuck) {
+    const hh = v.h / 2;
+    s += sLine({ x: v.n / 2, y: hh }, { x: v.n / 2, y: -hh }, '#C62828', 5) + sLine({ x: -v.n / 2, y: hh }, { x: -v.n / 2, y: -hh }, '#C62828', 5);
+  }
+  if (o.touch) s += sCircle(g.A, F(9), 'none', o.touch, 3) + sCircle(g.B, F(9), 'none', o.touch, 3);
+  s += sCircle(g.O, F(6), '#424242', '#fff', 1.5);
+  s += sLabel(g.A, 'A', g.O, '#1F2A37', -1) + sLabel(g.B, 'B', g.O, '#1F2A37', 1) + sLabel(g.C, 'C', g.O, '#1F2A37', 1) + sLabel(g.D, 'D', g.O, '#1F2A37', -1);
+  s += sText({ x: g.O.x + F(18), y: g.O.y }, 'O', 21, { cls: 'pt', bold: true });
+  if (o.read != null) s += sRuler(g.D, g.C, g.O, o.read, o.read >= 1 ? `${Ps('CD')} = ${fmt(dist(g.C, g.D))} cm` : '');
+  return { svg: s, g };
+}
+
+function buildCtrl2() {
+  const sel = $('#sel2');
+  sel.innerHTML = vessels.map((v, i) => `<option value="${i}">${v.name}</option>`).join('');
+  sel.addEventListener('change', () => {
+    t2.vi = +sel.value;
+    if (vessels[t2.vi].cup) { t2.L = 16; k2.L.set(16); }
+    $('#edit2').hidden = true; $('#btnEdit2').textContent = 'Sửa kích thước';
+    changed2();
+  });
+  $$('#flat2 button').forEach(b => b.addEventListener('click', () => {
+    t2.mode = b.dataset.m;
+    $$('#flat2 button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    changed2();
+  }));
+  const box = $('#c2');
+  k2.L = makeCtrl(box, { label: 'Độ dài mỗi thanh L', min: 10, max: 30, step: 0.1, dec: 1, unit: 'cm', value: T2D.L, onChange: v => { t2.L = v; changed2(); } });
+  k2.w = makeCtrl(box, { label: 'Bề rộng thanh w', min: 0.3, max: 1.5, step: 0.05, dec: 2, unit: 'cm', value: T2D.w, onChange: v => { t2.w = v; changed2(); } });
+  k2.a = makeCtrl(box, { label: 'Mở thước (góc α)', min: 0, max: 150, step: 0.1, dec: 1, unit: '°', value: 0, onChange: v => { t2.alpha = v; changed2(true); } });
+  k2.d = makeCtrl($('#c2d'), { label: 'Độ lệch chốt d', min: 0, max: 3, step: 0.1, dec: 1, unit: 'cm', value: 0, onChange: v => { t2.d = v; changed2(); } });
+  k2.d.disable(true);
+  $('#off2').addEventListener('change', e => { t2.off = e.target.checked; k2.d.disable(!t2.off); changed2(); });
+  $('#btnRead2').addEventListener('click', read2);
+  $('#btnOut2').addEventListener('click', pullOut2);
+  $('#btnEdit2').addEventListener('click', toggleEdit2);
+  $('#btnCmp2').addEventListener('click', () => setCompare(true));
+  $('#btnCmpExit').addEventListener('click', () => setCompare(false));
+  for (let k = 0; k < 2; k++) {
+    const b = $('#cmpc' + k);
+    kc[k] = {
+      L: makeCtrl(b, { label: 'Độ dài mỗi thanh L', min: 10, max: 30, step: 0.1, dec: 1, unit: 'cm', value: t2.cmp[k].L, onChange: v => { t2.cmp[k].L = v; req(renderCmp); } }),
+      w: makeCtrl(b, { label: 'Bề rộng thanh w', min: 0.3, max: 1.5, step: 0.05, dec: 2, unit: 'cm', value: t2.cmp[k].w, onChange: v => { t2.cmp[k].w = v; req(renderCmp); } })
+    };
+  }
+}
+function stopAnim2() { if (t2.stop) { t2.stop(); t2.stop = null; } }
+// Mọi thay đổi: thước trở lại trong bình, xóa số đọc
+function changed2(fromAlpha) {
+  stopAnim2();
+  t2.lift = 0; t2.out = false; t2.read = null; t2.readDone = false;
+  if (!fromAlpha) {
+    const v = vesselOf(t2.vi, t2.mode), an = analyze(v, lens2().OA, t2.w);
+    if (!an.tooLong && t2.alpha > an.alphaMax) { t2.alpha = an.alphaMax; k2.a.set(t2.alpha); }
+  }
+  req(render2);
+}
+
+function render2() {
+  if (t2.compare) { renderCmp(); return; }
+  const v = vesselOf(t2.vi, t2.mode), { OA, OC } = lens2(), an = analyze(v, OA, t2.w);
+  $('#flat2').hidden = !vessels[t2.vi].flat;
+  // Giới hạn góc mở
+  let atLimit = false;
+  if (an.tooLong) { t2.alpha = 0; k2.a.set(0); k2.a.disable(true); }
+  else {
+    k2.a.disable(false);
+    if (t2.alpha > an.alphaMax) { t2.alpha = an.alphaMax; k2.a.set(t2.alpha); }
+    atLimit = t2.alpha >= an.alphaMax - 0.05;
+  }
+  const canRead = atLimit && an.limit === 'touch';
+  const Oy = an.tooLong ? v.h / 2 + OA : t2.lift;
+  fitScene(v2, v, OC, an.tooLong ? 0 : an.thMax, an.tooLong ? Oy : 0);
+  const stuck = atLimit && an.limit === 'neck';
+  const touch = canRead && t2.lift === 0 ? (an.region === 'body' ? '#2E7D32' : '#EF6C00') : null;
+  const sc = sScene(v, OA, OC, t2.w, t2.alpha, Oy, { stuck, touch, read: t2.read });
+  v2.svg.innerHTML = sc.svg;
+  $('#cap2').innerHTML = vessels[t2.vi].flat
+    ? `Đang đo theo <b>${t2.mode === 'T' ? 'bề dày' : 'bề rộng'}</b> của bình dẹt. Xoay thước 90° bên trong bình để đo chiều còn lại.`
+    : (v.cup ? 'Cốc kiểm định: chốt O đặt ở tâm miệng cốc.' : `Mặt cắt bình – chốt ${P('O')} nằm ở tâm cổ bình.`);
+  $('#btnRead2').disabled = !canRead || t2.lift > 0 || !!t2.stop;
+  // Thông báo
+  if (t2.lift === 0 && !t2.stop) {
+    if (an.tooLong) say('msg2', 'warn', `Cánh quá dài so với chiều sâu bình – không luồn vào được (${P('OA')} = ${fmt(OA)} cm > chiều sâu ${fmt(an.depth)} cm).`);
+    else if (an.blocked0) say('msg2', 'err', 'Thanh rộng hơn cổ bình – chọn thanh mảnh hơn.');
+    else if (stuck) say('msg2', 'err', 'Vướng cổ bình – thử cánh dài hơn hoặc thanh mảnh hơn.');
+    else if (canRead && an.region === 'body') say('msg2', 'ok', 'Chạm thành ✓ – đúng chỗ rộng nhất. Bấm “Đọc số đo”.');
+    else if (canRead) say('msg2', 'warn', 'Chạm vai bình – chưa tới chỗ rộng nhất, cần cánh dài hơn.');
+    else say('msg2', 'info', 'Kéo thanh trượt “Mở thước” để mở dần cho đến khi đầu đo chạm thành bình.');
+  }
+  // Bảng số đo
+  const AB = 2 * OA * Math.sin(t2.alpha / 2 * DEG), CD = 2 * OC * Math.sin(t2.alpha / 2 * DEG);
+  const r = (a, b) => `<tr class="plain"><th>${a}</th><td>${b}</td></tr>`;
+  $('#meas2').innerHTML =
+    r(vessels[t2.vi].flat ? `Kích thước cần đo (${t2.mode === 'T' ? 'bề dày' : 'bề rộng'})` : 'Kích thước cần đo (đường kính lòng)', fmt(v.W) + ' cm') +
+    r(`${P('OA')} = ${P('OB')}`, fmt(OA) + ' cm') + r(`${P('OC')} = ${P('OD')}`, fmt(OC) + ' cm') +
+    r('Góc mở α', fmt(t2.alpha, 1) + '°') + r('Góc mở tối đa', an.tooLong ? '–' : fmt(an.alphaMax, 1) + '°') +
+    r(`${P('AB')} (đầu đo trong bình)`, fmt(AB) + ' cm') + r(`${P('CD')} (số đọc bên ngoài)`, t2.readDone ? fmt(CD) + ' cm' : '?');
+  // Kết quả đọc số đo
+  const res = $('#res2');
+  if (t2.readDone) {
+    const err = Math.abs(CD - v.W) * 10, lim = v.cup ? 2 : 3, ok = mm1(err) <= lim;
+    const why = [];
+    if (t2.off && t2.d > 0) why.push(`chốt lệch trung điểm (${P('OA')} ≠ ${P('OC')})`);
+    if (an.region !== 'body') why.push('đầu đo chưa tới chỗ rộng nhất');
+    res.hidden = false; res.className = 'result ' + (ok ? 'ok' : 'err');
+    res.innerHTML = `<b>${ok ? 'Đo đúng' : 'Đo sai'}</b><br>Kích thước thật: ${fmt(v.W)} cm<br>Số đọc được: ${P('CD')} = ${fmt(CD)} cm<br>Sai số: ${fmt(err, 1)} mm (cho phép ≤ ${lim} mm)` +
+      (!ok && why.length ? `<br>Nguyên nhân: ${why.join('; ')}.` : '');
+  } else res.hidden = true;
+}
+
+// Nút “Đọc số đo”: thước thẳng ảo đo đoạn CD
+function read2() {
+  if (t2.stop) return;
+  t2.read = 0; t2.readDone = false;
+  t2.stop = animate(900, e => { t2.read = e; render2(); }, () => { t2.stop = null; t2.read = 1; t2.readDone = true; render2(); });
+}
+// Nút “Khép thước – rút ra”
+function pullOut2() {
+  if (t2.stop) return;
+  const v = vesselOf(t2.vi, t2.mode), { OA, OC } = lens2();
+  if (analyze(v, OA, t2.w).tooLong) { say('msg2', 'warn', 'Thước chưa luồn vào bình.'); return; }
+  t2.read = null; t2.readDone = false; hush('msg2');
+  const a0 = t2.alpha, H = v.h / 2 + OA + OC + 4;
+  t2.stop = animate(a0 > 0 ? 700 : 1, e => { t2.alpha = a0 * (1 - e); k2.a.set(t2.alpha); render2(); }, () => {
+    t2.stop = animate(900, e => { t2.lift = H * e; render2(); }, () => {
+      t2.stop = null; t2.out = true; render2();
+      say('msg2', 'info', 'Đã khép thước và rút ra khỏi bình. Kéo “Mở thước” để luồn thước vào lại.');
+    });
+  });
+}
+
+// Sửa kích thước bình theo bình thật của lớp
+function toggleEdit2() {
+  const box = $('#edit2');
+  if (!box.hidden) { box.hidden = true; $('#btnEdit2').textContent = 'Sửa kích thước'; return; }
+  const d = vessels[t2.vi];
+  const f = d.cup ? [['W', 'Đường kính lòng (cm)'], ['H', 'Chiều cao (cm)']]
+    : [['n', 'Cổ: rộng n (cm)'], ['h', 'Cổ: cao h (cm)'], ['s', 'Vai cao s (cm)'], ['W', d.flat ? 'Thân: bề rộng (cm)' : 'Thân: rộng W (cm)']]
+      .concat(d.flat ? [['T', 'Thân: bề dày (cm)']] : []).concat([['H', 'Thân: cao H (cm)']]);
+  box.innerHTML = `<div class="grid">${f.map(([k, l]) => `<label>${l}<input data-k="${k}" type="text" inputmode="decimal" value="${fmt(d[k])}"></label>`).join('')}</div>
+    <div class="btns"><button class="primary" id="btnSave2">Lưu</button><button id="btnDef2">Về mặc định</button><button id="btnClose2">Đóng</button></div>`;
+  box.hidden = false; $('#btnEdit2').textContent = 'Đóng bảng sửa';
+  $('#btnClose2').addEventListener('click', toggleEdit2);
+  $('#btnDef2').addEventListener('click', () => {
+    Object.assign(vessels[t2.vi], VDEF[t2.vi]); const ok = saveVessels();
+    box.hidden = true; $('#btnEdit2').textContent = 'Sửa kích thước';
+    changed2();
+    setTimeout(() => say('msg2', ok ? 'ok' : 'warn', ok ? 'Đã đưa kích thước về mặc định.' : 'Đã đưa về mặc định (trình duyệt này không lưu được).'), 30);
+  });
+  $('#btnSave2').addEventListener('click', () => {
+    const nv = {};
+    for (const inp of $$('input', box)) {
+      const x = parseNum(inp.value), k = inp.dataset.k;
+      const minOk = (k === 's' || k === 'h') ? x >= 0 : x > 0;
+      if (!isFinite(x) || !minOk || x > 100) { say('msg2', 'err', 'Kích thước chưa hợp lệ: hãy nhập số dương (cm).'); return; }
+      nv[k] = x;
+    }
+    const W = nv.W, n = nv.n;
+    if (!d.cup && (n > W || (d.flat && n > nv.T))) { say('msg2', 'err', 'Cổ bình không được rộng hơn thân bình.'); return; }
+    Object.assign(vessels[t2.vi], nv); const ok = saveVessels();
+    box.hidden = true; $('#btnEdit2').textContent = 'Sửa kích thước';
+    changed2();
+    setTimeout(() => say('msg2', ok ? 'ok' : 'warn', ok ? `Đã lưu kích thước: ${d.name}.` : 'Đã áp dụng kích thước nhưng trình duyệt này không lưu được.'), 30);
+  });
+}
+
+// So sánh 2 phương án của cùng một nhóm
+function setCompare(on) {
+  stopAnim2(); t2.compare = on;
+  $('#main2').hidden = on; $('#cmp2').hidden = !on; hush('msg2');
+  if (on) renderCmp(); else changed2();
+}
+function renderCmp() {
+  const v = vesselOf(t2.vi, t2.mode);
+  $('#cmpName').textContent = vessels[t2.vi].name + (vessels[t2.vi].flat ? (t2.mode === 'T' ? ' – đo bề dày' : ' – đo bề rộng') : '');
+  for (let k = 0; k < 2; k++) {
+    const { L, w } = t2.cmp[k], OA = L / 2, an = analyze(v, OA, w);
+    const alpha = an.tooLong ? 0 : an.alphaMax, Oy = an.tooLong ? v.h / 2 + OA : 0;
+    fitScene(vc[k], v, OA, an.tooLong ? 0 : an.thMax, Oy);
+    const touch = an.limit === 'touch' ? (an.region === 'body' ? '#2E7D32' : '#EF6C00') : null;
+    const sc = sScene(v, OA, OA, w, alpha, Oy, { stuck: !an.tooLong && an.limit === 'neck', touch, read: touch ? 1 : null });
+    vc[k].svg.innerHTML = sc.svg;
+    const m = $('#cmpmsg' + k);
+    let cls, txt;
+    if (an.tooLong) { cls = 'warn'; txt = 'Cánh quá dài so với chiều sâu bình – không luồn vào được.'; }
+    else if (an.blocked0) { cls = 'err'; txt = 'Thanh rộng hơn cổ bình.'; }
+    else if (an.limit === 'neck') { cls = 'err'; txt = 'Vướng cổ bình – thử cánh dài hơn hoặc thanh mảnh hơn.'; }
+    else if (an.region === 'body') { cls = 'ok'; txt = 'Chạm thành ✓ – đúng chỗ rộng nhất.'; }
+    else { cls = 'warn'; txt = 'Chạm vai bình – chưa tới chỗ rộng nhất, cần cánh dài hơn.'; }
+    m.className = 'msg show ' + cls; m.innerHTML = txt;
+    const CD = 2 * OA * Math.sin(alpha / 2 * DEG), errMm = Math.abs(CD - v.W) * 10;
+    const r = (a, b) => `<tr class="plain"><th>${a}</th><td>${b}</td></tr>`;
+    $('#cmpmeas' + k).innerHTML = r('Góc mở tối đa', an.tooLong ? '–' : fmt(alpha, 1) + '°') +
+      r(`Số đọc ${P('CD')}`, touch ? fmt(CD) + ' cm' : '–') + r('Sai số so với kích thước thật', touch ? fmt(errMm, 1) + ' mm' : '–');
+  }
+}
+function reset2() {
+  stopAnim2(); Object.assign(t2, T2D, { lift: 0, out: false, read: null, readDone: false, compare: false });
+  $('#sel2').value = '0'; $('#off2').checked = false; k2.d.disable(true);
+  k2.L.set(20); k2.w.set(0.8); k2.a.set(0); k2.d.set(0);
+  $$('#flat2 button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.m === 'W')));
+  $('#main2').hidden = false; $('#cmp2').hidden = true; $('#edit2').hidden = true; $('#btnEdit2').textContent = 'Sửa kích thước';
+  hush('msg2'); render2();
+}
+
+/* =========================================================
+   5. TAB ③ THỬ THÁCH
+   ========================================================= */
+const t3 = { ch: null, score: 0, total: 0, answered: false, OB: 5 };
+const v3 = new View($('#svg3')), v3b = new View($('#svg3b'));
+let k3b = null;
+
+// Vẽ thước chữ X dạng hình học (dùng cho tab ③ và ⑤)
+function sFigX(view, L, o = {}) {
+  CUR = view;
+  const g = xGeom(L.OA, L.OB, L.OC, L.OD, L.alpha);
+  const R = Math.max(L.OA, L.OB, L.OC, L.OD);
+  view.fit(-R - 1.6, -R - 1.8, R + 1.6, R + 2.9);
+  const ra = Math.min(1.1, 0.38 * Math.min(L.OA, L.OB, L.OC, L.OD));
+  let s = sGrid(view.box) + sBar(g.A, g.C, 0.55, '#E8C99B', '#B07A3B') + sBar(g.B, g.D, 0.55, '#E8C99B', '#B07A3B');
+  s += sPoly([g.O, g.A, g.B], '#2E6DB4', o.boldTri ? 0.45 : 0.30, '#2E6DB4', o.boldTri ? 3.5 : 2, o.cls && o.cls.tri ? `class="${o.cls.tri}"` : '');
+  s += sPoly([g.O, g.C, g.D], '#C2185B', o.boldTri ? 0.42 : 0.28, '#C2185B', o.boldTri ? 3.5 : 2, o.cls && o.cls.tri ? `class="${o.cls.tri}"` : '');
+  return { s, g, ra };
+}
+
+function newCh3() {
+  const L = 12 + 0.5 * Math.floor(Math.random() * 13);
+  let r = Math.random() < 0.5 ? 0.30 + Math.random() * 0.15 : 0.55 + Math.random() * 0.15;
+  r = Math.round(r * 100) / 100;
+  const OA = L * r;
+  t3.ch = { L, OA, OB: OA, OC: L - OA, OD: L - OA, alpha: 30 + Math.floor(Math.random() * 61) };
+  t3.answered = false;
+  $$('#ans3 button').forEach(b => { b.disabled = false; });
+  hush('msg3'); render3();
+}
+function render3() {
+  const c = t3.ch; if (!c) return;
+  const { s: base, g, ra } = sFigX(v3, c);
+  let s = base + sLine(g.A, g.B, '#2E6DB4', 3.5) + sArc(g.O, ra, ang(g.A, g.O), ang(g.B, g.O), '#2E6DB4', 2.5) + sArc(g.O, ra, ang(g.C, g.O), ang(g.D, g.O), '#C2185B', 2.5);
+  if (t3.answered) {
+    s += sLine(g.C, g.D, '#C2185B', 3.5) + sRuler(g.D, g.C, g.O, 1, `${Ps('CD')} = ${fmt(dist(g.C, g.D))} cm`);
+  } else {
+    s += sDash([g.D, g.C], '#C2185B', 3);
+    s += sText({ x: (g.C.x + g.D.x) / 2, y: (g.C.y + g.D.y) / 2 + F(20) }, `${Ps('CD')} = ?`, 20, { bold: true, fill: '#C2185B' });
+  }
+  s += sLabel(g.A, 'A', g.O) + sLabel(g.B, 'B', g.O) + sLabel(g.C, 'C', g.O) + sLabel(g.D, 'D', g.O);
+  s += sText({ x: F(20), y: F(2) }, 'O', 21, { cls: 'pt', bold: true }) + sCircle(g.O, F(7), '#424242', '#fff', 2);
+  v3.svg.innerHTML = s;
+  const AB = dist(g.A, g.B), CD = dist(g.C, g.D);
+  const r = (a, b) => `<tr class="plain"><th>${a}</th><td>${b}</td></tr>`;
+  $('#meas3').innerHTML = r('Độ dài mỗi thanh', fmt(c.L, 1) + ' cm') + r(`${P('OA')} = ${P('OB')}`, fmt(c.OA) + ' cm') + r(`${P('OC')} = ${P('OD')}`, fmt(c.OC) + ' cm') +
+    r('Góc mở α', fmt(c.alpha, 0) + '°') + r(P('AB'), fmt(AB) + ' cm') + r(P('CD'), t3.answered ? fmt(CD) + ' cm' : '?');
+}
+function answer3(a) {
+  if (!t3.ch || t3.answered) return;
+  const c = t3.ch, key = c.OC > c.OA ? 'gt' : 'lt';
+  t3.answered = true; t3.total++;
+  const ok = a === key; if (ok) t3.score++;
+  $$('#ans3 button').forEach(b => { b.disabled = true; });
+  $('#score3').textContent = `Điểm: ${t3.score}/${t3.total}`;
+  const g = xGeom(c.OA, c.OB, c.OC, c.OD, c.alpha);
+  const AB = dist(g.A, g.B), CD = dist(g.C, g.D);
+  const why = key === 'gt'
+    ? `Chốt lệch về phía ${P('A')}, ${P('B')} nên ${P('OC')} > ${P('OA')} và ${P('OD')} > ${P('OB')}. Hai tam giác có góc ở đỉnh ${P('O')} bằng nhau (đối đỉnh) nhưng hai cạnh của △${P('OCD')} dài hơn ⇒ ${P('CD')} > ${P('AB')}.`
+    : `Chốt lệch về phía ${P('C')}, ${P('D')} nên ${P('OC')} < ${P('OA')} và ${P('OD')} < ${P('OB')}. Hai tam giác có góc ở đỉnh ${P('O')} bằng nhau (đối đỉnh) nhưng hai cạnh của △${P('OCD')} ngắn hơn ⇒ ${P('CD')} < ${P('AB')}.`;
+  say('msg3', ok ? 'ok' : 'err', `${ok ? 'Đúng!' : 'Chưa đúng.'} ${P('CD')} = ${fmt(CD)} cm, ${P('AB')} = ${fmt(AB)} cm. ${why}`);
+  render3();
+}
+
+// Thử thách nâng cao: OA = 5 cm cố định, tìm OB để AB = CD
+function render3b() {
+  const OA = 5, OC = 10, OB = t3.OB, OD = 15 - OB, alpha = 50;
+  const swap = Math.abs(OB - OC) < 0.005 && Math.abs(OA - OD) < 0.005;
+  const { s: base, g, ra } = sFigX(v3b, { OA, OB, OC, OD, alpha }, { boldTri: swap });
+  let s = base + sLine(g.A, g.B, '#2E6DB4', 3.5) + sLine(g.C, g.D, '#C2185B', 3.5)
+    + sArc(g.O, ra, ang(g.A, g.O), ang(g.B, g.O), '#2E6DB4', 2.5) + sArc(g.O, ra, ang(g.C, g.O), ang(g.D, g.O), '#C2185B', 2.5);
+  if (Math.abs(OA - OD) < 0.005) s += sTicks(g.O, g.A, 1) + sTicks(g.O, g.D, 1);
+  if (Math.abs(OB - OC) < 0.005) s += sTicks(g.O, g.B, 2) + sTicks(g.O, g.C, 2);
+  s += sLabel(g.A, 'A', g.O) + sLabel(g.B, 'B', g.O) + sLabel(g.C, 'C', g.O) + sLabel(g.D, 'D', g.O);
+  s += sText({ x: F(20), y: F(2) }, 'O', 21, { cls: 'pt', bold: true }) + sCircle(g.O, F(7), '#424242', '#fff', 2);
+  v3b.svg.innerHTML = s;
+  const AB = dist(g.A, g.B), CD = dist(g.C, g.D), dmm = Math.abs(AB - CD) * 10;
+  const r = (a, b, c) => `<tr class="${c || 'plain'}"><th>${a}</th><td>${b}</td></tr>`;
+  $('#meas3b').innerHTML = r(`${P('OA')}; ${P('OC')}`, '5,00 cm; 10,00 cm') + r(`${P('OB')}; ${P('OD')}`, `${fmt(OB)} cm; ${fmt(OD)} cm`) +
+    r(P('AB'), fmt(AB) + ' cm') + r(P('CD'), fmt(CD) + ' cm') + r(`|${P('AB')} − ${P('CD')}|`, fmt(dmm, 1) + ' mm', dmm < 0.5 ? 'eq' : 'ne');
+  if (dmm < 0.5) say('msg3b', 'ok', `Tuyệt vời! ${P('OB')} = ${P('OC')} = 10 cm và ${P('OD')} = ${P('OA')} = 5 cm nên △${P('OAB')} = △${P('ODC')} (c.g.c) ⇒ ${P('AB')} = ${P('CD')}.`);
+  else if (Math.abs(OB - 5) < 0.05) say('msg3b', 'warn', `${P('OB')} = ${P('OA')} = 5 cm và ${P('OC')} = ${P('OD')} = 10 cm: mỗi cạnh của △${P('OCD')} gấp đôi cạnh của △${P('OAB')} ⇒ ${P('CD')} = 2${P('AB')}, chưa đo đúng.`);
+  else say('msg3b', 'info', `Kéo thanh trượt để đổi vị trí chốt trên thanh 2, quan sát |${P('AB')} − ${P('CD')}|.`);
+}
+function buildCtrl3() {
+  $('#btnNew3').addEventListener('click', newCh3);
+  $$('#ans3 button').forEach(b => b.addEventListener('click', () => answer3(b.dataset.a)));
+  k3b = makeCtrl($('#c3b'), { label: `Vị trí chốt trên thanh 2: ${P('OB')}`, min: 1.5, max: 13.5, step: 0.1, dec: 1, unit: 'cm', value: 5, onChange: v => { t3.OB = v; req(render3b); } });
+}
+function render3all() { render3(); render3b(); }
+function reset3() { t3.score = 0; t3.total = 0; t3.OB = 5; k3b.set(5); $('#score3').textContent = 'Điểm: 0/0'; newCh3(); render3b(); }
+
+/* =========================================================
+   6. TAB ⑤ GIẢI THÍCH TOÁN HỌC
+   ========================================================= */
+const STEPS5 = [
+  'Xét △<i class="pt">OAB</i> và △<i class="pt">OCD</i> có:',
+  '<i class="pt">OA</i> = <i class="pt">OC</i> (= 3 cm)',
+  '∠<i class="pt">AOB</i> = ∠<i class="pt">COD</i> (hai góc đối đỉnh)',
+  '<i class="pt">OB</i> = <i class="pt">OD</i> (= 4 cm)',
+  'Vậy △<i class="pt">OAB</i> = △<i class="pt">OCD</i> (c.g.c)',
+  '⇒ <i class="pt">AB</i> = <i class="pt">CD</i> (hai cạnh tương ứng)',
+  'Kết luận: thước chữ X đo đúng khi chốt <i class="pt">O</i> là trung điểm của mỗi thanh.'
+];
+const t5 = { step: 0, hide: false };
+const v5 = new View($('#svg5'));
+function render5() {
+  const k = t5.step, L = { OA: 3, OC: 3, OB: 4, OD: 4, alpha: 50 };
+  const { s: base, g, ra } = sFigX(v5, L, { boldTri: k >= 5, cls: { tri: k === 5 ? 'blink' : '' } });
+  const B = c => (c ? 'class="blink"' : '');
+  let s = base;
+  // Các đoạn OA, OC, OB, OD
+  s += sLine(g.O, g.A, '#2E6DB4', k === 2 ? 6 : 2.5, B(k === 2)) + sLine(g.O, g.C, '#C2185B', k === 2 ? 6 : 2.5, B(k === 2));
+  s += sLine(g.O, g.B, '#2E6DB4', k === 4 ? 6 : 2.5, B(k === 4)) + sLine(g.O, g.D, '#C2185B', k === 4 ? 6 : 2.5, B(k === 4));
+  s += sLine(g.A, g.B, '#2E6DB4', k === 6 ? 6 : 3, B(k === 6)) + sLine(g.C, g.D, '#C2185B', k === 6 ? 6 : 3, B(k === 6));
+  s += sArc(g.O, ra, ang(g.A, g.O), ang(g.B, g.O), '#2E6DB4', k === 3 ? 6 : 2.5, B(k === 3)) + sArc(g.O, ra, ang(g.C, g.O), ang(g.D, g.O), '#C2185B', k === 3 ? 6 : 2.5, B(k === 3));
+  if (k >= 2) s += sTicks(g.O, g.A, 1) + sTicks(g.O, g.C, 1);
+  if (k >= 4) s += sTicks(g.O, g.B, 2) + sTicks(g.O, g.D, 2);
+  s += sLabel(g.A, 'A', g.O) + sLabel(g.B, 'B', g.O) + sLabel(g.C, 'C', g.O) + sLabel(g.D, 'D', g.O);
+  s += sText({ x: F(20), y: F(2) }, 'O', 21, { cls: 'pt', bold: true }) + sCircle(g.O, F(7), '#424242', '#fff', 2);
+  v5.svg.innerHTML = s;
+  $('#step5').textContent = `Bước ${k}/${STEPS5.length}`;
+  $('#btnPrev5').disabled = k === 0; $('#btnNext5').disabled = k === STEPS5.length;
+  $('#proof5').innerHTML = t5.hide
+    ? '<li class="hidden-proof">Lời giải đang ẩn – hãy tự trình bày vào vở, rồi bấm “Ẩn/hiện lời giải” để đối chiếu.</li>'
+    : STEPS5.slice(0, k).map((x, i) => `<li class="${i === k - 1 ? 'cur' : ''}">${x}</li>`).join('');
+}
+function buildCtrl5() {
+  $('#btnNext5').addEventListener('click', () => { if (t5.step < STEPS5.length) { t5.step++; render5(); } });
+  $('#btnPrev5').addEventListener('click', () => { if (t5.step > 0) { t5.step--; render5(); } });
+  $('#btnHide5').addEventListener('click', () => { t5.hide = !t5.hide; render5(); });
+}
+function reset5() { t5.step = 0; t5.hide = false; render5(); }
+
+/* =========================================================
+   7. TAB ④ KIỂM TRA LÔ BÌNH (BẢNG KẾT QUẢ LỚP)
+   ========================================================= */
+const KEY4 = 'thuocChuX_bangKetQuaLop_v1';
+const NAMES4 = ['Hũ gạo', 'Bình hoa cổ hẹp', 'Bình nước cổ rất hẹp', 'Bình dẹt (bình tỳ bà)'];
+const blank4 = () => ({
+  params: { name: NAMES4.slice(), std: ['', '', '', ''], des: ['', '', '', ''], cup: '7,00', locked: false },
+  rows: [0, 1, 2, 3].map(() => ({ l: ['', '', ''], out: '', c: ['', '', ''], cutL: '', cutT: '' }))
+});
+let t4 = (function () {
+  const sv = store.get(KEY4), b = blank4();
+  try {
+    if (sv && sv.params && Array.isArray(sv.rows) && sv.rows.length === 4) {
+      ['name', 'std', 'des'].forEach(k => { if (Array.isArray(sv.params[k])) sv.params[k].forEach((x, i) => { if (i < 4) b.params[k][i] = String(x); }); });
+      if (sv.params.cup != null) b.params.cup = String(sv.params.cup);
+      b.params.locked = !!sv.params.locked;
+      sv.rows.forEach((r, i) => {
+        ['l', 'c'].forEach(k => { if (Array.isArray(r[k])) r[k].forEach((x, j) => { if (j < 3) b.rows[i][k][j] = String(x); }); });
+        ['out', 'cutL', 'cutT'].forEach(k => { if (r[k] != null) b.rows[i][k] = String(r[k]); });
+      });
+    }
+  } catch (e) { /* dùng bảng trống */ }
+  return b;
+})();
+const save4 = () => store.set(KEY4, t4);
+
+// Tính toán cho dòng i (Nhóm i+1 – Bình i+1)
+function calc4(i) {
+  const p = t4.params, r = t4.rows[i];
+  const L = r.l.map(parseNum).filter(isFinite), C = r.c.map(parseNum).filter(isFinite);
+  const std = parseNum(p.std[i]), des = parseNum(p.des[i]), cupStd = parseNum(p.cup);
+  const tb = L.length ? avg(L) : NaN;
+  const spread = L.length >= 2 ? (Math.max(...L) - Math.min(...L)) * 10 : NaN;
+  const tbC = C.length ? avg(C) : NaN;
+  const cupErr = isFinite(tbC) && isFinite(cupStd) ? Math.abs(tbC - cupStd) * 10 : NaN;
+  const outRaw = parseNum(r.out);
+  const outer = isFinite(outRaw) ? (i < 3 ? outRaw / 3.14 : outRaw) : NaN;
+  const thick = isFinite(outer) && isFinite(tb) ? (outer - tb) / 2 * 10 : NaN;
+  const thickDev = isFinite(thick) && isFinite(des) ? Math.abs(thick - des) : NaN;
+  const lumErr = isFinite(tb) && isFinite(std) ? Math.abs(tb - std) * 10 : NaN;
+  const warns = [];
+  if (isFinite(spread) && mm1(spread) > 2) warns.push('Ba lần đo lệch nhau – đo lại');
+  let cupOk = null, level = null;
+  if (isFinite(cupErr)) {
+    const e = mm1(cupErr); cupOk = e <= 2; level = e <= 2 ? 3 : (e <= 4 ? 2 : 1);
+    if (!cupOk) warns.push('Thước chưa đủ tin cậy – cải tiến và đo lại');
+  }
+  const dDef = isFinite(thickDev) && mm1(thickDev) > 2, lDef = isFinite(lumErr) && mm1(lumErr) > 3;
+  const verdict = (dDef || lDef) ? 'loi' : (isFinite(thickDev) && isFinite(lumErr) ? 'dat' : null);
+  const reasons = [];
+  if (dDef) reasons.push(`độ dày lệch ${fmt(thickDev, 1)} mm > 2 mm`);
+  if (lDef) reasons.push(`đường kính lòng sai ${fmt(lumErr, 1)} mm > 3 mm`);
+  const cutL = parseNum(r.cutL), cutT = parseNum(r.cutT);
+  const cutLd = isFinite(cutL) && isFinite(tb) ? Math.abs(cutL - tb) * 10 : NaN;
+  const cutTd = isFinite(cutT) && isFinite(thick) ? Math.abs(cutT - thick) : NaN;
+  return { tb, spread, tbC, cupErr, outer, thick, thickDev, lumErr, des, warns, cupOk, level, verdict, reasons, cutLd, cutTd };
+}
+const name4 = i => (t4.params.name[i] || '').trim() || NAMES4[i];
+
+function build4() {
+  const p = t4.params;
+  $('#par4').innerHTML = `<thead><tr><th>Bình</th><th>Tên mẫu</th><th>Đường kính lòng chuẩn (cm)<span class="sub">Bình dẹt: bề rộng lòng chuẩn</span></th><th>Độ dày thiết kế (mm)</th></tr></thead><tbody>` +
+    [0, 1, 2, 3].map(i => `<tr><th class="rowh">Bình ${i + 1}</th><td><input class="name" data-p="name" data-i="${i}" value="${esc(p.name[i])}" aria-label="Tên mẫu bình ${i + 1}"></td>
+      <td><input data-p="std" data-i="${i}" inputmode="decimal" value="${esc(p.std[i])}" aria-label="Đường kính lòng chuẩn bình ${i + 1}"></td>
+      <td><input data-p="des" data-i="${i}" inputmode="decimal" value="${esc(p.des[i])}" aria-label="Độ dày thiết kế bình ${i + 1}"></td></tr>`).join('') +
+    `<tr><th class="rowh">Cốc kiểm định</th><td style="text-align:left">Đường kính chuẩn (cm)</td><td><input data-p="cup" inputmode="decimal" value="${esc(p.cup)}" aria-label="Đường kính chuẩn cốc"></td><td></td></tr></tbody>`;
+  const inp = (i, f, j, label) => `<td><input data-r="${i}" data-f="${f}" ${j != null ? `data-j="${j}"` : ''} inputmode="decimal" value="${esc(j != null ? t4.rows[i][f][j] : t4.rows[i][f])}" aria-label="${label}"></td>`;
+  $('#in4').innerHTML = `<thead><tr><th rowspan="2">Nhóm – Bình</th><th colspan="3">Lòng bình đo bằng thước chữ X (cm)<span class="sub">3 bạn đo, mỗi bạn 1 lần</span></th>
+      <th rowspan="2">Kích thước ngoài (cm)</th><th colspan="3">Đo cốc kiểm định bằng thước của nhóm (cm)</th><th colspan="2">Sau khi cắt bình (tùy chọn)</th></tr>
+      <tr><th>Lần 1</th><th>Lần 2</th><th>Lần 3</th><th>Lần 1</th><th>Lần 2</th><th>Lần 3</th><th>Lòng (cm)</th><th>Độ dày (mm)</th></tr></thead><tbody>` +
+    [0, 1, 2, 3].map(i => `<tr><th class="rowh">Nhóm ${i + 1} – <span data-name="${i}">${esc(name4(i))}</span></th>` +
+      [0, 1, 2].map(j => inp(i, 'l', j, `Nhóm ${i + 1} lòng lần ${j + 1}`)).join('') +
+      `<td><span class="sub">${i < 3 ? 'Chu vi ngoài' : 'Bề ngang ngoài'}</span><input data-r="${i}" data-f="out" inputmode="decimal" value="${esc(t4.rows[i].out)}" aria-label="Nhóm ${i + 1} ${i < 3 ? 'chu vi ngoài' : 'bề ngang ngoài'}"></td>` +
+      [0, 1, 2].map(j => inp(i, 'c', j, `Nhóm ${i + 1} cốc lần ${j + 1}`)).join('') +
+      inp(i, 'cutL', null, `Nhóm ${i + 1} lòng sau khi cắt`) + inp(i, 'cutT', null, `Nhóm ${i + 1} độ dày sau khi cắt`) + '</tr>').join('') + '</tbody>';
+  applyLock4(); update4();
+}
+function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+function applyLock4() {
+  $$('#par4 input').forEach(x => { x.readOnly = t4.params.locked; });
+  $('#btnLock4').textContent = t4.params.locked ? 'Mở khóa thông số' : 'Khóa thông số';
+  $('#btnLock4').setAttribute('aria-pressed', String(t4.params.locked));
+}
+
+function update4(silent) {
+  if (!silent && !save4()) say('msg4', 'warn', 'Trình duyệt này không lưu được số liệu – hãy Xuất CSV trước khi đóng trang.');
+  const R = [0, 1, 2, 3].map(calc4);
+  const errs = R.map(r => (isFinite(r.cupErr) ? mm1(r.cupErr) : Infinity));
+  const best = Math.min(...errs);
+  $('#out4').innerHTML = `<thead><tr><th>Nhóm – Bình</th><th>TB đường kính lòng (cm)</th><th>Độ chênh 3 lần đo (mm)</th><th>Sai số lòng so với chuẩn (mm)</th>
+      <th>Đường kính ngoài (cm)</th><th>Độ dày thành (mm)</th><th>Lệch so với thiết kế (mm)</th><th>Sai số đo cốc (mm)</th><th>Thước chữ X</th><th>Kết luận</th></tr></thead><tbody>` +
+    R.map((r, i) => {
+      const th = r.cupOk == null ? '<td>–</td>' : `<td class="${r.cupOk ? 'v-ok' : 'v-err'}">${r.cupOk ? 'Đạt kiểm định' : 'Chưa đạt'}<span class="sub">Mức ${r.level}${errs[i] === best && isFinite(best) ? ' ★ chính xác nhất' : ''}</span></td>`;
+      const extra = r.warns.map(w => `<span class="warn">⚠ ${w}</span>`).join('') +
+        (isFinite(r.cutLd) || isFinite(r.cutTd) ? `<span class="sub">Sau khi cắt: lòng chênh ${fmt(r.cutLd, 1)} mm; độ dày chênh ${fmt(r.cutTd, 1)} mm</span>` : '');
+      const v = r.verdict == null ? `<td>Chưa đủ số liệu${extra}</td>`
+        : `<td class="${r.verdict === 'dat' ? 'v-ok' : 'v-err'}">${r.verdict === 'dat' ? 'Đạt' : 'Bình lỗi'}${r.reasons.length ? `<span class="sub">${r.reasons.join('; ')}</span>` : ''}${extra}</td>`;
+      return `<tr><th class="rowh">Nhóm ${i + 1} – ${esc(name4(i))}</th><td>${fmt(r.tb)}</td><td>${fmt(r.spread, 1)}</td><td>${fmt(r.lumErr, 1)}</td>
+        <td>${fmt(r.outer)}${i === 3 ? '<span class="sub">bề ngang</span>' : ''}</td><td>${fmt(r.thick, 1)}</td><td>${fmt(r.thickDev, 1)}</td><td>${fmt(r.cupErr, 1)}</td>${th}${v}</tr>`;
+    }).join('') + '</tbody>';
+  const dat = R.filter(r => r.verdict === 'dat').length, loi = R.map((r, i) => r.verdict === 'loi' ? `Bình ${i + 1} – ${esc(name4(i))}` : null).filter(Boolean);
+  const okT = R.filter(r => r.cupOk === true).length, miss = R.filter(r => r.verdict == null).length;
+  $('#sum4').innerHTML = `Lô bình: ${dat}/4 bình đạt; bình lỗi: ${loi.length ? loi.join(', ') : 'không có'}; thước đạt kiểm định: ${okT}/4` + (miss ? ` <span class="sub">(${miss} bình chưa đủ số liệu)</span>` : '');
+  $('#ch1').innerHTML = chartThick(R);
+  $('#ch2').innerHTML = chartCup(R);
+  return R;
+}
+
+// Biểu đồ SVG tự vẽ
+function niceMax(v) { const p = Math.pow(10, Math.floor(Math.log10(v))); const m = v / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p; }
+function axes(ymax, unit) {
+  const X0 = 56, X1 = 545, Y0 = 270, Y1 = 22, step = ymax / 5;
+  let s = '';
+  for (let k = 0; k <= 5; k++) {
+    const v = k * step, y = Y0 - (Y0 - Y1) * v / ymax;
+    s += `<line x1="${X0}" y1="${y}" x2="${X1}" y2="${y}" stroke="${k ? '#E3E8EF' : '#90A4AE'}"/><text x="${X0 - 8}" y="${y}" font-size="13" text-anchor="end" dominant-baseline="central" fill="#5B6776">${fmt(v, step < 1 ? 1 : 0)}</text>`;
+  }
+  s += `<text x="14" y="${(Y0 + Y1) / 2}" font-size="13" text-anchor="middle" fill="#5B6776" transform="rotate(-90 14 ${(Y0 + Y1) / 2})">${unit}</text>`;
+  return { s, X0, X1, Y0, Y1, yOf: v => Y0 - (Y0 - Y1) * v / ymax };
+}
+function chartThick(R) {
+  const vals = R.map(r => r.thick), des = R.map(r => r.des);
+  const m = Math.max(1, ...vals.filter(isFinite), ...des.filter(isFinite).map(d => d + 2));
+  const A = axes(niceMax(m * 1.12), 'mm'), slot = (A.X1 - A.X0) / 4;
+  let s = A.s;
+  R.forEach((r, i) => {
+    const cx = A.X0 + slot * (i + 0.5), bw = slot * 0.42;
+    if (isFinite(r.des)) {
+      const y1 = A.yOf(r.des + 2), y2 = A.yOf(Math.max(0, r.des - 2));
+      s += `<rect x="${cx - slot * 0.42}" y="${y1}" width="${slot * 0.84}" height="${y2 - y1}" fill="#2E7D32" fill-opacity=".12"/>`;
+    }
+    if (isFinite(r.thick)) {
+      const v = Math.max(0, r.thick), y = A.yOf(v), bad = r.verdict === 'loi' && isFinite(r.thickDev) && mm1(r.thickDev) > 2;
+      s += `<rect x="${cx - bw / 2}" y="${y}" width="${bw}" height="${A.Y0 - y}" fill="#D9A877" stroke="${bad ? '#C62828' : '#8B5A2B'}" stroke-width="${bad ? 4 : 1.5}"/>`;
+      s += `<text x="${cx}" y="${y - 10}" font-size="13" text-anchor="middle" fill="#1F2A37" font-weight="700">${fmt(r.thick, 1)}</text>`;
+      if (bad) s += `<text x="${cx}" y="${y - 28}" font-size="15" text-anchor="middle" fill="#C62828" font-weight="800">LỖI</text>`;
+    }
+    if (isFinite(r.des)) { const y = A.yOf(r.des); s += `<line x1="${cx - slot * 0.42}" y1="${y}" x2="${cx + slot * 0.42}" y2="${y}" stroke="#2E7D32" stroke-width="3"/>`; }
+    s += `<text x="${cx}" y="${A.Y0 + 18}" font-size="13" text-anchor="middle" font-weight="700" fill="#1F2A37">Bình ${i + 1}</text><text x="${cx}" y="${A.Y0 + 35}" font-size="11" text-anchor="middle" fill="#5B6776">${esc(name4(i)).slice(0, 22)}</text>`;
+  });
+  s += `<line x1="330" y1="318" x2="352" y2="318" stroke="#2E7D32" stroke-width="3"/><text x="357" y="318" font-size="12" dominant-baseline="central" fill="#5B6776">Độ dày thiết kế (dải mờ: ±2 mm)</text>`;
+  return s;
+}
+function chartCup(R) {
+  const m = Math.max(4, ...R.map(r => r.cupErr).filter(isFinite));
+  const A = axes(niceMax(m * 1.15), 'mm'), slot = (A.X1 - A.X0) / 4;
+  let s = A.s;
+  R.forEach((r, i) => {
+    const cx = A.X0 + slot * (i + 0.5), bw = slot * 0.42;
+    if (isFinite(r.cupErr)) {
+      const y = A.yOf(r.cupErr), ok = r.cupOk;
+      s += `<rect x="${cx - bw / 2}" y="${y}" width="${bw}" height="${Math.max(0, A.Y0 - y)}" fill="${ok ? '#81C784' : '#EF9A9A'}" stroke="${ok ? '#2E7D32' : '#C62828'}" stroke-width="1.5"/>`;
+      s += `<text x="${cx}" y="${y - 10}" font-size="13" text-anchor="middle" font-weight="700" fill="#1F2A37">${fmt(r.cupErr, 1)}</text>`;
+    }
+    s += `<text x="${cx}" y="${A.Y0 + 18}" font-size="13" text-anchor="middle" font-weight="700" fill="#1F2A37">Thước nhóm ${i + 1}</text>`;
+  });
+  const y2 = A.yOf(2);
+  s += `<line x1="${A.X0}" y1="${y2}" x2="${A.X1}" y2="${y2}" stroke="#C62828" stroke-width="2.5" stroke-dasharray="8 6"/><text x="${A.X1}" y="${y2 - 9}" font-size="12" text-anchor="end" fill="#C62828" font-weight="700">ngưỡng 2 mm</text>`;
+  return s;
+}
+
+function bind4() {
+  $('#par4').addEventListener('input', e => {
+    const x = e.target; if (!x.dataset.p || t4.params.locked) return;
+    if (x.dataset.p === 'cup') t4.params.cup = x.value; else t4.params[x.dataset.p][+x.dataset.i] = x.value;
+    if (x.dataset.p === 'name') { const sp = $(`#in4 [data-name="${x.dataset.i}"]`); if (sp) sp.textContent = name4(+x.dataset.i); }
+    update4();
+  });
+  $('#in4').addEventListener('input', e => {
+    const x = e.target; if (!x.dataset.f) return;
+    const r = t4.rows[+x.dataset.r];
+    if (x.dataset.j != null) r[x.dataset.f][+x.dataset.j] = x.value; else r[x.dataset.f] = x.value;
+    update4();
+  });
+  $('#btnLock4').addEventListener('click', () => {
+    t4.params.locked = !t4.params.locked; applyLock4(); update4();
+    say('msg4', 'info', t4.params.locked ? 'Đã khóa thông số thiết kế.' : 'Đã mở khóa thông số thiết kế.');
+  });
+  $('#btnSample4').addEventListener('click', () => {
+    t4 = {
+      params: { name: NAMES4.slice(), std: ['9,00', '9,00', '8,50', '10,00'], des: ['3', '4', '4', '3'], cup: '7,00', locked: true },
+      rows: [
+        { l: ['9,0', '9,1', '9,0'], out: '30,25', c: ['7,0', '7,1', '7,0'], cutL: '', cutT: '' },
+        { l: ['9,0', '9,1', '8,9'], out: '30,77', c: ['7,0', '7,0', '7,0'], cutL: '9,0', cutT: '4' },
+        { l: ['8,5', '8,5', '8,5'], out: '32,97', c: ['7,1', '7,1', '7,1'], cutL: '8,5', cutT: '10' },
+        { l: ['10,0', '9,9', '10,0'], out: '10,6', c: ['6,9', '7,0', '6,9'], cutL: '', cutT: '' }
+      ]
+    };
+    build4(); say('msg4', 'info', 'Đã nạp số liệu mẫu (theo Phụ lục 10): Bình 3 là bình lỗi.');
+  });
+  $('#btnClear4').addEventListener('click', () => { $('#confirm4').hidden = false; $('#btnNo4').focus(); });
+  $('#btnNo4').addEventListener('click', () => { $('#confirm4').hidden = true; });
+  $('#btnYes4').addEventListener('click', () => { $('#confirm4').hidden = true; t4 = blank4(); store.del(KEY4); build4(); say('msg4', 'info', 'Đã xóa bảng.'); });
+  $('#btnCsv4').addEventListener('click', csv4);
+  $('#btnPrint4').addEventListener('click', print4);
+}
+
+// Xuất CSV (UTF-8 có BOM, phân cách bằng dấu chấm phẩy)
+function csv4() {
+  const R = [0, 1, 2, 3].map(calc4), q = x => `"${String(x).replace(/"/g, '""')}"`;
+  const head = ['Nhóm', 'Bình', 'Lòng chuẩn (cm)', 'Độ dày thiết kế (mm)', 'Lòng lần 1', 'Lòng lần 2', 'Lòng lần 3', 'TB lòng (cm)', 'Độ chênh 3 lần (mm)', 'Sai số lòng (mm)',
+    'Kích thước ngoài nhập (cm)', 'Đường kính ngoài (cm)', 'Độ dày thành (mm)', 'Lệch độ dày (mm)', 'Cốc lần 1', 'Cốc lần 2', 'Cốc lần 3', 'TB cốc (cm)', 'Sai số cốc (mm)',
+    'Thước', 'Kết luận', 'Cảnh báo', 'Sau cắt – lòng (cm)', 'Sau cắt – độ dày (mm)'];
+  const lines = [head.map(q).join(';')];
+  R.forEach((r, i) => {
+    const w = t4.rows[i], p = t4.params;
+    lines.push([i + 1, name4(i), p.std[i], p.des[i], ...w.l, fmt(r.tb), fmt(r.spread, 1), fmt(r.lumErr, 1), w.out, fmt(r.outer), fmt(r.thick, 1), fmt(r.thickDev, 1),
+      ...w.c, fmt(r.tbC), fmt(r.cupErr, 1), r.cupOk == null ? '' : (r.cupOk ? 'Đạt kiểm định' : 'Chưa đạt'),
+      r.verdict == null ? 'Chưa đủ số liệu' : (r.verdict === 'dat' ? 'Đạt' : 'Bình lỗi'), r.warns.join(' | '), w.cutL, w.cutT].map(q).join(';'));
+  });
+  lines.push(q($('#sum4').textContent));
+  try {
+    const blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'kiem-tra-lo-binh.csv';
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    say('msg4', 'ok', 'Đã xuất tệp kiem-tra-lo-binh.csv.');
+  } catch (e) { say('msg4', 'err', 'Trình duyệt này không cho tải tệp.'); }
+}
+// In biên bản kiểm tra (A4 dọc)
+function print4() {
+  const R = update4(true), d = new Date();
+  const rows = R.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(name4(i))}</td><td>${esc(t4.params.std[i]) || '–'}</td><td>${fmt(r.tb)}</td><td>${fmt(r.outer)}</td><td>${fmt(r.thick, 1)}</td><td>${esc(t4.params.des[i]) || '–'}</td><td>${fmt(r.cupErr, 1)}</td><td>${r.cupOk == null ? '–' : (r.cupOk ? 'Đạt' : 'Chưa đạt')}</td><td><b>${r.verdict == null ? 'Chưa đủ số liệu' : (r.verdict === 'dat' ? 'Đạt' : 'Bình lỗi')}</b>${r.warns.length ? '<br>' + r.warns.map(w => '⚠ ' + w).join('<br>') : ''}</td></tr>`).join('');
+  $('#print-area').innerHTML = `<p class="c">TRƯỜNG THCS PHƯỚC BÌNH – TỔ KIỂM TRA CHẤT LƯỢNG LỚP 7TH5</p>
+    <h1>BIÊN BẢN KIỂM TRA CHẤT LƯỢNG LÔ BÌNH</h1>
+    <p class="c">Ngày ${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()} – Dụng cụ: thước chữ X do 4 nhóm chế tạo – Cốc kiểm định chuẩn: ${esc(t4.params.cup)} cm</p>
+    <table><thead><tr><th>Nhóm – Bình</th><th>Mẫu</th><th>Lòng chuẩn (cm)</th><th>TB lòng đo (cm)</th><th>ĐK ngoài (cm)</th><th>Độ dày (mm)</th><th>Thiết kế (mm)</th><th>Sai số cốc (mm)</th><th>Thước</th><th>Kết luận</th></tr></thead><tbody>${rows}</tbody></table>
+    <p><b>${$('#sum4').textContent}</b></p>
+    <p>Tiêu chí: độ dày thành lệch không quá 2 mm; đường kính lòng sai không quá 3 mm; thước đạt kiểm định khi sai số đo cốc không quá 2 mm.</p>
+    <div class="charts"><svg viewBox="0 0 560 330">${chartThick(R)}</svg><svg viewBox="0 0 560 330">${chartCup(R)}</svg></div>
+    <div class="sign"><div><b>Đại diện tổ kiểm tra</b></div><div><b>Giáo viên</b></div></div>`;
+  window.print();
+}
+
+/* =========================================================
+   8. KHỞI ĐỘNG VÀ NÚT CHUNG
+   ========================================================= */
+const RENDER = { 1: render1, 2: render2, 3: render3all, 4: () => update4(true), 5: render5 };
+function showTab(n) {
+  app.tab = n;
+  $$('nav.tabs button').forEach(b => b.setAttribute('aria-selected', String(+b.dataset.tab === n)));
+  $$('section.tab').forEach(s => s.classList.toggle('active', s.id === 'tab' + n));
+  RENDER[n]();
+}
+function bindTop() {
+  $$('nav.tabs button').forEach(b => b.addEventListener('click', () => showTab(+b.dataset.tab)));
+  $('#btnPresent').addEventListener('click', e => {
+    app.present = !app.present; document.documentElement.classList.toggle('present', app.present);
+    e.currentTarget.setAttribute('aria-pressed', String(app.present)); RENDER[app.tab]();
+  });
+  $('#btnSound').addEventListener('click', e => {
+    app.sound = !app.sound; e.currentTarget.textContent = 'Âm thanh: ' + (app.sound ? 'Bật' : 'Tắt');
+    e.currentTarget.setAttribute('aria-pressed', String(app.sound)); if (app.sound) tick();
+  });
+  $('#btnFull').addEventListener('click', () => {
+    const d = document, el = d.documentElement;
+    try {
+      if (d.fullscreenElement || d.webkitFullscreenElement) (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+      else if (el.requestFullscreen) el.requestFullscreen().catch(() => noFull());
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else noFull();
+    } catch (e) { noFull(); }
+  });
+  const fsChange = () => { $('#btnFull').textContent = (document.fullscreenElement || document.webkitFullscreenElement) ? 'Thoát toàn màn hình' : 'Toàn màn hình'; setTimeout(() => RENDER[app.tab](), 120); };
+  document.addEventListener('fullscreenchange', fsChange); document.addEventListener('webkitfullscreenchange', fsChange);
+  $('#btnReset').addEventListener('click', () => {
+    if (app.tab === 1) reset1();
+    else if (app.tab === 2) reset2();
+    else if (app.tab === 3) reset3();
+    else if (app.tab === 4) { update4(true); say('msg4', 'info', 'Đã làm mới hiển thị. Số liệu của bảng vẫn được giữ.'); }
+    else reset5();
+  });
+  let rz = 0;
+  window.addEventListener('resize', () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => RENDER[app.tab]()); });
+}
+function noFull() { const id = app.tab === 5 ? null : 'msg' + app.tab; if (id) say(id, 'info', 'Trình duyệt này chưa hỗ trợ chế độ toàn màn hình.'); }
+
+buildCtrl1(); bindDrag1(); buildCtrl2(); buildCtrl3(); buildCtrl5(); build4(); bind4(); bindTop();
+newCh3();
+showTab(1);
+</script>
+</body>
+</html>

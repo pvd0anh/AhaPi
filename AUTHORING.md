@@ -168,6 +168,9 @@ device with no English voice available, the speaker button hides itself.
 You already have a finished `.html` file — a model, a game, an exercise page. Putting it on the site
 takes two uploads on GitHub, and nothing else.
 
+> A short Vietnamese version of this section lives in `models/README.md`; GitHub shows it
+> automatically when you open the **models** folder.
+
 **Before you start**, rename your file in **lowercase letters with no accents and no spaces**; use
 hyphens instead of spaces. Example: `Định lý Pytago.html` → `dinh-ly-pytago.html`.
 

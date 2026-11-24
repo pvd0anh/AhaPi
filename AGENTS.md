@@ -22,6 +22,7 @@ that workflow command-free.
 | `models/*.html` | Standalone interactive pages, authored by others. Leave their code and styling as is |
 | `models/models.json` | Home-page cards for `models/*.html`. **Array order = card order**. Hand-edited on github.com |
 | `models/art/` | Card pictures referenced from `models.json` |
+| `models/README.md` | Vietnamese how-to for teachers adding a model; GitHub renders it under the folder listing. Keep it in step with `AUTHORING.md` §F |
 | `404.html`, `favicon.svg` | Error page, icon |
 | `.nojekyll`, `CNAME` | Required by GitHub Pages — keep both |
 | `README.md` / `AUTHORING.md` | Docs for developers / for the non-programming teacher |

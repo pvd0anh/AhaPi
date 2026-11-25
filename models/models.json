@@ -24,5 +24,13 @@
     "tag": "Toán 7",
     "new": true,
     "image": "art/thuoc-chu-x.svg"
+  },
+  {
+    "file": "xuong-bia-carton.html",
+    "title": "Xưởng bìa carton",
+    "text": "Bóc tách mô hình, xem lưới khai triển để cắt – gấp – dán bìa carton, hoặc tự kéo thả hình hộp, lăng trụ, hình chóp dựng mô hình của em.",
+    "tag": "STEM",
+    "new": true,
+    "image": "art/xuong-bia-carton.svg"
   }
 ]
